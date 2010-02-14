@@ -1,0 +1,15 @@
+Main contents of this repository written in Japanese.
+If any question or notification you have, please contact me in English on twitter or github.
+http://twitter.com/hiromi2424/
+
+
+■概要
+各種翻訳のプロジェクトです。
+コミットされた後、masterがFTPで当該サーバーにアップロードします。
+http://hiromi2424.lv9.org/translate/
+
+
+■各プロジェクト
+□cakephp13
+HTMLファイルが列挙されています。
+なるべくタグの内容を破壊せず、Inner or Outer Textを変更していきます。
