@@ -1,0 +1,78 @@
+
+      <div><h2>Logging enhancements</h2>
+<p><code>CakeLog</code> the default logging solution in CakePHP has
+been enhanced to provide a more flexible logging for 1.3. In
+addition to the default file logging, you can extend the logging by
+configuring additional log streams. Log streams can be provided as
+part of plugins or be part of your app.</p>
+<h3>Creating and configuring log streams</h3>
+<p>Log stream handlers can be part of your application, or part of
+plugins. If for example you had a database logger called
+<code>DatabaseLogger</code>. As part of your application it would
+be placed in <code>app/libs/log/database_logger.php</code>. As part
+of a plugin it would be placed in
+<code>app/plugins/my_plugin/libs/log/database_logger.php</code>.
+When configured <code>CakeLog</code> will attempt to load
+Configuring log streams is done by calling
+<code>CakeLog::config()</code>. Configuring our DatabaseLogger
+would look like</p>
+<pre>
+<code class="php">//for app/libs
+CakeLog::config('otherFile', array(
+    'engine' =&gt; 'DataBaseLogger',
+    'model' =&gt; 'LogEntry',
+    ...
+));
+
+//for plugin called LoggingPack
+CakeLog::config('otherFile', array(
+    'engine' =&gt; 'LoggingPack.DataBaseLogger',
+    'model' =&gt; 'LogEntry',
+    ...
+));</code>
+</pre>
+<p>When configuring a log stream the <code>engine</code> parameter
+is used to locate and load the log handler. All of the other
+configuration properties are passed to the log stream's constructor
+as an array.</p>
+<pre>
+<code class="php">class DatabaseLogger {
+    function __construct($options = array()) {
+        //...
+    }
+}</code>
+</pre>
+<p>CakePHP has no requirements for Log streams other than that they
+must implement a <code>write</code> method. This write method must
+take two parameters <code>$type, $message</code> in that order.
+<code>$type</code> is the string type of the logged message, core
+values are <code>error</code>, <code>warning</code>,
+<code>info</code> and <code>debug</code>. In addition you can
+define your own types by using them when you call
+<code>CakeLog::write</code>.</p>
+<h3>Interacting with log streams</h3>
+<p>You can introspect the configured streams with
+<code>CakeLog::configured()</code>. The return of
+<code>configured()</code> is an array of all the currently
+configured streams. You can remove streams using
+<code>CakeLog::drop($key)</code>. Once a log stream has been
+dropped it will no longer receive messages.</p>
+<h3>Writing to the log streams</h3>
+<p>All log streams are written to sequentially each time
+<code>CakeLog::write()</code> is called. You do not need to
+configure a stream in order to use logging. If no streams are
+configured when the log is written to, a <code>default</code>
+stream using the core <code>FileLog</code> class will be configured
+to output into <code>app/tmp/logs/</code> just as CakeLog did in
+CakePHP 1.2</p>
+<h3>Error Logging</h3>
+<p>Errors are now logged when <code>Configure::write('debug',
+0);</code>. You can use <code>Configure::write('log', $val)</code>,
+to control which errors are logged when debug is off. By default
+all errors are logged.</p>
+<pre>
+<code class="php">Configure::write('log', E_WARNING);</code>
+</pre>
+<p>Would log only warning and fatal errors. Setting
+<code>Configure::write('log', false);</code> will disable error
+logging when debug = 0.</p>
