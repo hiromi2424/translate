@@ -1,0 +1,440 @@
+
+      <div><h1>Features introduced in 1.3</h1>
+<p>A number of new and useful features have been added in the 1.3
+branch, this page attempts to summarize many of them until the
+permanent documentation is updated.</p>
+<h2>Router</h2>
+<p>Generating urls with new style prefixes works exactly the same
+as admin routing did in 1.2. They use the same syntax and
+persist/behave in the same way. Assuming you have
+<code>Configure::write('Routing.prefixes', array('admin',
+'member'));</code> in your core.php you will be able to do the
+following from a non-prefixed url:</p>
+<pre>
+<code class=
+"php">$this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'member' =&gt; true));
+$this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'admin' =&gt; true));</code>
+</pre>
+<p>Likewise, if you are in a prefixed url and want to go to a
+non-prefixed url, do the following:</p>
+<pre>
+<code class=
+"php">$this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'member' =&gt; false));
+$this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'admin' =&gt; false));</code>
+</pre>
+<h3>Route classes</h3>
+<p>For 1.3 the router has been internally rebuilt, and a new class
+<code>CakeRoute</code> has been created. This class handles the
+parsing and reverse matching of an individual connected route. Also
+new in 1.3 is the ability to create and use your own Route classes.
+You can implement and special routing features that may be needed
+in application routing classes. Developer route classes must extend
+<code>CakeRoute</code> if they do not an error will be triggered.
+Commonly a custom route class will override the
+<code>parse()</code> and/or <code>match()</code> methods found in
+<code>CakeRoute</code> to provide custom handling.</p>
+<h3>Dispatcher</h3>
+<ul>
+<li>Accessing filtered asset paths, while having no defined asset
+filter will create 404 status code responses.</li>
+</ul>
+<h2>Helpers</h2>
+<p>Helpers can now be addressed at
+<code>$this-&gt;Helper-&gt;func()</code> in addition to
+<code>$helper-&gt;func()</code>. This allows view variables and
+helpers to share names and not create collisions.</p>
+<h3>New JsHelper and new features in HtmlHelper</h3>
+<p>See [wiki:1.3/new-features/js-helper JsHelper documentation for
+more information]</p>
+<h3>Pagination Helper</h3>
+<p>Pagination helper provides additional css classes for styling
+and you can set the default sort() direction.
+<code>PaginatorHelper::next()</code> and
+<code>PaginatorHelper::prev()</code> now generate span tags by
+default, instead of divs.</p>
+<h3>Helper</h3>
+<p><code>Helper::assetTimestamp()</code> has been added. It will
+add timestamps to any asset under WWW_ROOT. It works with
+<code>Configure::read('Asset.timestamp');</code> just as before,
+but the functionality used in Html and Javascript helpers has been
+made available to all helpers. Assuming <code>Asset.timestamp ==
+force</code></p>
+<pre>
+<code class="php">$path = 'css/cake.generic.css'
+$stamped = $this-&gt;Html-&gt;assetTimestamp($path);
+
+//$stamped contains 'css/cake.generic.css?5632934892'</code>
+</pre>
+<p>The appended timestamp contains the last modification time of
+the file. Since this method is defined in <code>Helper</code> it is
+available to all subclasses.</p>
+<h3>TextHelper</h3>
+<p>highlight() now accepts an array of words to highlight.</p>
+<h3>NumberHelper</h3>
+<p>A new method <code>addFormat()</code> has been added. This
+method allows you to set currency parameter sets, so you don't have
+to retype them.</p>
+<pre>
+<code class=
+"php">$this-&gt;Number-&gt;addFormat('NOK', array('before' =&gt; 'Kr. '));
+$formatted = $this-&gt;Number-&gt;currency(1000, 'NOK');</code>
+</pre>
+<h3>FormHelper</h3>
+<p>The form helper has had a number of improvements and API
+modifications, see [wiki:1.3/new-features/form-helper FormHelper
+improvements] for more information.</p>
+<h2>Error Handling</h2>
+<p>Subclasses of ErrorHandler can more easily implement additional
+error methods. In the past you would need to override
+<code>__construct()</code> and work around ErrorHandler's desire to
+convert all error methods into <code>error404</code> when debug =
+0. In 1.3 error methods that are declared in subclasses are not
+converted to <code>error404</code>. If you want your error methods
+converted into error404, then you will need to do it manually.</p>
+<h2>Scaffolding</h2>
+<p>With the addition of <code>Routing.prefixes</code> scaffolding
+has been updated to allow the scaffolding of any one prefix.</p>
+<pre>
+<code class=
+"php">Configure::write('Routing.prefixes', array('admin', 'member'));
+
+class PostsController extends AppController {
+    var $scaffold = 'member';
+}</code>
+</pre>
+<p>Would use scaffolding for member prefixed urls.</p>
+<h2>Logging</h2>
+<p>Logging and <code>CakeLog</code> have been enhanced
+considerably, both in features and flexibility. See <a href=
+"/projects/42648/13-new-features-logging">New Logging features</a>
+for more information.</p>
+<h2>Caching</h2>
+<p>Cache engines have been made more flexible in 1.3. You can now
+provide custom <code>Cache</code> adapters in <code>app/libs</code>
+as well as in plugins using <code>$plugin/libs</code>. App/plugin
+cache engines can also override the core engines. Cache adapters
+must be in a cache directory. If you had a cache engine named
+<code>MyCustomCacheEngine</code> it would be placed in either
+<code>app/libs/cache/my_custom_cache.php</code> as an app/libs. Or
+in <code>$plugin/libs/cache/my_custom_cache.php</code> as part of a
+plugin. Cache configs from plugins need to use the plugin dot
+syntax.</p>
+<pre>
+<code class="php">Cache::config('custom', array(
+    'engine' =&gt; 'CachePack.MyCustomCacheEngine',
+    ...
+));</code>
+</pre>
+<h3>New Cache methods</h3>
+<p>Cache has a few new methods for 1.3, the make introspection and
+testing teardown easier.</p>
+<ul>
+<li><code>Cache::configured()</code> returns an array of configured
+Cache engine keys.</li>
+<li><code>Cache::drop($config)</code> drops a configured Cache
+engine. Once dropped cache engines are no longer readable or
+writeable.</li>
+<li><code>Cache::increment()</code> Perform an atomic increment on
+a numeric value. This is not implemented in FileEngine.</li>
+<li><code>Cache::decrement()</code> Perform an atomic decrement on
+a numeric value. This is not implemented in FileEngine.</li>
+</ul>
+<h2>Validation</h2>
+<p>After 1.2 was released there were numerous requests to add
+additional localizations to the <code>phone()</code> and
+<code>postal()</code> methods. Instead of trying to add every
+locale to Validation itself, which would result in large bloated
+ugly methods, and still not afford the flexibility needed for all
+cases, an alternate path was taken. In 1.3 <code>phone()</code> and
+<code>postal()</code> will pass off any country prefix it does not
+know how to handle to another class with the appropriate name. For
+example if you lived in the Netherlands you would create a class
+like</p>
+<pre>
+<code class="php">class NlValidation {
+    function phone($check) {
+        ...
+    }
+    function postal($check) {
+        ...
+    }
+}</code>
+</pre>
+<p>This file could be placed anywhere in your application, but must
+be imported before attempting to use it. In your model validation
+you could use your NlValidation class by doing the following.</p>
+<pre>
+<code class="php">var $validate = array(
+    'phone_no' =&gt; array('rule' =&gt; array('phone', null, 'nl')),
+    'postal_code' =&gt; array('rule' =&gt; array('postal', null, 'nl'))
+);</code>
+</pre>
+<p>When your model data is validated, Validation will see that it
+cannot handle the 'nl' locale and will attempt to delegate out to
+<code>NlValidation::postal()</code> and the return of that method
+will be used as the pass/fail for the validation. This approach
+allows you to create classes that handle a subset or group of
+locales, something that a large switch would not have. The usage of
+the individual validation methods has not changed, the ability to
+pass off to another validator has been added.</p>
+<h3>IP Address Validation</h3>
+<p>Validaiton of IP Addresses has been extended to allow strict
+validation of a specific IP Version. It will also make use of PHP
+native validation mechanisms if available.</p>
+<pre>
+<code class=
+"php">Validation::ip($someAddress);         // Validates both IPv4 and IPv6
+Validation::ip($someAddress, 'IPv4'); // Validates IPv4 Addresses only
+Validation::ip($someAddress, 'IPv6'); // Validates IPv6 Addresses only</code>
+</pre>
+<h3>Valdation::uuid()</h3>
+<p>A uuid() pattern validation has been added to the
+<code>Validation</code> class. It will check that a given string
+matches a uuid by pattern only. It does not ensure uniqueness of
+the given uuid.</p>
+<h2>Inflector</h2>
+<p>The Inflector now internally caches all data passed to it for
+inflection.</p>
+<h2>Models and Datasources</h2>
+<h3>App::import(), datasources &amp; datasources from plugins</h3>
+<p>Datasources can now be included loaded with
+<code>App::import()</code> and be included in plugins! To include a
+datasource in your plugin you put it in
+<code>my_plugin/datasources/your_datasource.php</code>. To import a
+Datasource from a plugin use <code>App::import('Datasouce',
+'MyPlugin.YourDatasource');</code></p>
+<h3>Using plugin datasources in your database.php</h3>
+<p>You can use plugin datasources by setting the datasource key
+with the plugin name. For example if you had a WebservicePack
+plugin with a LastFm datasource, you could do:</p>
+<pre>
+<code class="php">var $lastFm = array(
+    'datasource' =&gt; 'WebservicePack.LastFm'
+    ...</code>
+</pre>
+<h3>Model</h3>
+<ul>
+<li>Missing Validation methods now trigger errors, making debugging
+why validation isn't working easier.</li>
+<li>Models now support <a href=
+"/projects/42648/13-new-features-virtual-fields">virtual
+fields</a></li>
+</ul>
+<h3>Behaviors</h3>
+<p>Using behaviors that do not exist, now triggers a
+<code>cakeError</code> making missing behaviors easier to find and
+fix.</p>
+<h3>CakeSchema</h3>
+<p>CakeSchema can now locate, read and write schema files to
+plugins. The SchemaShell also exposes this functionality, see below
+for changes to SchemaShell. CakeSchema also supports
+<code>tableParameters</code>. Table Parameters are non column
+specific table information such as collation, charset, comments,
+and table engine type. Each Dbo implements the tableParameters they
+support.</p>
+<h3>tableParameters in MySQL</h3>
+<p>MySQL supports the greatest number of tableParameters; You can
+use tableParameters to set a variety of MySQL specific
+settings.</p>
+<ul>
+<li><code>engine</code> Control the storage engine used for your
+tables.</li>
+<li><code>charset</code> Control the character set used for
+tables.</li>
+<li><code>encoding</code> Control the encoding used for
+tables.</li>
+</ul>
+<p>In addition to tableParameters MySQL dbo's implement
+<code>fieldParameters</code>. fieldParameters allow you to control
+MySQL specific settings per column.</p>
+<ul>
+<li><code>charset</code> Set the character set used for a
+column</li>
+<li><code>encoding</code> Set the encoding used for a column</li>
+</ul>
+<p>See below for examples on how to use table and field parameters
+in your schema files.</p>
+<h3>tableParameters in Postgres</h3>
+<p>....</p>
+<h3>tableParameters in SQLite</h3>
+<p>....</p>
+<h3>Using tableParameters in schema files</h3>
+<p>You use <code>tableParameters</code> just as you would any other
+key in a schema file. Much like <code>indexes</code>:</p>
+<pre>
+<code class="php">var $comments =&gt; array(
+    'id' =&gt; array('type' =&gt; 'integer', 'null' =&gt; false, 'default' =&gt; 0, 'key' =&gt; 'primary'),
+    'post_id' =&gt; array('type' =&gt; 'integer', 'null' =&gt; false, 'default' =&gt; 0),
+    'comment' =&gt; array('type' =&gt; 'text'),
+    'indexes' =&gt; array(
+        'PRIMARY' =&gt; array('column' =&gt; 'id', 'unique' =&gt; true),
+        'post_id' =&gt; array('column' =&gt; 'post_id'),
+    ),
+    'tableParameters' =&gt; array(
+        'engine' =&gt; 'InnoDB',
+        'charset' =&gt; 'latin1',
+        'collate' =&gt; 'latin1_general_ci'
+    )
+);</code>
+</pre>
+<p>is an example of a table using <code>tableParameters</code> to
+set some database specific settings. If you use a schema file that
+contains options and features your database does not implement,
+those options will be ignored. For example if you imported the
+above schema to a PostgreSQL server, all of the tableParameters
+would be ignore as PostgreSQL does not support any of the included
+options.</p>
+<h2>Console and Shells</h2>
+<h3>Bake</h3>
+<p>Bake has had a number of significant changes made to it. Those
+changes are detailed in <a href=
+"/projects/42648/13-new-features-bake-updates">the bake updates
+section</a></p>
+<h3>Subclassing</h3>
+<p>The ShellDispatcher has been modified to not require shells and
+tasks to have <em>Shell</em> as their immediate parent anymore.</p>
+<h3>Output</h3>
+<p><code>Shell::nl()</code> has been added. It returns a single or
+multiple linefeed sequences. <code>Shell::out()</code>,
+<code>err()</code> and <code>hr()</code> now accept a
+<code>$newlines</code> parameter which is passed to
+<code>nl()</code> and allows for controlling how newlines are
+appended to the output.</p>
+<p><code>Shell::out()</code> and <code>Shell::err()</code> have
+been modified, allowing a parameterless usage. This is especially
+useful if you're often using <code>$this-&gt;out('')</code> for
+outputting just a single newline.</p>
+<h3>Acl Shell</h3>
+<p>All AclShell commands now take <code>node</code> parameters.
+<code>node</code> parameters can be either an alias path like
+<code>controllers/Posts/view</code> or Model.foreign_key ie.
+<code>User.1</code>. You no longer need to know or use the aco/aro
+id for commands.</p>
+<p>The Acl shell <code>dataSource</code> switch has been removed.
+Use the Configure settings instead.</p>
+<h3>SchemaShell</h3>
+<p>The Schema shell can now read and write Schema files and SQL
+dumps to plugins. It expects and will create schema files in
+<code>$plugin/config/schema</code></p>
+<p>....</p>
+<h2>Components</h2>
+<h3>SecurityComponent</h3>
+<p>The various requireXX methods like <code>requireGet</code> and
+<code>requirePost</code> now accept as single array as their
+argument as well as a collection of string names.</p>
+<pre>
+<code class=
+"php">$this-&gt;Security-&gt;requirePost(array('edit', 'update'));</code>
+</pre>
+<h3>Component settings</h3>
+<p>Component settings for all core components can now be set from
+the <code>$components</code> array. Much like behaviors, you can
+declare settings for components when you declare the component.</p>
+<pre>
+<code class="php">var $components = array(
+    'Cookie' =&gt; array(
+        'name' =&gt; 'MyCookie'
+    ),
+    'Auth' =&gt; array(
+        'userModel' =&gt; 'MyUser',
+        'loginAction' =&gt; array('controller' =&gt; 'users', 'action' =&gt; 'login')
+    )
+);</code>
+</pre>
+<p>This should reduce clutter in your Controller's
+<code>beforeFilter()</code> methods.</p>
+<h3>EmailComponent</h3>
+<ul>
+<li>You can now retrieve the rendered contents of sent Email
+messages, by reading <code>$this-&gt;Email-&gt;htmlMessage</code>
+and <code>$this-&gt;Email-&gt;textMessage</code>. These properties
+will contain the rendered email content matching their name.</li>
+<li>Many of EmailComponent's private methods have been made
+protected for easier extension.</li>
+<li>EmailComponent::$to can now be an array. Allowing easier
+setting of multiple recipients, and consistency with other
+properties.</li>
+<li><code>EmailComponent::$messageId</code> has been added, it
+allows control over the Message-ID header for email messages.</li>
+</ul>
+<h2>Libs</h2>
+<h3>Set</h3>
+<p>Set has a new method <code>Set::apply()</code>, which allows you
+to apply <a href="http://ca2.php.net/callback">callbacks</a> to the
+results of <code>Set::extract</code> and do so in either a map or
+reduce fashion.</p>
+<pre>
+<code class=
+"php">Set::apply('/Movie/rating', $data, 'array_sum');</code>
+</pre>
+<p>Would return the sum of all Movie ratings in
+<code>$data</code>.</p>
+<h3>L10N</h3>
+<p>All languages in the catalog now have a direction key. This can
+be used to determine/define the text direction of the locale being
+used.</p>
+<h3>File</h3>
+<ul>
+<li>File now has a copy() method. It copies the file represented by
+the file instance, to a new location.</li>
+</ul>
+<h3>Configure</h3>
+<ul>
+<li><code>Configure::load()</code> can now load configuration files
+from plugins. Use <code>Configure::load('plugin.file');</code> to
+load configuration files from plugins. Any configuration files in
+your application that use <code>.</code> in the name should be
+updated to used <code>_</code></li>
+</ul>
+<h2>App/libs</h2>
+<p>In addition to <code>app/vendors</code> a new
+<code>app/libs</code> directory has been added. This directory can
+also be part of plugins, located at <code>$plugin/libs</code>. Libs
+directories are intended to contain 1st party libraries that do not
+come from 3rd parties or external vendors. This allows you to
+separate your organization's internal libraries from vendor
+libraries. <code>App::import()</code> has also been updated to
+import from libs directories.</p>
+<pre>
+<code class=
+"php">App::import('Lib', 'ImageManipulation'); //imports app/libs/image_manipulation.php</code>
+</pre>
+<p>You can also import libs files from plugins</p>
+<pre>
+<code class=
+"php">App::import('Lib', 'Geocoding.Geocode'); //imports app/plugins/geocoding/libs/geocode.php</code>
+</pre>
+<p>The remainder of lib importing syntax is identical to vendor
+files. So if you know how to import vendor files with unique names,
+you know how to import libs files with unique names.</p>
+<h2>Configuration</h2>
+<ul>
+<li>The default <code>Security.level</code> in 1.3 is
+<strong>medium</strong> instead of <strong>high</strong></li>
+<li>There is a new configuration value
+<code>Security.cipherSeed</code> this value should be customized to
+ensure more secure encrypted cookies, and a warning will be
+generated in development mode when the value matches its default
+value.</li>
+</ul>
+<h2>i18n</h2>
+<p>Now you can use locale definition files for the LC_TIME category
+to retrieve date and time preferences for an specific language.
+Just use any POSIX compliant locale definition file and store it at
+app/locale/<em>language</em>/ (do not create a folder for the
+category LC_TIME, just put the file in there).</p>
+<p>For example, if you have access to a machine running debian or
+ubuntu you can find a french locale file at:
+/usr/share/i18n/locales/fr_FR. Copy the part corresponding to
+LC_TIME into app/locale/fr_fr/LC_TIME file. You can then access to
+time preferences for French language this way:</p>
+<pre>
+<code class=
+"php">Configure::write('Config.language','fr_fr'); // set the current language
+$monthNames = __('mon',5,true); // returns an aray with the month names in French
+$dateFormat = __('d_fmt',5,true); // return the preferred dates format for France</code>
+</pre>
+<p>You can read a complete guide of possible values in LC_TIME
+definition file in <a href=
+"http://sunsson.iptime.org/susv3/basedefs/xbd_chap07.html">this
+page</a></p>

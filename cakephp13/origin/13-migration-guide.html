@@ -1,0 +1,641 @@
+
+      <div><h1>Migration Guide from 1.2 to 1.3</h1>
+<p>This guide summarizes many of the changes necessary when
+migrating from a 1.2 to 1.3 Cake core.</p>
+<p><strong>This guide reflects the Git head, if you are using a
+package of 1.3 some or all of this guide may be
+inaccurate.</strong></p>
+<p><strong>App File Replacements (important)</strong></p>
+<ul>
+<li>webroot/index.php: Must be replaced due to changes in
+bootstrapping process.</li>
+<li>config/core.php: Additional settings have been put in place
+which are required for PHP 5.3.</li>
+</ul>
+<h2>Removed Constants</h2>
+<p>The following constants have been removed from CakePHP. If your
+application depends on them you must define them in
+<code>app/config/bootstrap.php</code></p>
+<ul>
+<li><code>CIPHER_SEED</code> - It has been replaced with Configure
+class var <code>Security.cipherSeed</code> which should be changed
+in <code>app/config/core.php</code></li>
+<li><code>PEAR</code></li>
+<li><code>INFLECTIONS</code></li>
+<li><code>VALID_NOT_EMPTY</code></li>
+<li><code>VALID_EMAIL</code></li>
+<li><code>VALID_NUMBER</code></li>
+<li><code>VALID_YEAR</code></li>
+</ul>
+<h2>Deprecated methods and features</h2>
+<p>Deprecated methods and classes have not yet been removed. But
+any deprecations triggering errors before beta is released will be
+removed by 1.3 final. It is recommended that developers update code
+to use the new methods.</p>
+<h3>CookieComponent</h3>
+<ul>
+<li><code>del</code> is deprecated use <code>delete</code></li>
+</ul>
+<h3>RequestHandlerComponent</h3>
+<ul>
+<li><code>getReferrer</code> is deprecated use
+<code>getReferer</code></li>
+</ul>
+<h3>SessionComponent</h3>
+<ul>
+<li><code>del</code> is deprecated use <code>delete</code></li>
+</ul>
+<h3>CakeSession</h3>
+<ul>
+<li><code>del</code> is deprecated use <code>delete</code></li>
+</ul>
+<h3>Folder</h3>
+<ul>
+<li><code>mkdir</code> is deprecated use <code>create</code></li>
+<li><code>mv</code> is deprecated use <code>move</code></li>
+<li><code>ls</code> is deprecated use <code>read</code></li>
+<li><code>cp</code> is deprecated use <code>copy</code></li>
+<li><code>rm</code> is deprecated use <code>delete</code></li>
+</ul>
+<h3>Set</h3>
+<ul>
+<li><code>isEqual</code> is deprecated. Use == or ===.</li>
+</ul>
+<h3>String</h3>
+<ul>
+<li><code>getInstance</code> is deprecated, call String methods
+statically.</li>
+</ul>
+<h3>View</h3>
+<ul>
+<li><code>View::renderElement</code> removed. Use
+<code>View::element()</code> instead.</li>
+<li>Automagic support for <code>.thtml</code> view file extension
+has been removed either declare <code>$this-&gt;ext =
+'thtml';</code> in your controllers, or rename your views to use
+<code>.ctp</code></li>
+</ul>
+<h3>Router</h3>
+<p><code>Routing.admin</code> is deprecated. It provided an
+inconsistent behavior with other prefix style routes in that it was
+treated differently. Instead you should use
+<code>Routing.prefixes</code>. Prefix routes in 1.3 do not require
+additional routes to be declared manually. All prefix routes will
+be generated automatically. To update simply change your
+core.php.</p>
+<pre>
+<code class="php">//from:
+Configure::write('Routing.admin', 'admin');
+
+//to:
+Configure::write('Routing.prefixes', array('admin'));</code>
+</pre>
+<p>See the New features guide for more information on using prefix
+routes. A small change has also been done to routing params. Routed
+params should now only consist of alphanumeric chars, - and _ or
+<code>/[A-Z0-9-_+]+/</code>.</p>
+<pre>
+<code class=
+"php">Router::connect('/:$%@#param/:action/*', array(...)); // BAD
+Router::connect('/:can/:anybody/:see/:m-3/*', array(...)); //Acceptable</code>
+</pre>
+<p>For 1.3 the internals of the Router were heavily refactored to
+increase performance and reduce code clutter. The side effect of
+this is two seldom used features were removed, as they were
+problematic and buggy even with the existing code base. First path
+segments using full regular expressions was removed. You can no
+longer create routes like</p>
+<pre>
+<code class=
+"php">Router::connect('/([0-9]+)-p-(.*)/', array('controller' =&gt; 'products', 'action' =&gt; 'show'));</code>
+</pre>
+<p>These routes complicated route compilation and impossible to
+reverse route. If you need routes like this, it is recommended that
+you use route parameters with capture patterns. Next mid-route
+greedy star support has been removed. It was previously possible to
+use a greedy star in the middle of a route.</p>
+<pre>
+<code class="php">Router::connect(
+    '/pages/*/:event',
+    array('controller' =&gt; 'pages', 'action' =&gt; 'display'), 
+    array('event' =&gt; '[a-z0-9_-]+')
+);</code>
+</pre>
+<p>This is no longer supported as mid-route greedy stars behaved
+erratically, and complicated route compiling. Outside of these two
+edge-case features and the above changes the router behaves exactly
+as it did in 1.2</p>
+<h3>Dispatcher</h3>
+<p><code>Dispatcher</code> is no longer capable of setting a
+controller's layout/viewPath with request parameters. Control of
+these properties should be handled by the Controller, not the
+Dispatcher. This feature was also undocumented, and untested.</p>
+<h3>TextHelper</h3>
+<ul>
+<li><code>TextHelper::trim()</code> is deprecated, used
+<code>truncate()</code> instead.</li>
+</ul>
+<h3>Model</h3>
+<ul>
+<li><code>Model::del()</code> and <code>Model::remove()</code> have
+been deprecated in favor of <code>Model::delete()</code>, which is
+now the canonical delete method.</li>
+<li><code>Model::findAll</code>, findCount, findNeighbours,
+removed.</li>
+<li>Dynamic calling of setTablePrefix() has been removed.
+tableprefix should be with the <code>$tablePrefix</code> property,
+and any other custom construction behavior should be done in an
+overridden <code>Model::__construct()</code>.</li>
+</ul>
+<h3>Shell</h3>
+<p><code>Shell::getAdmin()</code> has been moved up to
+<code>ProjectTask::getAdmin()</code></p>
+<h3>Library Renames</h3>
+<p>Core libraries of libs/session.php, libs/socket.php,
+libs/model/schema.php and libs/model/behavior.php have been renamed
+so that there is a better mapping between filenames and main
+classes contained within (as well as dealing with some name-spacing
+issues):</p>
+<ul>
+<li>
+<p>session.php -&gt; cake_session.php</p>
+<ul>
+<li>App::import('Core', 'Session') -&gt; App::import('Core',
+'CakeSession')</li>
+</ul>
+</li>
+<li>
+<p>socket.php -&gt; cake_socket.php</p>
+<ul>
+<li>App::import('Core', 'Socket') -&gt; App::import('Core',
+'CakeSocket')</li>
+</ul>
+</li>
+<li>
+<p>schema.php -&gt; cake_schema.php</p>
+<ul>
+<li>App::import('Model', 'Schema') -&gt; App::import('Model',
+'CakeSchema')</li>
+</ul>
+</li>
+<li>
+<p>behavior.php -&gt; model_behavior.php</p>
+<ul>
+<li>App::import('Core', 'Behavior') -&gt; App::import('Core',
+'ModelBehavior')</li>
+</ul>
+</li>
+</ul>
+<p>In most cases, the above renaming will not affect userland
+code.</p>
+<h3>vendors/css, vendors/js, and vendors/img</h3>
+<p>Support for these three directories, both in
+<code>app/vendors</code> as well as <code>plugin/vendors</code> has
+been removed. They have been replaced with plugin and theme webroot
+directories. See <a href=
+"/projects/42648/13-new-features-plugin-assets">New plugin and
+theme assets</a> for more information on how to convert your
+existing plugins to use the new structure.</p>
+<h2>API Changes</h2>
+<p>The following is a list of notable method and behavior changes,
+that may or may not affect your application. The changes are
+organized by the class they appear in.</p>
+<h3>Inheritance from Object</h3>
+<p>The following classes no longer extend Object:</p>
+<ul>
+<li>Router</li>
+<li>Set</li>
+<li>Inflector</li>
+<li>Cache</li>
+<li>CacheEngine</li>
+</ul>
+<p>If you were using Object methods from these classes, you will
+need to not use those methods.</p>
+<h3>Controller</h3>
+<ul>
+<li>
+<p><code>Controller::set()</code> no longer changes variables from
+<code>$var_name</code> to <code>$varName</code>. Variables always
+appear in the view exactly as you set them.</p>
+</li>
+<li>
+<p><code>Controller::set('title', $var)</code> no longer sets
+<code>$title_for_layout</code> when rendering the layout.
+<code>$title_for_layout</code> is still populated by default. But
+if you want to customize it, use
+<code>$this-&gt;set('title_for_layout', $var)</code>.</p>
+</li>
+<li>
+<p><code>Controller::$pageTitle</code> has been removed. Use
+<code>$this-&gt;set('title_for_layout', $var);</code> instead.</p>
+</li>
+</ul>
+<h3>Model</h3>
+<ul>
+<li><code>DboSource::query()</code> now throws warnings for
+un-handled model methods, instead of trying to run them as queries.
+This means, people starting transactions improperly via the
+<code>$this-&gt;Model-&gt;begin()</code> syntax will need to update
+their code so that it accesses the model's DataSource object
+directly.</li>
+<li>Missing validation methods will now trigger errors in
+development mode.</li>
+<li>Missing behaviors will now trigger a cakeError.</li>
+</ul>
+<h3>Datasources</h3>
+<ul>
+<li>DataSource::exists() has been refactored to be more consistent
+with non-database backed datasources. Previously, if you set
+<code>var $useTable = false; var $useDbConfig = 'custom';</code>,
+it was impossible for <code>Model::exists()</code> to return
+anything but false. This prevented custom datasources from using
+<code>create()</code> or <code>update()</code> correctly without
+some ugly hacks. If you have custom datasources that implement
+<code>create()</code>, <code>update()</code>, and
+<code>read()</code> (since <code>Model::exists()</code> will make a
+call to <code>Model::find('count')</code>, which is passed to
+<code>DataSource::read()</code>), make sure to re-run your unit
+tests on 1.3.</li>
+</ul>
+<h3>View</h3>
+<ul>
+<li><code>View::set('title', $var)</code> no longer sets
+<code>$title_for_layout</code> when rendering the layout.
+<code>$title_for_layout</code> is still populated by default. But
+if you want to customize it, use
+<code>$this-&gt;set('title_for_layout', $var)</code>.</li>
+<li><code>View::$pageTitle</code> has been removed. Use
+<code>$this-&gt;set('title_for_layout', $var);</code> instead.</li>
+<li>The <code>$cakeDebug</code> layout variable associated with
+debug = 3 has been removed. Remove it from your layouts as it will
+cause errors. Also see the notes related to SQL log dumping and
+Configure for more information.</li>
+</ul>
+<h3>Databases</h3>
+<p>Most database configurations no longer support the 'connect' key
+(which has been deprecated since pre-1.2). Instead, set
+<code>'persistent' =&gt; true</code> or false to determine whether
+or not a persistent database connection should be used</p>
+<h3>SQL log dumping</h3>
+<p>A commonly asked question is how can one disable or remove the
+SQL log dump at the bottom of the page?. In previous versions the
+HTML SQL log generation was buried inside DboSource. For 1.3 there
+is a new core element called <code>sql_dump</code>.
+<code>DboSource</code> no longer automatically outputs SQL logs. If
+you want to output SQL logs in 1.3, do the following:</p>
+<pre>
+<code>&lt;?php echo $this-&gt;element('sql_dump'); ?&gt;</code>
+</pre>
+<p>You can place this element anywhere in your layout or view. The
+<code>sql_dump</code> element will only generate output when
+<code>Configure::read('debug')</code> is equal to 2. You can of
+course customize or override this element in your app by creating
+<code>app/views/elements/sql_dump.ctp</code>.</p>
+<h3>SessionHelper &amp; SessionComponent</h3>
+<p><code>SessionComponent::setFlash()</code> second param used to
+be used for setting the layout and accordingly rendered a layout
+file. This has been modifed to use an element. If you specified
+custom session flash layouts in your applications you will need to
+make the following changes.</p>
+<ol>
+<li>Move the required layout files into app/views/elements<br></li>
+<li>Rename the $content_for_layout variable to $message</li>
+</ol>
+<p>Both <code>SessionHelper</code> and
+<code>SessionComponent</code> are no longer automatically included
+without you asking for them. SessionHelper and SessionComponent now
+act like every other component and must be declared like any other
+helper/component. You should update
+<code>AppController::$components</code> and
+<code>AppController::$helpers</code> to include these classes to
+retain existing behavior.</p>
+<pre>
+<code>var $components = array('Session', 'Auth', ...);
+var $helpers = array('Session', 'Html', 'Form' ...);</code>
+</pre>
+<p>These change were done to make CakePHP more explicit and
+declarative in what classes you the application developer want to
+use. In the past there was no way to avoid loading the Session
+classes without modifying core files. Which is something we want
+you to be able to avoid. In addition Session classes were the only
+magical component and helper. This change helps unify and normalize
+behavior amongst all classes.</p>
+<h3>Debugger</h3>
+<ul>
+<li><code>Debugger::checkSessionKey()</code> has been renamed to
+<code>Debugger::checkSecurityKeys()</code></li>
+<li>Calling <code>Debugger::output("text")</code> no longer works.
+Use <code>Debugger::output("txt")</code>.</li>
+</ul>
+<h3>Object</h3>
+<ul>
+<li><code>Object::$_log</code> has been removed.
+<code>CakeLog::write</code> is now called statically. See <a href=
+"/projects/42648/13-new-features-logging">New Logging features</a>
+for more information on changes made to logging.</li>
+</ul>
+<h3>Sanitize</h3>
+<ul>
+<li><code>Sanitize::html()</code> now actually always returns
+escaped strings. In the past using the <code>$remove</code>
+parameter would skip entity encoding, returning possibly dangerous
+content.</li>
+<li><code>Sanitize::clean()</code> now has a
+<code>remove_html</code> option. This will trigger the
+<code>strip_tags</code> feature of <code>Sanitize::html()</code>,
+and must be used in conjunction with the <code>encode</code>
+parameter.</li>
+</ul>
+<h3>Test Suite and Unit Tests</h3>
+<p>Group tests should now extend TestSuite instead of the
+deprecated GroupTest class. If your Group tests do not run, you
+will need to update the base class.</p>
+<h3>Configure and App</h3>
+<ul>
+<li>Configure::listObjects() replaced by App::objects()</li>
+<li>Configure::corePaths() replaced by App::core()</li>
+<li>Configure::buildPaths() replaced by App::build()</li>
+<li>Configure no longer manages paths.</li>
+<li>Configure::write('modelPaths', array...) replaced by
+App::build(array('models' =&gt; array...))</li>
+<li>Configure::read('modelPaths') replaced by
+App::path('models')</li>
+<li>There is no longer a debug = 3. The controller dumps generated
+by this setting often caused memory consumption issues making it an
+impractical and unusable setting. The <code>$cakeDebug</code>
+variable has also been removed from <code>View::renderLayout</code>
+You should remove this variable reference to avoid errors.</li>
+<li><code>Configure::load()</code> can now load configuration files
+from plugins. Use <code>Configure::load('plugin.file');</code> to
+load configuration files from plugins. Any configuration files in
+your application that use <code>.</code> in the name should be
+updated to used <code>_</code></li>
+</ul>
+<h3>Bootstrapping Additional Paths.</h3>
+<p>If in your app/config/bootstrap.php you may have variables like
+$pluginPaths or $controllerPaths.<br>
+The new way to add paths.</p>
+<pre>
+<code class="php">App::build(array(
+    'plugins' =&gt; array('/full/path/to/plugins/', '/next/full/path/to/plugins/'),
+    'models' =&gt;  array('/full/path/to/models/', '/next/full/path/to/models/'),
+    'views' =&gt; array('/full/path/to/views/', '/next/full/path/to/views/'),
+    'controllers' =&gt; array('/full/path/to/controllers/', '/next/full/path/to/controllers/'),
+    'datasources' =&gt; array('/full/path/to/datasources/', '/next/full/path/to/datasources/'),
+    'behaviors' =&gt; array('/full/path/to/behaviors/', '/next/full/path/to/behaviors/'),
+    'components' =&gt; array('/full/path/to/components/', '/next/full/path/to/components/'),
+    'helpers' =&gt; array('/full/path/to/helpers/', '/next/full/path/to/helpers/'),
+    'vendors' =&gt; array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
+    'shells' =&gt; array('/full/path/to/shells/', '/next/full/path/to/shells/'),
+    'locales' =&gt; array('/full/path/to/locale/', '/next/full/path/to/locale/')
+));</code>
+</pre>
+<p>Also changed is the order in which boostrapping occurs. In the
+past <code>app/config/core.php</code> was loaded
+<strong>after</strong> <code>app/config/bootstrap.php</code>. This
+caused any <code>App::import()</code> in an application bootstrap
+to be un-cached and considerably slower than a cached include. In
+1.3 core.php is loaded and the core cache configs are created
+<strong>before</strong> bootstrap.php is loaded.</p>
+<h3>Loading custom inflections</h3>
+<p><code>inflections.php</code> has been removed, it was an
+unnecessary file hit, and the related features have been refactored
+into a method to increase their flexibility. You now use
+<code>Inflector::rules()</code> to load custom inflections.</p>
+<pre>
+<code class="php">Inflector::rules('singular', array(
+    'rules' =&gt; array('/^(bil)er$/i' =&gt; '\1', '/^(inflec|contribu)tors$/i' =&gt; '\1ta'),
+    'uninflected' =&gt; array('singulars'),
+    'irregular' =&gt; array('spins' =&gt; 'spinor')
+));</code>
+</pre>
+<p>Will merge the supplied rules into the infection sets, with the
+added rules taking precedence over the core rules.</p>
+<h3>Vendor, plugin and theme assets</h3>
+<p>Vendor asset serving has been removed in 1.3 in favour of plugin
+and theme webroot directories. You can read more about <a href=
+"/projects/42648/13-new-features-plugin-assets">plugin and theme
+assets</a>.</p>
+<h2>Helper API Changes</h2>
+<p>All core helpers no longer use <code>Helper::output()</code>.
+The method was inconsistently used and caused output issues with
+many of FormHelper's methods. If you previously overrode
+<code>AppHelper::output()</code> to force helpers to auto-echo you
+will need to update your view files to manually echo helper
+output.</p>
+<h3>PaginatorHelper</h3>
+<p>PaginatorHelper has had a number of enhancements applied to make
+styling easier.<br>
+<code>prev()</code>, <code>next()</code>, <code>first()</code> and
+<code>last()</code></p>
+<p>The disabled state of these methods now defaults to
+<code>&lt;span&gt;</code> tags instead of <code>&lt;div&gt;</code>
+tags.</p>
+<p>passedArgs are now auto merged with url options in
+paginator.</p>
+<h4>Additional classnames</h4>
+<p><code>sort()</code>, <code>prev()</code>, <code>next()</code>
+now add additional class names to the generated html.
+<code>prev()</code> adds a class of prev. <code>next()</code> adds
+a class of next. <code>sort()</code> will add the direction
+currently being sorted, either asc or desc.</p>
+<h3>FormHelper</h3>
+<ul>
+<li><code>FormHelper::dateTime()</code> no longer has a
+<code>$showEmpty</code> parameter. Use
+<code>$attributes['empty']</code> instead.</li>
+<li><code>FormHelper::year()</code> no longer has a
+<code>$showEmpty</code> parameter. Use
+<code>$attributes['empty']</code> instead.</li>
+<li><code>FormHelper::month()</code> no longer has a
+<code>$showEmpty</code> parameter. Use
+<code>$attributes['empty']</code> instead.</li>
+<li><code>FormHelper::day()</code> no longer has a
+<code>$showEmpty</code> parameter. Use
+<code>$attributes['empty']</code> instead.</li>
+<li><code>FormHelper::minute()</code> no longer has a
+<code>$showEmpty</code> parameter. Use
+<code>$attributes['empty']</code> instead.</li>
+<li><code>FormHelper::meridian()</code> no longer has a
+<code>$showEmpty</code> parameter. Use
+<code>$attributes['empty']</code> instead.</li>
+<li><code>FormHelper::select()</code> no longer has a
+<code>$showEmpty</code> parameter. Use
+<code>$attributes['empty']</code> instead.</li>
+<li>Default urls generated by form helper no longer contain 'id'
+parameter. This makes default urls more consistent with documented
+userland routes. Also enables reverse routing to work in a more
+intuitive fashion with default FormHelper urls.</li>
+<li><code>FormHelper::submit()</code> Can now create other types of
+inputs other than type=submit. Use the type option to control the
+type of input generated.</li>
+<li><code>FormHelper::button()</code> Now creates
+<code>&lt;button&gt;</code> elements instead of reset or clear
+inputs. If you want to generate those types of inputs use
+<code>FormHelper::submit()</code> with a <code>'type' =&gt;
+'reset'</code> option for example.</li>
+<li><code>FormHelper::secure()</code> and
+<code>FormHelper::create()</code> no longer create hidden fieldset
+elements. Instead they create hidden div elements. This improves
+validation with HTML4.</li>
+</ul>
+<p>Also be sure to check the <a href=
+"/projects/42648/13-new-features-formhelper">Form helper
+improvements</a> for additional changes and new features in the
+FormHelper.</p>
+<h3>HtmlHelper</h3>
+<ul>
+<li><code>HtmlHelper::meta()</code> no longer has an
+<code>$inline</code> parameter. It has been merged with the
+<code>$options</code> array.</li>
+<li><code>HtmlHelper::link()</code> no longer has an
+<code>$escapeTitle</code> parameter. Use
+<code>$options['escape']</code> instead.</li>
+<li><code>HtmlHelper::para()</code> no longer has an
+<code>$escape</code> parameter. Use <code>$options['escape']</code>
+instead.</li>
+<li><code>HtmlHelper::div()</code> no longer has an
+<code>$escape</code> parameter. Use <code>$options['escape']</code>
+instead.</li>
+<li><code>HtmlHelper::tag()</code> no longer has an
+<code>$escape</code> parameter. Use <code>$options['escape']</code>
+instead.</li>
+<li><code>HtmlHelper::css()</code> no longer has an
+<code>$inline</code> parameter. Use <code>$options['inline']</code>
+instead.</li>
+</ul>
+<h3>TextHelper</h3>
+<ul>
+<li><code>TextHelper::highlight()</code> no longer has:</li>
+<li>an <code>$highlighter</code> parameter. Use
+<code>$options['format']</code> instead.</li>
+<li>an <code>$considerHtml</code>parameter. Use
+<code>$options['html']</code> instead.</li>
+<li><code>TextHelper::truncate()</code> no longer has:</li>
+<li>an <code>$ending</code> parameter. Use
+<code>$options['ending']</code> instead.</li>
+<li>an <code>$exact</code> parameter. Use
+<code>$options['exact']</code> instead.</li>
+<li>an <code>$considerHtml</code>parameter. Use
+<code>$options['html']</code> instead.</li>
+</ul>
+<h3>SessionHelper</h3>
+<ul>
+<li><code>flash()</code> no longer auto echos. You must add an
+<code>echo $session-&gt;flash();</code> to your session-&gt;flash()
+calls. flash() was the only helper method that auto outputted, and
+was changed to create consistency in helper methods.</li>
+</ul>
+<h3>CacheHelper</h3>
+<p>CacheHelper's interactions with
+<code>Controller::$cacheAction</code> has changed slightly. In the
+past if you used an array for <code>$cacheAction</code> you were
+required to use the routed url as the keys, this caused caching to
+break whenever routes were changed. You also could set different
+cache durations for different passed argument values, but not
+different named parameters or query string parameters. Both of
+these limitations/inconsistencies have been removed. You now use
+the controller's action names as the keys for
+<code>$cacheAction</code>. This makes configuring
+<code>$cacheAction</code> easier as its no longer coupled to the
+routing, and allows cacheAction to work with all custom routing. If
+you need to have custom cache durations for specific argument sets
+you will need to detect and update cacheAction in your
+controller.</p>
+<h3>TimeHelper</h3>
+<p>TimeHelper has been refactored to make it more i18n friendly.
+Internally almost all calls to date() have been replaced by
+strftime(). The new method TimeHelper::i18nFormat() has been added
+and will take localization data from a LC_TIME locale definition
+file in app/locale following the POSIX standard. These are the
+changes made in TimeHelepres API:</p>
+<ul>
+<li>TimeHelper::format() can now take a time string as first
+parameter and a format string as the second one, the format must be
+using the strftime() style. When called with this parameter order
+it will try to automatically convert the date format into the
+preferred one for the current locale. It will also take parameters
+as in 1.2.x version to be backwards compatible, but in this case
+format string must be compatible with date().</li>
+<li>TimeHelper::i18nFormat() has been added</li>
+</ul>
+<h3>Deprecated Helpers</h3>
+<p>Both the JavascriptHelper and the AjaxHelper are deprecated, and
+the JsHelper + HtmlHelper should be used in their place.</p>
+<p>You should replace <code>$javascript-&gt;link()</code> with
+<code>$html-&gt;script()</code> and
+<code>$javascript-&gt;codeBlock()</code> with
+<code>$html-&gt;scriptBlock()</code> or
+<code>$html-&gt;scriptStart()</code> and
+<code>$html-&gt;scriptEnd()</code> depending on your usage.</p>
+<h3>Cache</h3>
+<p>In addition to being able to load CacheEngines from app/libs or
+plugins, Cache underwent some refactoring for CakePHP1.3. These
+refactorings focused around reducing the number and frequency of
+method calls. The end result was a significant performance
+improvement with only a few minor API changes which are detailed
+below.</p>
+<p>The changes in Cache removed the singletons used for each Engine
+type, and instead an engine instance is made for each unique key
+created with <code>Cache::config()</code>. Since engines are not
+singletons anymore, <code>Cache::engine()</code> was not needed and
+was removed. In addition <code>Cache::isInitialized()</code> now
+checks cache <em>configuration names</em>, not cache <em>engine
+names</em>. You can still use <code>Cache::set()</code> or
+<code>Cache::engine()</code> to modify cache configurations. Also
+checkout the <a href="/projects/42648/13-new-features">New features
+guide</a> for more information on the additional methods added to
+<code>Cache</code>.</p>
+<p>It should be noted that using an app/libs or plugin cache engine
+for the default cache config can cause performance issues as the
+import that loads these classes will always be uncached. It is
+recommended that you either use one of the core cache engines for
+your <code>default</code> configuration, or manually include the
+cache engine class before configuring it. Furthermore any non-core
+cache engine configurations should be done in
+<code>app/config/bootstrap.php</code> for the same reasons detailed
+above.</p>
+<h2>Schema API changes</h2>
+<h4>Schema File location moved.</h4>
+<p>Schema files used with the SchemaShell have been moved to
+<code>app/config/schema</code> instead of
+<code>app/config/sql</code> Although <code>config/sql</code> will
+continue to work in 1.3, it will not in future versions, it is
+recommend that the new path is used.</p>
+<h2>Console API changes</h2>
+<h3>Schema shell</h3>
+<ul>
+<li><code>cake schema run create</code> has been renamed to
+<code>cake schema create</code></li>
+<li><code>cake schema run update</code> has been renamed to
+<code>cake schema update</code></li>
+</ul>
+<h3>Console Error Handling</h3>
+<p>The shell dispatcher has been modified to exit with a
+<code>1</code> status code if the method called on the shell
+explicitly returns <code>false</code>. Returning anything else
+results in a <code>0</code> status code. Before the value returned
+from the method was used directly as the status code for exiting
+the shell.</p>
+<p>Shell methods which are returning <code>1</code> to indicate an
+error should be updated to return <code>false</code> instead.</p>
+<p><code>Shell::error()</code> has been modified to exit with
+status code 1 after printing the error message which now uses a
+slightly different formatting.</p>
+<pre>
+<code class=
+"php">$this-&gt;error('Invalid Foo', 'Please provide bar.');
+// outputs:
+Error: Invalid Foo
+Please provide bar.
+// exits with status code 1</code>
+</pre>
+<p><code>ShellDispatcher::stderr()</code> has been modified to not
+prepend Error: to the message anymore. It's signature is now
+similar to <code>Shell::stdout()</code>.</p>
+<h3>ShellDispatcher::shiftArgs()</h3>
+<p>The method has been modified to return the shifted argument.
+Before if no arguments were available the method was returning
+false, it now returns null. Before if arguments were available the
+method was returning true, it now returns the shifted argument
+instead.</p>

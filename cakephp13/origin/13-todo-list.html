@@ -1,0 +1,336 @@
+
+      <div><h3>Todo list for 1.3</h3>
+<p>The following are grouped by <em>mark_story</em> preference of
+getting them complete. Feel free to move them around, or remove
+tickets you think are no good. Also this list encompasses most of
+the remaining items from [wiki:Hit_List the old hit list] . If it
+is a change that will affect userland code document it in <a href=
+"/projects/42648/13-migration-guide">Migration Guide</a></p>
+<h3>Really should do</h3>
+<ul>
+<li>
+<p>Method deprecations.</p>
+<ul>
+<li><del>Model::bind() duplicates bindModel() and should be
+deprecated <a href=
+"https://trac.cakephp.org/ticket/6096">https://trac.cakephp.org/ticket/6096</a></del></li>
+<li><del>Deprecate convenience methods, their use has been removed
+from the core, and they are often a bad practice. <a href=
+"https://trac.cakephp.org/ticket/6525">https://trac.cakephp.org/ticket/6525</a></del>
+<em>Their usage from inside CakePHP outside of <code>am()</code>
+has been removed. The functions can be removed in a future version.
+Removing them now could cause a larger barrier to
+upgrading.</em></li>
+<li><del>CookieComponent::delete() <a href=
+"https://trac.cakephp.org/ticket/6015">https://trac.cakephp.org/ticket/6015</a></del></li>
+<li><del>Folder and other deprecations</del></li>
+<li>See <a href=
+"http://code.cakephp.org/wiki/RFCs/Method-cleanup">http://code.cakephp.org/wiki/RFCs/Method-cleanup</a></li>
+</ul>
+</li>
+<li>
+<p><del>Session cookie path should be configurable <a href=
+"https://trac.cakephp.org/ticket/6324">https://trac.cakephp.org/ticket/6324</a></del></p>
+</li>
+<li><del>Decouple Session cookie lifetime from security level
+<a href=
+"https://trac.cakephp.org/ticket/5985">https://trac.cakephp.org/ticket/5985</a>.</del></li>
+<li><del>Convert SessionHelper::flash() and
+SessionComponent::setFlash() to use an element instead of a layout.
+Its counter intuitive that a page fragment is a layout and not an
+element.</del></li>
+<li><del>Deprecate <code>Routing.admin</code>. Add support for
+<code>Routing.prefixes</code> and automatically create prefix
+routes much like admin routes are currently handled.</del></li>
+<li><del>Allow logging when debug = 0. Can be a special log or just
+use error.log. <a href=
+"https://trac.cakephp.org/ticket/3270">https://trac.cakephp.org/ticket/3270</a></del></li>
+<li><del>Make auth and acl work with plugins and plugin
+controllers. <a href=
+"http://code.cakephp.org/tickets/view/33">http://code.cakephp.org/tickets/view/33</a>&gt;</del></li>
+<li><del>Update bake to reflect changes in
+<code>Routing.prefixes</code>, Use prefixes instead of singular
+admin, and allow choice for baking views for any prefix the user
+has declared.</del></li>
+<li><del>Update Scaffold to allow scaffolding of any one
+prefix.</del></li>
+<li><del><code>File::copy()</code> Where are thou? Add
+<code>File::copy</code>.</del></li>
+<li><del>Custom Error methods defined in an AppError class are
+converted to <code>error404</code> when debug == 0. This is not
+intuitive and makes it harder to use custom error handling methods.
+Propose that when debug ==0, any methods of ErrorHandler are
+converted into error404. Any methods of a subclass as long as they
+exist are left alone. Otherwise they are converted to
+error404.</del></li>
+<li><del><code>Configure::load()</code> should be able to load
+config files inside
+<code>plugin/config/file_name.php</code>.</del></li>
+<li>
+<p><del>Remove <code>Helper::output()</code> the idea behind it
+(enabling auto echoing of helper methods) is flawed and not
+feasible. Furthermore, it is not uniformly implemented throughout
+the core helpers. Removing it will reduce helper
+overhead.</del></p>
+</li>
+<li>
+<p>Caching</p>
+<ul>
+<li><del>Cache engines should be able to reside in plugins as well
+as app/libs</del></li>
+</ul>
+</li>
+<li>
+<p>Logging</p>
+<ul>
+<li><del>Implement the CakeLog streams as discussed in
+[wiki:RFCs/logging-enhancements Logging enhancement RFC]</del></li>
+<li><del>Ensure that logging streams can be provided by
+plugins.</del></li>
+</ul>
+</li>
+<li>
+<p><del>Multibyte support in helpers. TextHelper and others use
+<code>strlen</code> and other str functions, update to use
+<code>mb_</code> to improve compatibility. References</del></p>
+<ul>
+<li><del>Text Helper should work with Russian characters in PHP 4
+<a href=
+"https://trac.cakephp.org/ticket/1406">https://trac.cakephp.org/ticket/1406</a></del></li>
+<li><del>multibyte strings should be supported <a href=
+"https://trac.cakephp.org/ticket/2218">https://trac.cakephp.org/ticket/2218</a></del></li>
+</ul>
+</li>
+<li>
+<p>Helper localization improvements. There are a few helper methods
+that are not i18n friendly. References:</p>
+<ul>
+<li><del>Time Helper should support localization <a href=
+"https://trac.cakephp.org/ticket/1410">https://trac.cakephp.org/ticket/1410</a></del></li>
+<li><del>Bake should create views with properly formatted i18n
+strings <a href=
+"https://trac.cakephp.org/ticket/3356">https://trac.cakephp.org/ticket/3356</a></del></li>
+<li><del>Time Helper methods should return i18n-friendly strings
+<a href=
+"https://trac.cakephp.org/ticket/3583">https://trac.cakephp.org/ticket/3583</a></del></li>
+<li><del>Allow default currency sets in number helper. <a href=
+"https://trac.cakephp.org/ticket/5630">https://trac.cakephp.org/ticket/5630</a></del></li>
+</ul>
+</li>
+<li>
+<p><del>Localization extensions for validations. The current
+implementation of validation localization is not sustainable and
+needs to be changed, there are numerous tickets containing various
+requests for different locales. Implementing a generic solution is
+a much better approach. References:</del></p>
+<ul>
+<li><del>Alphanumeric field validation is not UTF-8 safe <a href=
+"https://trac.cakephp.org/ticket/4819">https://trac.cakephp.org/ticket/4819</a></del></li>
+<li><del>Spanish Phone Validation <a href=
+"https://trac.cakephp.org/ticket/5678">https://trac.cakephp.org/ticket/5678</a></del></li>
+<li><del>Validation::postal(...) should accept multiple countries
+<a href=
+"https://trac.cakephp.org/ticket/5423">https://trac.cakephp.org/ticket/5423</a></del></li>
+<li><del>Italian and France Phone Validation <a href=
+"https://trac.cakephp.org/ticket/5839">https://trac.cakephp.org/ticket/5839</a></del></li>
+<li><del>Validation::ip() should support IPv6 addresses <a href=
+"https://trac.cakephp.org/ticket/5872">https://trac.cakephp.org/ticket/5872</a></del></li>
+<li><del>Validation for Australian PostCode <a href=
+"https://trac.cakephp.org/ticket/5874">https://trac.cakephp.org/ticket/5874</a></del></li>
+<li><del>[PATCH+TEST] Validation for cs+sk postal codes <a href=
+"https://trac.cakephp.org/ticket/6146">https://trac.cakephp.org/ticket/6146</a></del></li>
+<li><del><a href="/projects/42648/changesets/PATCH" title=
+"Changeset [PATCH]">[PATCH]</a> Postal code validation rule should
+support nl (Dutch) format <a href=
+"https://trac.cakephp.org/ticket/6479">https://trac.cakephp.org/ticket/6479</a></del></li>
+<li><del>Postal code validation rule for jp (Japan) format <a href=
+"https://trac.cakephp.org/ticket/6495">https://trac.cakephp.org/ticket/6495</a></del></li>
+</ul>
+</li>
+<li>
+<p>FormHelper</p>
+<ul>
+<li><del>Implement a way to set defaults for input() <a href=
+"https://trac.cakephp.org/ticket/4541">https://trac.cakephp.org/ticket/4541</a>
+and <a href=
+"http://code.cakephp.org/tickets/view/56">http://code.cakephp.org/tickets/view/56</a></del></li>
+<li>Implement templates for helper methods to allow more flexible
+output. <a href=
+"https://trac.cakephp.org/ticket/6368">https://trac.cakephp.org/ticket/6368</a></li>
+<li>Also see <a href=
+"http://code.cakephp.org/wiki/RFCs/API-changes">http://code.cakephp.org/wiki/RFCs/API-changes</a></li>
+<li><del>FormHelper::button() should actually make button elements.
+Seems wierd that it makes submit inputs.</del></li>
+<li><del>Remove <code>$dateFormat = 'NONE'</code> and
+<code>$timeFormat == 'NONE'</code> from FormHelper::dateTime(). If
+you want only a date or a time use those methods
+instead.</del></li>
+</ul>
+</li>
+<li>
+<p>JsHelper</p>
+<ul>
+<li><del><code>JsHelper::set()</code> allows you to set variables
+to javascript. The variables are converted to a javascript object,
+and are part of the contents in getBuffer/writeBuffer. A class
+property should control the javascript variable created.</del></li>
+</ul>
+</li>
+<li>
+<p>Views</p>
+<ul>
+<li><del>themes should be able to reside in plugins. <code>var
+$theme = 'plugin.theme'</code> See <a href=
+"http://code.cakephp.org/tickets/view/276">http://code.cakephp.org/tickets/view/276</a></del>
+Not complete, themes are not really intended to be inside plugins
+as they are similar to plugins. See the plugin/theme asset
+improvements.</li>
+</ul>
+</li>
+<li>
+<p>Model &amp; Datasources</p>
+<ul>
+<li><del>Fix query, to return result of <code>_execute</code> when
+there is no resultset. <a href=
+"https://trac.cakephp.org/ticket/6404">https://trac.cakephp.org/ticket/6404</a></del></li>
+<li>Complete addition of <code>tableParameters</code> to all Dbo's.
+Already implemented in Mysql + Mysqli</li>
+<li><del>Create a way to get query list from DboSource without
+getting a blob of HTML</del></li>
+<li>GROUP BY support in Containable behaviour <a href=
+"https://trac.cakephp.org/ticket/6433">https://trac.cakephp.org/ticket/6433</a></li>
+<li><del>Datasources in Plugins. Be able to define and use
+datasources located in plugins.</del></li>
+<li><del>Schema shell should generate based on plugin model
+<a href="https://trac.cakephp.org/ticket/4268">https://trac.cakephp.org/ticket/4268</a></del></li>
+<li><del>Implement counterCache for habtm relations <a href=
+"https://trac.cakephp.org/ticket/5214">https://trac.cakephp.org/ticket/5214</a>
+and <a href=
+"http://bakery.cakephp.org/articles/view/counter-cache-behavior-for-habtm-relations">
+http://bakery.cakephp.org/articles/view/counter-cache-behavior-for-habtm-relations</a></del>
+<em>Seems like a feature that could open another set of messy
+situtations where it only works half the time. Passing on this one
+for now</em></li>
+<li><del>Implement support for virtual fields or fields represented
+by SQL expressions at the model level. This will enable pagination
+etc on virtual fields.</del></li>
+<li>Allow search_path to not be set for PostgreSQL connections.
+Allows PostgreSQL connections to use more than one schema. <a href=
+"https://trac.cakephp.org/ticket/6373">https://trac.cakephp.org/ticket/6373</a></li>
+</ul>
+</li>
+<li>
+<p>Controller</p>
+<ul>
+<li><del>Convert SessionHelper::flash() and
+SessionComponent::setFlash() to use an element instead of a layout.
+Its counter intuitive that a page fragment is a layout and not an
+element.</del></li>
+<li><del>Controller::$data to an Xml object as is done now is dumb.
+Instead, the Xml class should be used to simply convert the data
+into an array.</del></li>
+</ul>
+</li>
+<li>
+<p>Components</p>
+<ul>
+<li><del>Update all core components to allow settings to be
+declared in the $components array. This will make component use
+more declarative and more consistent with behaviors.</del></li>
+</ul>
+</li>
+<li>
+<p>Test suite</p>
+<ul>
+<li><del>Add time and memory use to test suite output.</del></li>
+<li><del>Improve speed of CodeCoverage, right now its super
+slow.</del> Most of the time consumed was due to xdebug collecting
+reports and generating html diff reports.</li>
+<li>Improve CodeCoverage for GroupTests see <a href=
+"https://trac.cakephp.org/ticket/5725">https://trac.cakephp.org/ticket/5725</a></li>
+</ul>
+</li>
+</ul>
+<h4>Would like to do.</h4>
+<ul>
+<li><del>Separate HTTP Response Codes from Controller::header(),
+add 505 <a href=
+"https://trac.cakephp.org/ticket/6522">https://trac.cakephp.org/ticket/6522</a></del></li>
+<li><del>Model::findQueryType unset prior to Model::afterFind()
+<a href=
+"https://trac.cakephp.org/ticket/5847">https://trac.cakephp.org/ticket/5847</a></del></li>
+<li><del>Scaffolding doesn't support reverse routing <a href=
+"https://trac.cakephp.org/ticket/6011">https://trac.cakephp.org/ticket/6011</a></del></li>
+<li>
+<p><del>Inflector Slug enhancements:</del></p>
+<ul>
+<li><del>Inflector::slug -&gt; Polish chars added <a href=
+"https://trac.cakephp.org/ticket/5124">https://trac.cakephp.org/ticket/5124</a></del></li>
+<li><del>Inflector::slug() should support custom characters
+<a href="https://trac.cakephp.org/ticket/5168">https://trac.cakephp.org/ticket/5168</a></del></li>
+<li><del>Inflector::slug doesn't handle "&atilde;" and "&otilde;"
+<a href=
+"https://trac.cakephp.org/ticket/6007">https://trac.cakephp.org/ticket/6007</a></del></li>
+<li><del>Add more accent characters to Inflector::slug <a href=
+"https://trac.cakephp.org/ticket/6063">https://trac.cakephp.org/ticket/6063</a></del></li>
+</ul>
+</li>
+<li>
+<p>FormHelper</p>
+<ul>
+<li><del>Improve required class usage. <a href=
+"https://trac.cakephp.org/ticket/2563">https://trac.cakephp.org/ticket/2563</a></del></li>
+<li><del>Improve schema introspection <a href=
+"https://trac.cakephp.org/ticket/4203">https://trac.cakephp.org/ticket/4203</a></del></li>
+<li><del>Form::error() should follow input() escape attribute
+<a href=
+"https://trac.cakephp.org/ticket/2920">https://trac.cakephp.org/ticket/2920</a></del></li>
+<li><del>Fix arbitrary limitations with goofy
+<code>View::entity()</code> methods. <a href=
+"https://trac.cakephp.org/ticket/4499">https://trac.cakephp.org/ticket/4499</a>,
+<a href=
+"https://trac.cakephp.org/ticket/4626">https://trac.cakephp.org/ticket/4626</a></del></li>
+<li><del>Fix unchangeable select forcing <a href=
+"https://trac.cakephp.org/ticket/5109">https://trac.cakephp.org/ticket/5109</a></del></li>
+<li><del>Pass monthNames into datetime() <a href=
+"https://trac.cakephp.org/ticket/5099">https://trac.cakephp.org/ticket/5099</a></del></li>
+<li>HABTM support for error messages. <a href=
+"https://trac.cakephp.org/ticket/3604">https://trac.cakephp.org/ticket/3604</a></li>
+<li><del>Change default form target to current url <a href=
+"https://trac.cakephp.org/ticket/5353">https://trac.cakephp.org/ticket/5353</a></del></li>
+<li><del>Set encoding on generated forms <a href=
+"https://trac.cakephp.org/ticket/6042">https://trac.cakephp.org/ticket/6042</a></del></li>
+</ul>
+</li>
+<li>
+<p><del>Remove magic 'title' <a href=
+"https://trac.cakephp.org/ticket/6420">https://trac.cakephp.org/ticket/6420</a></del></p>
+</li>
+</ul>
+<h3>Possible to do</h3>
+<ul>
+<li>
+<p>FormHelper</p>
+<ul>
+<li><del>Allow disabling of hidden inputs for radio and checkbox
+methods. <a href=
+"https://trac.cakephp.org/ticket/6185">https://trac.cakephp.org/ticket/6185</a></del></li>
+<li><del>Unify html generated by <code>hour()</code> and
+<code>minute()</code> <a href=
+"https://trac.cakephp.org/ticket/6300">https://trac.cakephp.org/ticket/6300</a></del></li>
+<li><del>Add before and after to <code>submit()</code> <a href=
+"https://trac.cakephp.org/ticket/6340">https://trac.cakephp.org/ticket/6340</a></del></li>
+</ul>
+</li>
+<li>
+<p><del>AclBehavior update nodes in afterSave() <a href=
+"https://trac.cakephp.org/ticket/4261">https://trac.cakephp.org/ticket/4261</a>
+and <a href=
+"http://code.cakephp.org/tickets/view/31">http://code.cakephp.org/tickets/view/31</a></del></p>
+</li>
+<li><del>Helpers should always be addressed by
+$this-&gt;Helper-&gt;func() instead of $helper-&gt;func() <a href=
+"https://trac.cakephp.org/ticket/5935">https://trac.cakephp.org/ticket/5935</a>
+In 1.3 maintain the local vars, but also create the
+$this-&gt;Helper alias.</del></li>
+</ul>
