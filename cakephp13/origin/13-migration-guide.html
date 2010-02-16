@@ -373,8 +373,11 @@ updated to used <code>_</code></li>
 </ul>
 <h3>Bootstrapping Additional Paths.</h3>
 <p>If in your app/config/bootstrap.php you may have variables like
-$pluginPaths or $controllerPaths.<br>
-The new way to add paths.</p>
+<code>$pluginPaths</code> or <code>$controllerPaths</code>.<br>
+The new way to add paths. As of 1.3 RC1 the
+<code>$pluginPaths</code> variables will no longer work. You must
+use<br>
+<code>App::build()</code> to modify paths.</p>
 <pre>
 <code class="php">App::build(array(
     'plugins' =&gt; array('/full/path/to/plugins/', '/next/full/path/to/plugins/'),
