@@ -1,21 +1,12 @@
 
       <div><h2>FormHelperの改善</h2>
 <p>FormHelperはCakePHPで最もよく使われるクラスのうちの一つで、いくつかの改善が施されました。</p>
-<h3>Entityの階層制限</h3>
+<h3>エンティティの階層制限</h3>
 <p>1.2 では、ネストされたキーが5までに強く制限されていました。これは、幾ばくかのコンテキストでフォーム入力を作るときに重要な制限を引き起こしました。1.3 では、フォームの要素のキーとして、無限にネストされたものが作れます。また、Validationエラーと値の読み出しにも任意の階層が与えられています。<br></p>
-<h3>Model introspection</h3>
-<p>Model introspectionSupport for adding 'required' classes, and
-properties like <code>maxlength</code> to hasMany and other
-associations has been improved. In the past only 1 model and a
-limited set of associations would be introspected. In 1.3 models
-are introspected as needed, providing validation and additional
-information such as maxlength.</p>
-<h3>Default options for input()</h3>
-<p>In the past if you needed to use <code>'div' =&gt; false</code>,
-or <code>'label' =&gt; false</code> you would need to set those
-options on each and every call to <code>input()</code>. Instead in
-1.3 you can declare a set of default options for
-<code>input()</code> with the <code>inputDefaults</code> key.</p>
+<h3>Modelのイントロスペクション<a href="ref1">(*1)</a></h3>
+<p>hasMany などのアソシエーションへの<code>maxlength</code>のようなプロパティや、「required」クラスの追加が、Modelのイントロスペクションのサポートによって改善されました。以前は、イントロスペクションされるのは一つのクラスと限られたアソシエーションのみでした。1.3 では、必要とされるモデルがイントロスペクションされ、バリデーションと maxlength のような追加情報が提供されます。</p>
+<h3>input() のデフォルトオプション</h3>
+<p>以前は、<code>'div' =&gt; false</code>や<code>'label' =&gt; false</code>といったオプションを使いたい場合は、<code>input()</code>を呼ぶたびにこれらのオプションをセットする必要がありました。代わりに1.3 では、<code>inputDefaults</code>キーを用いて<code>input()</code>のデフォルトのオプションを定義することができます。</p>
 <pre>
 <code class="php"> echo $this-&gt;Form-&gt;create('User', array(
         'inputDefaults' =&gt; array(
@@ -80,3 +71,8 @@ generated. In addition to creating all types of buttons,
 <code>submit()</code> has <code>before</code> and
 <code>after</code> options that behave exactly like their
 counterparts in <code>input()</code>.</p>
+
+<hr />
+<ul id="ref">
+  <li><a name="ref1" id="ref1">*1.</a> イントロスペクション・・・Introspection、オブジェクトのメタデータを解析・取得すること。<a href="http://ja.wikipedia.org/wiki/%E5%8B%95%E7%9A%84%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E#.E3.82.A4.E3.83.B3.E3.83.88.E3.83.AD.E3.82.B9.E3.83.9A.E3.82.AF.E3.82.B7.E3.83.A7.E3.83.B3" taget="_blank">wikipedia</a> | <a href="http://www.google.co.jp/search?hl=ja&safe=off&q=%E3%82%A4%E3%83%B3%E3%83%88%E3%83%AD%E3%82%B9%E3%83%9A%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3&btnG=%E6%A4%9C%E7%B4%A2&lr=&aq=f&oq=">ググる</a></li>
+</ul>
