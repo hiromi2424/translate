@@ -1,5 +1,5 @@
 Main contents of this repository written in Japanese.
-If any question or notification you have, please contact me in English on twitter or github.
+If you have any question or notification , please contact me in English on twitter or github.
 http://twitter.com/hiromi2424/
 
 
@@ -10,6 +10,31 @@ http://hiromi2424.lv9.org/translate/
 
 
 ■各プロジェクト
-□cakephp13
-HTMLファイルが列挙されています。
-なるべくタグの内容を破壊せず、Inner or Outer Textを変更していきます。
+□cakephp13(http://hiromi2424.lv9.org/translate/cakephp13/)
+・概要
+  CakePHP1.3 migration guide を日本語に訳します。
+
+・方針
+  HTMLファイルが列挙されています。
+  なるべくタグの内容を破壊せず、Inner or Outer Textを変更します。
+
+・訳注の追加
+  各HTMLの一番下に
+  <ul id"ref">
+    <li><a name="ref1" id="ref1">*1.</a> 説明</li>
+  </ul>
+  を設けてください。
+  本文中に、訳注をつけたい単語・フレーズの”終わり”に、
+  <a href="#ref1">(*1)</a>
+  としてください。
+
+・文中の他ページへのリンク
+例
+  <a href=
+  "/projects/42648/13-new-features-plugin-assets">New plugin and
+  theme assets</a>
+  ↓
+  <a href="./13-new-features-plugin-assets">新機能 &gt; plugin assets</a>
+
+  アンカータグのInner Textは意訳してかまいません。メニューの通りになる必要は必ずしもありません。
+
