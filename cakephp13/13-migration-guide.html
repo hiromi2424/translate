@@ -236,8 +236,9 @@ var $helpers = array('Session', 'Html', 'Form' ...);</code>
 <li><code>Configure::load()</code>を使ってプラグインから設定ファイルを読み込めるようになりました。<code>Configure::load('plugin.file');</code>として使ってください。<code>.</code>（訳注：ピリオド）を設定ファイル名に使っている場合は、<code>_</code>（訳注：アンダースコア）に置き換えるべきです。</li>
 </ul>
 <h3>bootstrap時のパスの追加</h3>
-<p>app/config/bootstrap.php に、$pluginPaths や $controllerPaths のような変数が置かれているかもしれません。<br>
-以下はパスを追加する新しい方法です。</p>
+<p>app/config/bootstrap.php に、<code>$pluginPaths</code> や <code>$controllerPaths</code> のような変数が置かれているかもしれません。<br>
+以下はパスを追加する新しい方法です。1.3 RC1 では<code>$pluginPaths</code>変数はもはや働かないでしょう。<br>
+パスを更新するには<code>App::build()</code>を使う必要があります。</p>
 <pre>
 <code class="php">App::build(array(
     'plugins' =&gt; array('/full/path/to/plugins/', '/next/full/path/to/plugins/'),
