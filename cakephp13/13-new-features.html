@@ -1,12 +1,10 @@
 
-      <div><h1>Features introduced in 1.3</h1>
-<p>A number of new and useful features have been added in the 1.3
-branch, this page attempts to summarize many of them until the
-permanent documentation is updated.</p>
+      <div><h1>1.3 で導入された新機能</h1>
+<p>1.3 ブランチには数多くの新しい便利な機能が追加されました。このページは普遍のドキュメントが出来上がるまでの間、これら機能のうち多くを要約しようと試みます。</p>
 <h2>Router</h2>
-<p>Generating urls with new style prefixes works exactly the same
-as admin routing did in 1.2. They use the same syntax and
-persist/behave in the same way. Assuming you have
+<p>新しいスタイルの prefix を用いたURL生成は、まさしく 1.2 での admin ルーティングと同じく振舞います。同じ文法を使い、同じ方法で持続的になり、同じ方法で振る舞います。
+
+Assuming you have
 <code>Configure::write('Routing.prefixes', array('admin',
 'member'));</code> in your core.php you will be able to do the
 following from a non-prefixed url:</p>
@@ -18,8 +16,7 @@ $this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; '
 <p>Likewise, if you are in a prefixed url and want to go to a
 non-prefixed url, do the following:</p>
 <pre>
-<code class=
-"php">$this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'member' =&gt; false));
+<code class="php">$this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'member' =&gt; false));
 $this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'admin' =&gt; false));</code>
 </pre>
 <h3>Route classes</h3>
@@ -38,7 +35,7 @@ Commonly a custom route class will override the
 <li>Accessing filtered asset paths, while having no defined asset
 filter will create 404 status code responses.</li>
 </ul>
-<h2>Helpers</h2>
+<h2>ヘルパー</h2>
 <p>Helpers can now be addressed at
 <code>$this-&gt;Helper-&gt;func()</code> in addition to
 <code>$helper-&gt;func()</code>. This allows view variables and
@@ -103,41 +100,23 @@ class PostsController extends AppController {
 }</code>
 </pre>
 <p>Would use scaffolding for member prefixed urls.</p>
-<h2>Logging</h2>
-<p>Logging and <code>CakeLog</code> have been enhanced
-considerably, both in features and flexibility. See <a href=
-"/projects/42648/13-new-features-logging">New Logging features</a>
-for more information.</p>
-<h2>Caching</h2>
-<p>Cache engines have been made more flexible in 1.3. You can now
-provide custom <code>Cache</code> adapters in <code>app/libs</code>
-as well as in plugins using <code>$plugin/libs</code>. App/plugin
-cache engines can also override the core engines. Cache adapters
-must be in a cache directory. If you had a cache engine named
-<code>MyCustomCacheEngine</code> it would be placed in either
-<code>app/libs/cache/my_custom_cache.php</code> as an app/libs. Or
-in <code>$plugin/libs/cache/my_custom_cache.php</code> as part of a
-plugin. Cache configs from plugins need to use the plugin dot
-syntax.</p>
+<h2>ログ</h2>
+<p>ログと<code>CakeLog</code>は機能とフレキシビリティにおいてかなり進化しました。更なる情報は<a href="./13-new-features-logging">新しいログの機能</a>を見てください。</p>
+<h2>キャッシュ</h2>
+<p>1.3 では、キャッシュエンジンがよりフレキシブルになりました。<code>app/libs</code>にカスタム<code>Cache</code>アダプタを用意することができます。もちろん <code>$plugin/libs</code>にもです。また、app・plugin のキャッシュエンジンはコアのエンジンを上書きできます。Cache アダプタは cache ディレクトリに置く必要があります。<code>MyCustomCacheEngine</code>という名前のキャッシュエンジンがあるなら、<code>app/libs/cache/my_custom_cache.php</code>か<code>$plugin/libs/cache/my_custom_cache.php</code>のどちらかに置くことになります。プラグインのキャッシュ設定は、ドットを使った文法を使う必要があります。</p>
 <pre>
 <code class="php">Cache::config('custom', array(
     'engine' =&gt; 'CachePack.MyCustomCacheEngine',
     ...
 ));</code>
 </pre>
-<h3>New Cache methods</h3>
-<p>Cache has a few new methods for 1.3, the make introspection and
-testing teardown easier.</p>
+<h3>新しいキャッシュメソッド</h3>
+<p>キャッシュは 1.3 で幾つかの新しいメソッドがあり、テストのティアダウン<a href="#ref1">(*1)</a>とイントロスペクションを容易にします。</p>
 <ul>
-<li><code>Cache::configured()</code> returns an array of configured
-Cache engine keys.</li>
-<li><code>Cache::drop($config)</code> drops a configured Cache
-engine. Once dropped cache engines are no longer readable or
-writeable.</li>
-<li><code>Cache::increment()</code> Perform an atomic increment on
-a numeric value. This is not implemented in FileEngine.</li>
-<li><code>Cache::decrement()</code> Perform an atomic decrement on
-a numeric value. This is not implemented in FileEngine.</li>
+<li><code>Cache::configured()</code>は設定されたキャッシュエンジンのキーの配列を返します。</li>
+<li><code>Cache::drop($config)</code>は設定されたキャッシュエンジンを破棄します。一度破棄されたキャッシュエンジンは二度と書き込みや読み込みをすることができません。</li>
+<li><code>Cache::increment()</code>は数字の値に対して基本的なインクリメントを実行します。これは FileEngine では実装されていません。</li>
+<li><code>Cache::decrement()</code>は数字の値に対して基本的なデクリメントを実行します。これは FileEngine では実装されていません。</li>
 </ul>
 <h2>Validation</h2>
 <p>After 1.2 was released there were numerous requests to add
@@ -438,3 +417,10 @@ $dateFormat = __('d_fmt',5,true); // return the preferred dates format for Franc
 definition file in <a href=
 "http://sunsson.iptime.org/susv3/basedefs/xbd_chap07.html">this
 page</a></p>
+
+
+<hr />
+<h3>訳注</h3>
+<ul id="ref">
+  <li><a name="ref1" id="ref1">*1.</a> ティアダウン・・・teardown、直訳は破壊、分析のための分解。テスト時にteardown()という関数・メソッドがテストに使ったオブジェクトの開放などをする慣習から。</li>
+</ul>
