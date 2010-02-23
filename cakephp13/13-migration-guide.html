@@ -90,7 +90,7 @@ Router::connect('/:can/:anybody/:see/:m-3/*', array(...)); // 適切である</c
     array('event' =&gt; '[a-z0-9_-]+')
 );</code>
 </pre>
-<p>不規則な振る舞いやルートのコンパイルを複雑にするようなワイルドカードはもはやサポートされません。これら二つの境界ケース<a href="#ref2">(*2)</a>の機能と変更以外の振る舞いは、1.2のときと変わらず振舞います。
+<p>不規則な振る舞いやルートのコンパイルを複雑にするようなワイルドカードはもはやサポートされません。これら二つの境界ケース<a href="#ref2">(*2)</a>である機能と変更以外の振る舞いは、1.2のときと変わらず振舞います。
 </p>
 <h3>Dispatcher</h3>
 <p><code>Dispatcher</code>はもはやリクエストパラメータを元にControllerのlayout/viewPathを設定しません。これらのプロパティはDispatcherではなくControllerによって操作されるべきです。この機能はドキュメント化、テストがされませんでした。</p>
@@ -175,9 +175,7 @@ Router::connect('/:can/:anybody/:see/:m-3/*', array(...)); // 適切である</c
 </ul>
 <h3>Datasources</h3>
 <ul>
-<li>DataSource::exists()は非DBデータソースも使えるように書き直されました。以前は、<code>var $useTable = false; var $useDbConfig = 'custom';</code>としても、<code>Model::exists()</code>はfalse以外を返すことは不可能でした。このことが<code>create()</code>または<code>update()</code>を使っているカスタムデータソースに醜いハックを用いずに正しく動作させることを妨げていました。
-
-もしカスタムデータソースが<code>create()</code>、<code>update()</code>、<code>read()</code> (<code>Model::exists()</code>がコールするであろう<code>Model::find('count')</code>は、<code>DataSource::read()</code>に渡されるため)を実装しているなら、1.3上でユニットテストを再度走らせて確かめてください。
+<li>DataSource::exists()は非DBデータソースも使えるように書き直されました。以前は、<code>var $useTable = false; var $useDbConfig = 'custom';</code>としても、<code>Model::exists()</code>はfalse以外を返すことは不可能でした。このことが<code>create()</code>または<code>update()</code>を使っているカスタムデータソースに醜いハックを用いずに正しく動作させることを妨げていました。もしカスタムデータソースが<code>create()</code>、<code>update()</code>、<code>read()</code> (<code>Model::exists()</code>がコールするであろう<code>Model::find('count')</code>は、<code>DataSource::read()</code>に渡されるため)を実装しているなら、1.3上でユニットテストを再度走らせて確かめてください。
 </li>
 </ul>
 <h3>View</h3>

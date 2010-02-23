@@ -19,29 +19,19 @@ non-prefixed url, do the following:</p>
 <code class="php">$this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'member' =&gt; false));
 $this-&gt;Html-&gt;link('Go', array('controller' =&gt; 'posts', 'action' =&gt; 'index', 'admin' =&gt; false));</code>
 </pre>
-<h3>Route classes</h3>
-<p>For 1.3 the router has been internally rebuilt, and a new class
-<code>CakeRoute</code> has been created. This class handles the
-parsing and reverse matching of an individual connected route. Also
-new in 1.3 is the ability to create and use your own Route classes.
-You can implement and special routing features that may be needed
-in application routing classes. Developer route classes must extend
-<code>CakeRoute</code> if they do not an error will be triggered.
-Commonly a custom route class will override the
-<code>parse()</code> and/or <code>match()</code> methods found in
-<code>CakeRoute</code> to provide custom handling.</p>
+<h3>ルートクラス</h3>
+<p>1.3 では、ルートが内部で再構築され、新しく<code>CakeRoute</code>クラスが作られました。このクラスは、このクラス独自のルートをパース・リバースマッチングすることを扱います。また、1.3 では独自のルートクラスを作成・使用することができるようになりました。アプリケーションのルートクラスで必要とされる特殊ならルーティング機能を実装することができます。開発者のルートクラスは<code>CakeRoute</code>を継承しなければなりません。もしこれを継承しなければ、エラーが引き起こされます。一般的に、、カスタムルートクラスがカスタマイズされた処理を提供するには、<code>parse()</code>と<code>match()</code>のどちらか（または両方共）をオーバーライドします。</p>
 <h3>Dispatcher</h3>
 <ul>
-<li>Accessing filtered asset paths, while having no defined asset
+<li>
+Accessing filtered asset paths, while having no defined asset
 filter will create 404 status code responses.</li>
 </ul>
 <h2>ヘルパー</h2>
-<p>Helpers can now be addressed at
-<code>$this-&gt;Helper-&gt;func()</code> in addition to
-<code>$helper-&gt;func()</code>. This allows view variables and
-helpers to share names and not create collisions.</p>
-<h3>New JsHelper and new features in HtmlHelper</h3>
-<p>See [wiki:1.3/new-features/js-helper JsHelper documentation for
+<p>ヘルパーは、今や<code>$helper-&gt;func()</code>に加えて、<code>$this-&gt;Helper-&gt;func()</code>にもマッピングされるようになりました。これは、ビューの変数とヘルパーの名前との衝突を避けることができます。</p>
+<h3>新しい JsHelper と HtmlHelper の新機能</h3>
+<p>
+See [wiki:1.3/new-features/js-helper JsHelper documentation for
 more information]</p>
 <h3>Pagination Helper</h3>
 <p>Pagination helper provides additional css classes for styling
