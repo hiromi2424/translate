@@ -235,7 +235,7 @@ var $helpers = array('Session', 'Html', 'Form' ...);</code>
 <li>debug = 3はもうありません。この設定によって生成されるコントローラのダンプは、度々メモリの消費問題を引き起こし、非実用的で使用不可能な設定でした。また<code>$cakeDebug</code>変数は<code>View::renderLayout</code>から削除されました。エラーを避けるためこの変数の参照を削除してください。</li>
 <li><code>Configure::load()</code>を使ってプラグインから設定ファイルを読み込めるようになりました。<code>Configure::load('plugin.file');</code>として使ってください。<code>.</code>（訳注：ピリオド）を設定ファイル名に使っている場合は、<code>_</code>（訳注：アンダースコア）に置き換えるべきです。</li>
 </ul>
-<h3>bootstrap時のパスの追加</h3>
+<h3>ブートストラップ時のパスの追加</h3>
 <p>app/config/bootstrap.php に、<code>$pluginPaths</code> や <code>$controllerPaths</code> のような変数が置かれているかもしれません。<br>
 以下はパスを追加する新しい方法です。1.3 RC1 では<code>$pluginPaths</code>変数はもはや働かないでしょう。<br>
 パスを更新するには<code>App::build()</code>を使う必要があります。</p>
@@ -254,7 +254,7 @@ var $helpers = array('Session', 'Html', 'Form' ...);</code>
     'locales' =&gt; array('/full/path/to/locale/', '/next/full/path/to/locale/')
 ));</code>
 </pre>
-<p>またbootstrapするときの順序が変更されました。以前は、<code>app/config/bootstrap.php</code><strong>の後に</strong><code>app/config/core.php</code>が読み込まれていました。これはアプリケーションのbootstrapの<code>App::import()</code>がキャッシュせず、キャッシュがヒットしたときよりかなりかなり遅くなっていました。1.3では、core.php の読み込みと設定のキャッシュは bootstrap.php の読み込みの<strong>前に</strong>されます。</p>
+<p>またブートストラップするときの順序が変更されました。以前は、<code>app/config/bootstrap.php</code><strong>の後に</strong><code>app/config/core.php</code>が読み込まれていました。これはアプリケーションのブートストラップの<code>App::import()</code>がキャッシュせず、キャッシュがヒットしたときよりかなりかなり遅くなっていました。1.3では、core.php の読み込みと設定のキャッシュは bootstrap.php の読み込みの<strong>前に</strong>されます。</p>
 <h3>カスタム inflections の読み込み</h3>
 <p>不必要なファイルの読み込みをしていた<code>inflections.php</code>は削除され、関連した機能は柔軟性を増強するため、メソッドに書き直されています。今やカスタム inflections を読み込むためには、<code>Inflector::rules()</code>を使います。</p>
 <pre>
