@@ -1,0 +1,80 @@
+<p><strong>Inflector</strong></p>
+<p>今や、Inflector::rulesを使い、Inflector:slugで使われる音訳マップのデフォルトをグローバルにカスタマイズすることができるようになりました。
+例：<code>Inflector::rules('transliteration', array('/å/' => 'aa', '/ø/' => 'oe'))<code>
+</p>
+<p>また、Inflectorは今や<em>inflection</em>のために渡された全てのデータを内部でキャッシュします。（これはslugメソッドを期待します）</p>
+
+<p><strong>Set</strong></p>
+<p>Setには新しく<code>Set::apply()</code>メソッドがあります。これはcode>Set::extract</code>の結果に<a href="http://php.net/manual/ja/language.pseudo-types.php">コールバック</a>を適用することができ、mapやreduceとして振舞うこともできます。</p>
+<pre>
+Set::apply('/Movie/rating', $data, 'array_sum');
+</pre>
+<p>これは<code>$data</code>内の映画の評価合計を返します。</p>
+
+<p><strong>L10N</strong></p>
+<p>カタログの全ての言語はdirectionキーを持つようになりました。これは使われているロケールの文字の流れる方向を決定・定義するのに使用することができます。</p>
+
+<p><strong>File</strong></p>
+<ul>
+<li>Fileには今やcopy()メソッドがあります。これはファイルのインスタンスで表現されたファイルを新しい場所にコピーします。</li>
+</ul>
+
+<p><strong>Configure</strong></p>
+<ul>
+<li><code>Configure::load()</code>は今やプラグインからも設定ファイルを読み込めるようになりました。<code>Configure::load('plugin.file');</code>としてプラグインから設定ファイルを読み込んでください。アプリケーションで<code>.</code>をファイル名にもつ設定ファイルがあったら、その名前は<code>_</code>を使うように修正すべきです。</li>
+</ul>
+
+
+<p><strong>App/libs</strong></p>
+<p>In addition to <code>app/vendors</code> a new
+<code>app/libs</code> directory has been added. This directory can
+also be part of plugins, located at <code>$plugin/libs</code>. Libs
+directories are intended to contain 1st party libraries that do not
+come from 3rd parties or external vendors. This allows you to
+separate your organization's internal libraries from vendor
+libraries. <code>App::import()</code> has also been updated to
+import from libs directories.</p>
+<pre>
+App::import('Lib', 'ImageManipulation'); //imports app/libs/image_manipulation.php
+</pre>
+<p>You can also import libs files from plugins</p>
+<pre>
+App::import('Lib', 'Geocoding.Geocode'); //imports app/plugins/geocoding/libs/geocode.php
+</pre>
+<p>The remainder of lib importing syntax is identical to vendor
+files. So if you know how to import vendor files with unique names,
+you know how to import libs files with unique names.</p>
+
+
+<p><strong>Configuration</strong></p>
+<ul>
+<li>The default <code>Security.level</code> in 1.3 is
+<strong>medium</strong> instead of <strong>high</strong></li>
+<li>There is a new configuration value
+<code>Security.cipherSeed</code> this value should be customized to
+ensure more secure encrypted cookies, and a warning will be
+generated in development mode when the value matches its default
+value.</li>
+</ul>
+
+
+<p><strong>i18n</strong></p>
+<p>Now you can use locale definition files for the LC_TIME category
+to retrieve date and time preferences for an specific language.
+Just use any POSIX compliant locale definition file and store it at
+app/locale/<em>language</em>/ (do not create a folder for the
+category LC_TIME, just put the file in there).</p>
+<p>For example, if you have access to a machine running debian or
+ubuntu you can find a french locale file at:
+/usr/share/i18n/locales/fr_FR. Copy the part corresponding to
+LC_TIME into app/locale/fr_fr/LC_TIME file. You can then access to
+time preferences for French language this way:</p>
+<pre>
+Configure::write('Config.language','fr-fr'); // set the current language
+$monthNames = __c('mon',LC_TIME,true); // returns an aray with the month names in French
+$dateFormat = __c('d_fmt',LC_TIME,true); // return the preferred dates format for France
+</pre>
+<p>You can read a complete guide of possible values in LC_TIME
+definition file in <a href=
+"http://sunsson.iptime.org/susv3/basedefs/xbd_chap07.html">this
+page</a></p>
