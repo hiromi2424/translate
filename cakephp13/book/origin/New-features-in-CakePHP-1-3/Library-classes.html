@@ -1,0 +1,91 @@
+<p><strong>Inflector</strong></p>
+<p>You can now globally customize the default transliteration map used in Inflector:slug using Inflector::rules.
+eg. <code>Inflector::rules('transliteration', array('/å/' => 'aa', '/ø/' => 'oe'))<code>
+</p>
+<p>The Inflector now also internally caches all data passed to it for inflection (except slug method).</p>
+
+<p><strong>Set</strong></p>
+<p>Set has a new method <code>Set::apply()</code>, which allows you
+to apply <a href="http://ca2.php.net/callback">callbacks</a> to the
+results of <code>Set::extract</code> and do so in either a map or
+reduce fashion.</p>
+<pre>
+Set::apply('/Movie/rating', $data, 'array_sum');
+</pre>
+<p>Would return the sum of all Movie ratings in
+<code>$data</code>.</p>
+
+<p><strong>L10N</strong></p>
+<p>All languages in the catalog now have a direction key. This can
+be used to determine/define the text direction of the locale being
+used.</p>
+
+<p><strong>File</strong></p>
+<ul>
+<li>File now has a copy() method. It copies the file represented by
+the file instance, to a new location.</li>
+</ul>
+
+<p><strong>Configure</strong></p>
+<ul>
+<li><code>Configure::load()</code> can now load configuration files
+from plugins. Use <code>Configure::load('plugin.file');</code> to
+load configuration files from plugins. Any configuration files in
+your application that use <code>.</code> in the name should be
+updated to used <code>_</code></li>
+</ul>
+
+
+<p><strong>App/libs</strong></p>
+<p>In addition to <code>app/vendors</code> a new
+<code>app/libs</code> directory has been added. This directory can
+also be part of plugins, located at <code>$plugin/libs</code>. Libs
+directories are intended to contain 1st party libraries that do not
+come from 3rd parties or external vendors. This allows you to
+separate your organization's internal libraries from vendor
+libraries. <code>App::import()</code> has also been updated to
+import from libs directories.</p>
+<pre>
+App::import('Lib', 'ImageManipulation'); //imports app/libs/image_manipulation.php
+</pre>
+<p>You can also import libs files from plugins</p>
+<pre>
+App::import('Lib', 'Geocoding.Geocode'); //imports app/plugins/geocoding/libs/geocode.php
+</pre>
+<p>The remainder of lib importing syntax is identical to vendor
+files. So if you know how to import vendor files with unique names,
+you know how to import libs files with unique names.</p>
+
+
+<p><strong>Configuration</strong></p>
+<ul>
+<li>The default <code>Security.level</code> in 1.3 is
+<strong>medium</strong> instead of <strong>high</strong></li>
+<li>There is a new configuration value
+<code>Security.cipherSeed</code> this value should be customized to
+ensure more secure encrypted cookies, and a warning will be
+generated in development mode when the value matches its default
+value.</li>
+</ul>
+
+
+<p><strong>i18n</strong></p>
+<p>Now you can use locale definition files for the LC_TIME category
+to retrieve date and time preferences for an specific language.
+Just use any POSIX compliant locale definition file and store it at
+app/locale/<em>language</em>/ (do not create a folder for the
+category LC_TIME, just put the file in there).</p>
+<p>For example, if you have access to a machine running debian or
+ubuntu you can find a french locale file at:
+/usr/share/i18n/locales/fr_FR. Copy the part corresponding to
+LC_TIME into app/locale/fr_fr/LC_TIME file. You can then access to
+time preferences for French language this way:</p>
+<pre>
+Configure::write('Config.language','fr-fr'); // set the current language
+$monthNames = __c('mon',LC_TIME,true); // returns an aray with the month names in French
+$dateFormat = __c('d_fmt',LC_TIME,true); // return the preferred dates format for France
+</pre>
+<p>You can read a complete guide of possible values in LC_TIME
+definition file in <a href=
+"http://sunsson.iptime.org/susv3/basedefs/xbd_chap07.html">this
+page</a></p>
