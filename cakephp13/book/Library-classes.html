@@ -45,22 +45,12 @@ App::import('Lib', 'Geocoding.Geocode'); // app/plugins/geocoding/libs/geocode.p
 
 
 <p><strong>i18n</strong></p>
-<p>Now you can use locale definition files for the LC_TIME category
-to retrieve date and time preferences for an specific language.
-Just use any POSIX compliant locale definition file and store it at
-app/locale/<em>language</em>/ (do not create a folder for the
-category LC_TIME, just put the file in there).</p>
-<p>For example, if you have access to a machine running debian or
-ubuntu you can find a french locale file at:
-/usr/share/i18n/locales/fr_FR. Copy the part corresponding to
-LC_TIME into app/locale/fr_fr/LC_TIME file. You can then access to
-time preferences for French language this way:</p>
+<p>今や、特定の言語の日時設定を検索するために、LC_TIMEカテゴリのロケール定義ファイルを使うことができます。POSIXに従ったロケール定義ファイルを使い、app/locale/<em>language</em>/ に保存してください（LC_TIMEカテゴリの為にフォルダを作るのではなく、ファイルを作成してください）。</p>
+<p>例として、debianかubuntuが走ってるマシーンにアクセスすることができるなら、フランスのロケールファイルを/usr/share/i18n/locales/fr_FRに見つけることができます。LC_TIMEに該当する部分をapp/locale/fr_fr/LC_TIME（ファイル）にコピーしてください。そうすると、このようにフランス語の時間設定にアクセスすることがきでます：</p>
 <pre>
-Configure::write('Config.language','fr-fr'); // set the current language
-$monthNames = __c('mon',LC_TIME,true); // returns an aray with the month names in French
-$dateFormat = __c('d_fmt',LC_TIME,true); // return the preferred dates format for France
+Configure::write('Config.language','fr-fr'); // 現在の言語をセットする
+$monthNames = __c('mon',LC_TIME,true); // フランス語の月の名前の配列を返す
+$dateFormat = __c('d_fmt',LC_TIME,true); // フランスで好まれる日にちのフォーマットを返す
 </pre>
-<p>You can read a complete guide of possible values in LC_TIME
-definition file in <a href=
-"http://sunsson.iptime.org/susv3/basedefs/xbd_chap07.html">this
-page</a></p>
+<p>LC_TIME定義ファイルで使うことの出来る値の完全なガイドを<a href=
+"http://sunsson.iptime.org/susv3/basedefs/xbd_chap07.html">このページ</a>（英語）で読むことが出来ます。</p>
