@@ -1,0 +1,32 @@
+<p>Cache engines have been made more flexible in 1.3. You can now
+provide custom <code>Cache</code> adapters in <code>app/libs</code>
+as well as in plugins using <code>$plugin/libs</code>. App/plugin
+cache engines can also override the core engines. Cache adapters
+must be in a cache directory. If you had a cache engine named
+<code>MyCustomCacheEngine</code> it would be placed in either
+<code>app/libs/cache/my_custom_cache.php</code> as an app/libs. Or
+in <code>$plugin/libs/cache/my_custom_cache.php</code> as part of a
+plugin. Cache configs from plugins need to use the plugin dot
+syntax.</p>
+<pre>
+Cache::config('custom', array(
+    'engine' => 'CachePack.MyCustomCacheEngine',
+    ...
+));
+</pre>
+
+
+<p><strong>New Cache methods</strong></p>
+<p>Cache has a few new methods for 1.3, the make introspection and
+testing teardown easier.</p>
+<ul>
+<li><code>Cache::configured()</code> returns an array of configured
+Cache engine keys.</li>
+<li><code>Cache::drop($config)</code> drops a configured Cache
+engine. Once dropped cache engines are no longer readable or
+writeable.</li>
+<li><code>Cache::increment()</code> Perform an atomic increment on
+a numeric value. This is not implemented in FileEngine.</li>
+<li><code>Cache::decrement()</code> Perform an atomic decrement on
+a numeric value. This is not implemented in FileEngine.</li>
+</ul>

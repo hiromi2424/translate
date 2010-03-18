@@ -1,0 +1,83 @@
+<p><strong>Error Handling</strong></p>
+<p>Subclasses of ErrorHandler can more easily implement additional
+error methods. In the past you would need to override
+<code>__construct()</code> and work around ErrorHandler's desire to
+convert all error methods into <code>error404</code> when debug =
+0. In 1.3 error methods that are declared in subclasses are not
+converted to <code>error404</code>. If you want your error methods
+converted into error404, then you will need to do it manually.</p>
+
+
+<p><strong>Scaffolding</strong></p>
+<p>With the addition of <code>Routing.prefixes</code> scaffolding
+has been updated to allow the scaffolding of any one prefix.</p>
+<pre>
+Configure::write('Routing.prefixes', array('admin', 'member'));
+
+class PostsController extends AppController {
+    var $scaffold = 'member';
+}
+</pre>
+<p>Would use scaffolding for member prefixed urls.</p>
+
+
+
+
+<p><strong>Validation</strong></p>
+<p>After 1.2 was released there were numerous requests to add
+additional localizations to the <code>phone()</code> and
+<code>postal()</code> methods. Instead of trying to add every
+locale to Validation itself, which would result in large bloated
+ugly methods, and still not afford the flexibility needed for all
+cases, an alternate path was taken. In 1.3 <code>phone()</code> and
+<code>postal()</code> will pass off any country prefix it does not
+know how to handle to another class with the appropriate name. For
+example if you lived in the Netherlands you would create a class
+like</p>
+<pre>
+class NlValidation {
+    function phone($check) {
+        ...
+    }
+    function postal($check) {
+        ...
+    }
+}
+</pre>
+
+<p>This file could be placed anywhere in your application, but must
+be imported before attempting to use it. In your model validation
+you could use your NlValidation class by doing the following.</p>
+<pre>
+var $validate = array(
+    'phone_no' => array('rule' => array('phone', null, 'nl')),
+    'postal_code' => array('rule' => array('postal', null, 'nl'))
+);
+</pre>
+
+<p>When your model data is validated, Validation will see that it
+cannot handle the 'nl' locale and will attempt to delegate out to
+<code>NlValidation::postal()</code> and the return of that method
+will be used as the pass/fail for the validation. This approach
+allows you to create classes that handle a subset or group of
+locales, something that a large switch would not have. The usage of
+the individual validation methods has not changed, the ability to
+pass off to another validator has been added.</p>
+
+
+<p><strong>IP Address Validation</strong></p>
+<p>Validaiton of IP Addresses has been extended to allow strict
+validation of a specific IP Version. It will also make use of PHP
+native validation mechanisms if available.</p>
+<pre>
+Validation::ip($someAddress);         // Validates both IPv4 and IPv6
+Validation::ip($someAddress, 'IPv4'); // Validates IPv4 Addresses only
+Validation::ip($someAddress, 'IPv6'); // Validates IPv6 Addresses only
+</pre>
+
+
+<p><strong>Valdation::uuid()</strong></p>
+<p>A uuid() pattern validation has been added to the
+<code>Validation</code> class. It will check that a given string
+matches a uuid by pattern only. It does not ensure uniqueness of
+the given uuid.</p>

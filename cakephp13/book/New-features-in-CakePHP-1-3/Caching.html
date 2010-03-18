@@ -1,0 +1,17 @@
+<p>1.3 では、キャッシュエンジンがよりフレキシブルになりました。<code>app/libs</code>にカスタム<code>Cache</code>アダプタを用意することができます。もちろん <code>$plugin/libs</code>にもです。また、app・plugin のキャッシュエンジンはコアのエンジンを上書きできます。Cache アダプタは cache ディレクトリに置く必要があります。<code>MyCustomCacheEngine</code>という名前のキャッシュエンジンがあるなら、<code>app/libs/cache/my_custom_cache.php</code>か<code>$plugin/libs/cache/my_custom_cache.php</code>のどちらかに置くことになります。プラグインのキャッシュ設定は、ドットを使った文法を使う必要があります。</p>
+<pre>
+Cache::config('custom', array(
+    'engine' => 'CachePack.MyCustomCacheEngine',
+    ...
+));
+</pre>
+
+
+<p><strong>新しいキャッシュメソッド</strong></p>
+<p>キャッシュは 1.3 で幾つかの新しいメソッドがあり、テストのティアダウン(<em>teardown</em>)とイントロスペクション(<em>introspection</em>)を容易にします。</p>
+<ul>
+<li><code>Cache::configured()</code>は設定されたキャッシュエンジンのキーの配列を返します。</li>
+<li><code>Cache::drop($config)</code>は設定されたキャッシュエンジンを破棄します。一度破棄されたキャッシュエンジンは二度と書き込みや読み込みをすることができません。</li>
+<li><code>Cache::increment()</code>は数字の値に対して基本的なインクリメントを実行します。これは FileEngine では実装されていません。</li>
+<li><code>Cache::decrement()</code>は数字の値に対して基本的なデクリメントを実行します。これは FileEngine では実装されていません。</li>
+</ul>
