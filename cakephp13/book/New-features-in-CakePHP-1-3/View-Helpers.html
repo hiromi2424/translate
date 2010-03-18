@@ -1,19 +1,14 @@
-<p>Helpers can now be addressed at
-<code>$this-&gt;Helper-&gt;func()</code> in addition to
-<code>$helper-&gt;func()</code>. This allows view variables and
-helpers to share names and not create collisions.</p>
-<p><strong>New JsHelper and new features in HtmlHelper</strong></p>
-<p>See <a href="http://book.cakephp.org/view/1592/Js">JsHelper documentation</a> for
-more information</p>
+<p>ヘルパーは、今や<code>$helper-&gt;func()</code>に加えて、<code>$this-&gt;Helper-&gt;func()</code>にもマッピングされるようになりました。これは、ビューの変数とヘルパーの名前との衝突を避けることができます。</p>
+<p><strong>新しい JsHelper と HtmlHelper の新機能</strong></p>
+<p>更なる情報は<a href="http://book.cakephp.org/view/1592/Js">JsHelperドキュメント</a>を見てください。</p>
 <p><strong>Pagination Helper</strong></p>
-<p>Pagination helper provides additional css classes for styling
-and you can set the default sort() direction.
-<code>PaginatorHelper::next()</code> and
-<code>PaginatorHelper::prev()</code> now generate span tags by
-default, instead of divs.</p>
+<p>PaginationヘルパはスタイリングのためにCSSのクラスの追加を提供します。また、デフォルトのsort()の方向をセットすることができます。
+<code>PaginatorHelper::next()</code>と
+<code>PaginatorHelper::prev()</code>は、今やdivタグの代わりにspanタグをデフォルトとして生成します。</p>
 
 <p><strong>Helper</strong></p>
-<p><code>Helper::assetTimestamp()</code> has been added. It will
+<p><code>Helper::assetTimestamp()</code>が追加されました。
+ It will
 add timestamps to any asset under WWW_ROOT. It works with
 <code>Configure::read('Asset.timestamp');</code> just as before,
 but the functionality used in Html and Javascript helpers has been
