@@ -7,35 +7,25 @@
 <code>PaginatorHelper::prev()</code>は、今やdivタグの代わりにspanタグをデフォルトとして生成します。</p>
 
 <p><strong>Helper</strong></p>
-<p><code>Helper::assetTimestamp()</code>が追加されました。
- It will
-add timestamps to any asset under WWW_ROOT. It works with
-<code>Configure::read('Asset.timestamp');</code> just as before,
-but the functionality used in Html and Javascript helpers has been
-made available to all helpers. Assuming <code>Asset.timestamp ==
-force</code></p>
+<p><code>Helper::assetTimestamp()</code>が追加されました。これはWWW_ROOT以下にあるアセットにタイムスタンプを付与します。従来と同様に、<code>Configure::read('Asset.timestamp');</code>を伴って動作しますが、HtmlヘルパーとJavascriptヘルパーで使われていたこの機能は、全てのヘルパーで利用可能になりました。<code>Asset.timestamp ==
+force</code>と仮定します。</p>
 <pre>
 $path = 'css/cake.generic.css'
 $stamped = $this->Html->assetTimestamp($path);
 
-//$stamped contains 'css/cake.generic.css?5632934892'
+//$stamped は 'css/cake.generic.css?5632934892' （のような）文字列が入る
 </pre>
-<p>The appended timestamp contains the last modification time of
-the file. Since this method is defined in <code>Helper</code> it is
-available to all subclasses.</p>
+<p>付加されたタイムスタンプはファイルの最終更新時刻に等しいです。このメソッドは<code>Helper</code>で定義され、全てのサブクラスで利用可能になりました。</p>
 
 
 <p><strong>TextHelper</strong></p>
-<p>highlight() now accepts an array of words to highlight.</p>
+<p>highlight() はハイライトするための単語の配列を受け入れるようになりました。</p>
 <p><strong>NumberHelper</strong></p>
-<p>A new method <code>addFormat()</code> has been added. This
-method allows you to set currency parameter sets, so you don't have
-to retype them.</p>
+<p>新しいメソッド<code>addFormat()</code>が追加されました。このメソッドは<em>currency</em>パラメータの組み合わせを設定することを可能にし、同じものを何度も入力する必要がなくなりました。</p>
 <pre>
 $this->Number->addFormat('NOK', array('before' => 'Kr. '));
 $formatted = $this->Number->currency(1000, 'NOK');
 </pre>
 
 <p><strong>FormHelper</strong></p>
-<p>The form helper has had a number of improvements and API
-modifications, see <a href="http://book.cakephp.org/view/1616/x1-3-improvements">Form Helper improvements</a> for more information.</p>
+<p>フォームヘルパーは数多くの改良と、APIの更新があります。更なる情報は<a href="http://book.cakephp.org/view/1616/x1-3-improvements">Formヘルパーの改良点</a>を見てください。</p>
