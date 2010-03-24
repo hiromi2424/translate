@@ -1,14 +1,8 @@
-<p><strong>App::import(), datasources &amp; datasources from plugins</strong></p>
-<p>Datasources can now be included loaded with
-<code>App::import()</code> and be included in plugins! To include a
-datasource in your plugin you put it in
-<code>my_plugin/models/datasources/your_datasource.php</code>. To import a
-Datasource from a plugin use <code>App::import('Datasouce',
-'MyPlugin.YourDatasource');</code></p>
-<p><strong>Using plugin datasources in your database.php</strong></p>
-<p>You can use plugin datasources by setting the datasource key
-with the plugin name. For example if you had a WebservicePack
-plugin with a LastFm datasource (plugin/models/datasources/last_fm.php), you could do:</p>
+<p><strong>App::import()、データソース、プラグインのデータソース</strong></p>
+<p>データソースは<code>App::import()</code>を用いてインクルードできるようになり、またプラグインからインクルードできるようになりました！プラグインにデータソースをインクルードするには、<code>my_plugin/models/datasources/your_datasource.php</code>に置いてください。データソースをプラグインからインポートするには、<code>App::import('Datasouce',
+'MyPlugin.YourDatasource');</code>を用いてください。</p>
+<p><strong>database.phpでプラグインのデータソースを使うには</strong></p>
+<p>プラグイン名を用いた「datesource」キーを設定することによって、プラグインのデータソースを使うことが出来ます。例えば、LastFmデータソースを含むWebservicePackプラグイン(plugin/webservice_pack/models/datasources/last_fm.php)があるとすると、このようにできます：</p>
 <pre>
 var $lastFm = array(
     'datasource' => 'WebservicePack.LastFm'
@@ -16,13 +10,11 @@ var $lastFm = array(
 </pre>
 
 
-<p><strong>Model</strong></p>
+<p><strong>モデル</strong></p>
 <ul>
-<li>Missing Validation methods now trigger errors, making debugging
-why validation isn't working easier.</li>
-<li>Models now support <a href=
-"/view/1608/Virtual-fields">virtual
-fields</a></li>
+<li>バリデーションメソッドが無い場合にエラーを引き起こすようになりました。何故バリデーションがうまく働かないかをデバッグするのが容易になりました。</li>
+<li>モデルは今や<a href=
+"/view/1608/Virtual-fields">バーチャルフィールド</a>をサポートします。</li>
 </ul>
 
 
