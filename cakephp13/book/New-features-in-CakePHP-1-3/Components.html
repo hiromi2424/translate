@@ -1,15 +1,11 @@
 <p><strong>SecurityComponent</strong></p>
-<p>The various requireXX methods like <code>requireGet</code> and
-<code>requirePost</code> now accept as single array as their
-argument as well as a collection of string names.</p>
+<p>種々の<code>requireGet</code>や<code>requirePost</code>のようなrequireXXメソッドは、今や名前を指定する際に、引数一つ一つに文字列を渡すだけでなく、第一引数に単純な配列を渡すこともできるようになりました。</p>
 <pre>
 $this->Security->requirePost(array('edit', 'update'));
 </pre>
 
-<p><strong>Component settings</strong></p>
-<p>Component settings for all core components can now be set from
-the <code>$components</code> array. Much like behaviors, you can
-declare settings for components when you declare the component.</p>
+<p><strong>コンポーネントの設定</strong></p>
+<p>全てのコアコンポーネントに対する設定は、<code>$components</code>配列から設定できるようになりました。ビヘイビアのように、コンポーネントを宣言する際、コンポーネントの設定を宣言することができます。</p>
 <pre>
 var $components = array(
     'Cookie' => array(
@@ -21,20 +17,12 @@ var $components = array(
     )
 );
 </pre>
-<p>This should reduce clutter in your Controller's
-<code>beforeFilter()</code> methods.</p>
+<p>これはコントローラの<code>beforeFilter()</code>メソッドの乱雑さを減らすはずです。</p>
 
 <p><strong>EmailComponent</strong></p>
 <ul>
-<li>You can now retrieve the rendered contents of sent Email
-messages, by reading <code>$this-&gt;Email-&gt;htmlMessage</code>
-and <code>$this-&gt;Email-&gt;textMessage</code>. These properties
-will contain the rendered email content matching their name.</li>
-<li>Many of EmailComponent's private methods have been made
-protected for easier extension.</li>
-<li>EmailComponent::$to can now be an array. Allowing easier
-setting of multiple recipients, and consistency with other
-properties.</li>
-<li><code>EmailComponent::$messageId</code> has been added, it
-allows control over the Message-ID header for email messages.</li>
+<li>今や、送信されたメールのメッセージの、レンダリング済みの内容を、<code>$this-&gt;Email-&gt;htmlMessage</code>と<code>$this-&gt;Email-&gt;textMessage</code>を読むことによって検索することができます。これらのプロパティは、名前に即したレンダリングがなされたメールの内容に等しくなるでしょう。</li>
+<li>多くのEmailComponentのprivateメソッドは、拡張しやすいようにprotectedになりました。</li>
+<li>EmailComponent::$to は今や配列にすることができます。容易に複数の受取人を指定することと、他のプロパティとの整合性を取ることが可能になりました。</li>
+<li><code>EmailComponent::$messageId</code> が追加されました。これによりメールの「Message-ID」ヘッダを制御することが可能になりました。</li>
 </ul>
