@@ -3,7 +3,7 @@
 error methods. In the past you would need to override
 <code>__construct()</code> and work around ErrorHandler's desire to
 convert all error methods into <code>error404</code> when debug =
-0. In 1.3 error methods that are declared in subclasses are not
+0. In 1.3, error methods that are declared in subclasses are not
 converted to <code>error404</code>. If you want your error methods
 converted into error404, then you will need to do it manually.</p>
 
@@ -24,12 +24,12 @@ class PostsController extends AppController {
 
 
 <p><strong>Validation</strong></p>
-<p>After 1.2 was released there were numerous requests to add
+<p>After 1.2 was released, there were numerous requests to add
 additional localizations to the <code>phone()</code> and
 <code>postal()</code> methods. Instead of trying to add every
 locale to Validation itself, which would result in large bloated
 ugly methods, and still not afford the flexibility needed for all
-cases, an alternate path was taken. In 1.3 <code>phone()</code> and
+cases, an alternate path was taken. In 1.3, <code>phone()</code> and
 <code>postal()</code> will pass off any country prefix it does not
 know how to handle to another class with the appropriate name. For
 example if you lived in the Netherlands you would create a class
@@ -66,7 +66,7 @@ pass off to another validator has been added.</p>
 
 
 <p><strong>IP Address Validation</strong></p>
-<p>Validaiton of IP Addresses has been extended to allow strict
+<p>Validation of IP Addresses has been extended to allow strict
 validation of a specific IP Version. It will also make use of PHP
 native validation mechanisms if available.</p>
 <pre>
@@ -76,7 +76,7 @@ Validation::ip($someAddress, 'IPv6'); // Validates IPv6 Addresses only
 </pre>
 
 
-<p><strong>Valdation::uuid()</strong></p>
+<p><strong>Validation::uuid()</strong></p>
 <p>A uuid() pattern validation has been added to the
 <code>Validation</code> class. It will check that a given string
 matches a uuid by pattern only. It does not ensure uniqueness of

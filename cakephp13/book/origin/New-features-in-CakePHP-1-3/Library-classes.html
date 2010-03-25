@@ -1,6 +1,6 @@
 <p><strong>Inflector</strong></p>
-<p>You can now globally customize the default transliteration map used in Inflector:slug using Inflector::rules.
-eg. <code>Inflector::rules('transliteration', array('/å/' => 'aa', '/ø/' => 'oe'))<code>
+<p>You can now globally customize the default transliteration map used in Inflector::slug using Inflector::rules.
+eg. <code>Inflector::rules('transliteration', array('/å/' => 'aa', '/ø/' => 'oe'))</code>
 </p>
 <p>The Inflector now also internally caches all data passed to it for inflection (except slug method).</p>
 
@@ -78,7 +78,7 @@ category LC_TIME, just put the file in there).</p>
 <p>For example, if you have access to a machine running debian or
 ubuntu you can find a french locale file at:
 /usr/share/i18n/locales/fr_FR. Copy the part corresponding to
-LC_TIME into app/locale/fr_fr/LC_TIME file. You can then access to
+LC_TIME into app/locale/fr_fr/LC_TIME file. You can then access the
 time preferences for French language this way:</p>
 <pre>
 Configure::write('Config.language','fr-fr'); // set the current language
