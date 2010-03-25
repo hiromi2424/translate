@@ -18,50 +18,33 @@ var $lastFm = array(
 </ul>
 
 
-<p><strong>Behaviors</strong></p>
-<p>Using behaviors that do not exist, now triggers a
-<code>cakeError</code> making missing behaviors easier to find and
-fix.</p>
+<p><strong>ビヘイビア</strong></p>
+<p>存在しないビヘイビアを使おうとすると、<em>missing behaviors</em>を出力する<code>cakeError</code>を引き起こすようになりました。これによりビヘイビアが見つからないことを発見することと、修正することが容易になりました。</p>
 
 <p><strong>CakeSchema</strong></p>
-<p>CakeSchema can now locate, read and write schema files to
-plugins. The SchemaShell also exposes this functionality, see below
-for changes to SchemaShell. CakeSchema also supports
-<code>tableParameters</code>. Table Parameters are non column
-specific table information such as collation, charset, comments,
-and table engine type. Each Dbo implements the tableParameters they
-support.</p>
+<p>CakeSchemaがプラグインに対して、スキーマファイルを設置/読み込み/書き込みできるようになりました。またSchemaShellはこの機能を公開しています。SchemaShellへの変更は下記を見てください。また、CakeSchemaは<code>tableParameters</code>をサポートします。テーブルパラメータは非カラムな、テーブルの特定の情報です。これは照合順序、文字セット、コメント、テーブルエンジン種別のようなものです。各々のDBOは自身がサポートするテーブルパラメータを実装します。</p>
 
-<p><strong>tableParameters in MySQL</strong></p>
-<p>MySQL supports the greatest number of tableParameters; You can
-use tableParameters to set a variety of MySQL specific
-settings.</p>
+<p><strong>MySQLでのテーブルパラメータ</strong></p>
+<p>MySQLは一番多くのテーブルパラメータをサポートしています。種々のMySQL特有の設定をするのに、テーブルパラメーターを使うことが出来ます。</p>
 <ul>
-<li><code>engine</code> Control the storage engine used for your
-tables.</li>
-<li><code>charset</code> Control the character set used for
-tables.</li>
-<li><code>encoding</code> Control the encoding used for
-tables.</li>
+<li><code>engine</code> テーブルで使われるストレージエンジンをコントロールします。</li>
+<li><code>charset</code> テーブルで使われる文字セットをコントロールします。</li>
+<li><code>encoding</code> テーブルで使われるエンコーディングをコントロールします。</li>
 </ul>
-<p>In addition to tableParameters MySQL dbo's implement
-<code>fieldParameters</code>. fieldParameters allow you to control
-MySQL specific settings per column.</p>
+<p>テーブルパラメータに加えて、MySQLのDBOは<code>fieldParameters</code>を実装しています。フィールドパラメータはカラム毎のMySQL特有の設定をコントロール可能にします。</p>
 <ul>
-<li><code>charset</code> Set the character set used for a
-column</li>
-<li><code>encoding</code> Set the encoding used for a column</li>
+<li><code>charset</code> カラムで使われる文字セットを指定します。</li>
+<li><code>encoding</code> カラムで使われるエンコーディングを指定します。</li>
 </ul>
-<p>See below for examples on how to use table and field parameters
-in your schema files.</p>
+<p>下記のテーブルパラメータとフィールドパラメータをスキーマファイルでどのように使うかの例を見てください。</p>
 
-<p><strong>tableParameters in Postgres</strong></p>
+<p><strong>Postgresでのテーブルパラメータ</strong></p>
 <p>....</p>
 
-<p><strong>tableParameters in SQLite</strong></p>
+<p><strong>SQLiteでのテーブルパラメータ</strong></p>
 <p>....</p>
 
-<p><strong>Using tableParameters in schema files</strong></p>
+<p><strong>スキーマファイルでテーブルパラメータを使う</strong></p>
 <p>You use <code>tableParameters</code> just as you would any other
 key in a schema file. Much like <code>indexes</code>:</p>
 <pre>
