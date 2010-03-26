@@ -4,14 +4,13 @@ Subclasses of ErrorHandler can more easily implement additional
 error methods. In the past you would need to override
 <code>__construct()</code> and work around ErrorHandler's desire to
 convert all error methods into <code>error404</code> when debug =
-0. In 1.3, error methods that are declared in subclasses are not
+0. In 1.3 error methods that are declared in subclasses are not
 converted to <code>error404</code>. If you want your error methods
 converted into error404, then you will need to do it manually.</p>
 
 
-<p><strong>Scaffolding</strong></p>
-<p>With the addition of <code>Routing.prefixes</code> scaffolding
-has been updated to allow the scaffolding of any one prefix.</p>
+<p><strong>スキャフォールディング</strong></p>
+<p><code>Routing.prefixes</code>が追加されたことに伴い、スキャフォールディングはprefixのいずれかの中でのスキャフォールディングが可能になるように書き直されました。</p>
 <pre>
 Configure::write('Routing.prefixes', array('admin', 'member'));
 
@@ -19,22 +18,15 @@ class PostsController extends AppController {
     var $scaffold = 'member';
 }
 </pre>
-<p>Would use scaffolding for member prefixed urls.</p>
+<p>これは「member」prefixがなされたURLでのスキャフォールディングを使うことになります。</p>
 
 
 
 
-<p><strong>Validation</strong></p>
-<p>After 1.2 was released, there were numerous requests to add
-additional localizations to the <code>phone()</code> and
-<code>postal()</code> methods. Instead of trying to add every
-locale to Validation itself, which would result in large bloated
-ugly methods, and still not afford the flexibility needed for all
-cases, an alternate path was taken. In 1.3, <code>phone()</code> and
-<code>postal()</code> will pass off any country prefix it does not
-know how to handle to another class with the appropriate name. For
-example if you lived in the Netherlands you would create a class
-like</p>
+<p><strong>バリデーション</strong></p>
+<p>1.2がリリースされた後、<code>phone()</code>と<code>postal()</code>メソッドに補足的なローカライゼーションを追加して欲しいというリクエストが莫大に寄せられました。
+全てのロケールをバリデーションしようとすると、メソッドが醜く膨れ上がる上に、あらゆるケースで必要とされる柔軟性を満たせないので、代わりの方法が採用されました。
+1.3では、<code>phone()</code> および <code>postal()</code>は、バリデーションが扱えない国識別子(<em>country prefix</em>)を、適切な名称を持つ別のクラスに受け流して処理させます。例として、あなたがオランダに住んでいたとします。あなたは以下のようなクラスを作ることになります。</p>
 <pre>
 class NlValidation {
     function phone($check) {
@@ -46,9 +38,7 @@ class NlValidation {
 }
 </pre>
 
-<p>This file could be placed anywhere in your application, but must
-be imported before attempting to use it. In your model validation
-you could use your NlValidation class by doing the following.</p>
+<p>このファイルはアプリケーションのどこにでも配置することができますが、使ってみようとする前にインポートされなければなりません。モデルのバリデーションにおいて、以下のようにしてNlValidationクラスを使用します。</p>
 <pre>
 var $validate = array(
     'phone_no' => array('rule' => array('phone', null, 'nl')),
@@ -56,29 +46,17 @@ var $validate = array(
 );
 </pre>
 
-<p>When your model data is validated, Validation will see that it
-cannot handle the 'nl' locale and will attempt to delegate out to
-<code>NlValidation::postal()</code> and the return of that method
-will be used as the pass/fail for the validation. This approach
-allows you to create classes that handle a subset or group of
-locales, something that a large switch would not have. The usage of
-the individual validation methods has not changed, the ability to
-pass off to another validator has been added.</p>
+<p>モデルのデータがバリデートされる際、バリデーションは「nl」ロケールを扱えないことを確認し、<code>NlValidation::postal()</code>に委譲しようと試みます。そしてこのメソッドの返り値がバリデーションの成功・失敗として扱われます。このアプローチは、長大なswitch文が許容できないロケールのサブセットもしくはグループを扱うクラスを作成可能にします。個別のバリデーションメソッドの使用方法は変更されず、別のバリデーターに受け渡す能力が追加されました。</p>
 
 
-<p><strong>IP Address Validation</strong></p>
-<p>Validation of IP Addresses has been extended to allow strict
-validation of a specific IP Version. It will also make use of PHP
-native validation mechanisms if available.</p>
+<p><strong>IPアドレスのバリデーション</strong></p>
+<p>IPアドレスのバリデーションは特定のIPバージョンの厳格なバリデーションができるように拡張されました。またこれは、もし利用可能なら、PHPネイティブのバリデーション機構を利用します。</p>
 <pre>
-Validation::ip($someAddress);         // Validates both IPv4 and IPv6
-Validation::ip($someAddress, 'IPv4'); // Validates IPv4 Addresses only
-Validation::ip($someAddress, 'IPv6'); // Validates IPv6 Addresses only
+Validation::ip($someAddress);         // IPv4 と IPv6 両方を検証
+Validation::ip($someAddress, 'IPv4'); // IPv4 だけを検証
+Validation::ip($someAddress, 'IPv6'); // IPv6 だけを検証
 </pre>
 
 
-<p><strong>Validation::uuid()</strong></p>
-<p>A uuid() pattern validation has been added to the
-<code>Validation</code> class. It will check that a given string
-matches a uuid by pattern only. It does not ensure uniqueness of
-the given uuid.</p>
+<p><strong>Valdation::uuid()</strong></p>
+<p>uuid()パターンのバリデーションが<code>Validation</code>クラスに追加されました。これは与えられた文字列をパターンによってuuidに適合するかのチェックだけをします。与えられたuuidの唯一性を保障するわけではありません。</p>
