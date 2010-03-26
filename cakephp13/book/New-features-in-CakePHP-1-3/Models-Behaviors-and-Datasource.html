@@ -45,8 +45,7 @@ var $lastFm = array(
 <p>....</p>
 
 <p><strong>スキーマファイルでテーブルパラメータを使う</strong></p>
-<p>You use <code>tableParameters</code> just as you would any other
-key in a schema file. Much like <code>indexes</code>:</p>
+<p>スキーマファイルで他のキーを使うのと同様に、<code>tableParameters</code>を使います。<code>indexes</code>とよく似ています：</p>
 <pre>
 var $comments => array(
     'id' => array('type' => 'integer', 'null' => false, 'default' => 0, 'key' => 'primary'),
@@ -64,10 +63,4 @@ var $comments => array(
 );
 </pre>
 
-<p>is an example of a table using <code>tableParameters</code> to
-set some database specific settings. If you use a schema file that
-contains options and features your database does not implement,
-those options will be ignored. For example if you imported the
-above schema to a PostgreSQL server, all of the tableParameters
-would be ignore as PostgreSQL does not support any of the included
-options.</p>
+<p>これはいくつかのデータベース特有の設定をするための<code>tableParameters</code>を使ったテーブルの例となります。データベースが実装していないオプションや機能が含まれたスキーマファイルを使ったとすると、これらのオプションは無視されるでしょう。例として、上記のスキーマをPostgreSQLサーバにインポートしたとすると、全てのテーブルパラメータは、内包するオプションをPostgreSQLがいずれもサポートしていないので無視されるでしょう。</p>
