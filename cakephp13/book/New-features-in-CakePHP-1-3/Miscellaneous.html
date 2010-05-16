@@ -1,12 +1,5 @@
 <p><strong>エラーハンドリング</strong></p>
-<p>ErrorHandlerのサブクラスは、追加のエラーメソッドを実装することが更に簡単になりました。以前は、<code>__construct()</code>をオーバーライドする必要があり、
-Subclasses of ErrorHandler can more easily implement additional
-error methods. In the past you would need to override
-<code>__construct()</code> and work around ErrorHandler's desire to
-convert all error methods into <code>error404</code> when debug =
-0. In 1.3 error methods that are declared in subclasses are not
-converted to <code>error404</code>. If you want your error methods
-converted into error404, then you will need to do it manually.</p>
+<p>ErrorHandlerのサブクラスは、追加のエラーメソッドを実装することが更に簡単になりました。以前は、debug = 0のとき全てのエラーメソッドを<code>error404</code>に変換するというErrorHandlerの要求を、<code>__construct()</code>をオーバーライドすることによって回避する必要があったかもしれません。1.3では、サブクラスで定義されたエラーメソッドは<code>error404</code>に変換されることはありません。error404に独自のエラーメソッドを変換したいなら、手動でする必要があります。</p>
 
 
 <p><strong>スキャフォールディング</strong></p>
