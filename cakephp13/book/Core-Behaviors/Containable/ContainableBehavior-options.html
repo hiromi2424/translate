@@ -1,0 +1,15 @@
+<p>The <code>ContainableBehavior</code> has a number of options that can be set when the Behavior is attached to a model. The settings allow you to fine tune the behavior of Containable and work with other behaviors more easily.</p>
+
+<ul>
+	<li><strong>recursive</strong> (boolean, optional) set to true to allow containable to automatically determine the recursiveness level needed to fetch specified models, and set the model recursiveness to this level. setting it to false disables this feature. The default value is <code>true</code>.</li>
+	<li><strong>notices</strong> (boolean, optional) issues E_NOTICES for bindings referenced in a containable call that are not valid. The default value is <code>true</code>.</li>
+	<li><strong>autoFields</strong>: (boolean, optional) auto-add needed fields to fetch requested bindings. The default value is <code>true</code>.</li>
+</ul>
+
+<p>You can change ContainableBehavior settings at run time by reattaching the behavior as seen in <a href="/view/90/Using-Behaviors">Using behaviors</a></p>
+
+<p>ContainableBehavior can sometimes cause issues with other behaviors or queries that use aggregate functions and/or GROUP BY statements.  If you get invalid SQL errors due to mixing of aggregate and non-aggregate fields, try disabling the <code>autoFields</code> setting.</p>
+
+<pre>
+$this->Post->Behaviors->attach('Containable', array('autoFields' => false));
+</pre>

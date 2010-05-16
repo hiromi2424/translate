@@ -1,0 +1,17 @@
+<p>A new addition to the CakePHP 1.2 core is the <code>ContainableBehavior</code>. This model behavior allows you to filter and limit model find operations. Using Containable will help you cut down on needless wear and tear on your database, increasing the speed and overall performance of your application. The class will also help you search and filter your data for your users in a clean and consistent way.</p>
+
+<p>Containable allows you to streamline and simplify operations on your model bindings.  It works by temporarily or permanently altering the associations of your models.  It does this by using the supplied containments to generate a series of <code>bindModel</code> and <code>unbindModel</code> calls.</p>
+
+<p>To use the new behavior, you can add it to the $actsAs property of your model:</p>
+
+<pre>
+class Post extends AppModel {
+    var $actsAs = array('Containable');
+}
+</pre>
+
+<p>You can also attach the behavior on the fly:</p>
+
+<pre>
+$this->Post->Behaviors->attach('Containable');
+</pre>

@@ -1,0 +1,141 @@
+<p>Containable also goes a step deeper: you can filter the data of the <em>associated</em> models. If you look at the results of the original find() call, notice the author field in the Comment model. If you are interested in the posts and the names of the comment authors &mdash; and nothing else &mdash; you could do something like the following:</p>
+
+<pre>
+$this->Post->contain('Comment.author');
+$this->Post->find('all');
+
+//or..
+
+$this->Post->find('all', array('contain' => 'Comment.author'));
+</pre>
+
+<p>Here, we've told Containable to give us our post information, and just the author field of the associated Comment model. The output of the find call might look something like this:</p>
+
+<pre class="plain">
+[0] => Array
+        (
+            [Post] => Array
+                (
+                    [id] => 1
+                    [title] => First article
+                    [content] => aaa
+                    [created] => 2008-05-18 00:00:00
+                )
+            [Comment] => Array
+                (
+                    [0] => Array
+                        (
+                            [author] => Daniel
+                            [post_id] => 1
+                        )
+                    [1] => Array
+                        (
+                            [author] => Sam
+                            [post_id] => 1
+                        )
+                )
+        )
+[1] => Array
+        (...
+</pre>
+
+<p>As you can see, the Comment arrays only contain the author field (plus the post_id which is needed by CakePHP to map the results).</p>
+
+<p>You can also filter the associated Comment data by specifying a condition:</p>
+
+<pre>
+$this->Post->contain('Comment.author = "Daniel"');
+$this->Post->find('all');
+
+//or...
+
+$this->Post->find('all', array('contain' => 'Comment.author = "Daniel"'));
+</pre>
+
+<p>This gives us a result that gives us posts with comments authored by Daniel:</p>
+
+<pre class="plain">
+[0] => Array
+        (
+            [Post] => Array
+                (
+                    [id] => 1
+                    [title] => First article
+                    [content] => aaa
+                    [created] => 2008-05-18 00:00:00
+                )
+            [Comment] => Array
+                (
+                    [0] => Array
+                        (
+                            [id] => 1
+                            [post_id] => 1
+                            [author] => Daniel
+                            [email] => dan@example.com
+                            [website] => http://example.com
+                            [comment] => First comment
+                            [created] => 2008-05-18 00:00:00
+                        )
+                )
+        )
+</pre>
+
+<p>Additional filtering can be performed by supplying the standard <code><a href="/view/66/models#find-449">Model->find()</a></code> options:</p>
+
+<pre>
+$this->Post->find('all', array('contain' => array(
+    'Comment' => array(
+        'conditions' => array('Comment.author =' => "Daniel"),
+        'order' => 'Comment.created DESC'
+    )
+)));
+</pre>
+
+<p>
+Here's an example of using the <code>ContainableBehavior</code> when you've got deep and complex model relationships. 
+</p>
+
+<p>
+Let's consider the following model associations:
+</p>
+
+<pre class="plain">
+User->Profile
+User->Account->AccountSummary
+User->Post->PostAttachment->PostAttachmentHistory->HistoryNotes
+User->Post->Tag
+</pre>
+
+<p>
+This is how we retrieve the above associations with Containable:
+</p>
+
+<pre>
+$this->User->find('all', array(
+	'contain'=>array(
+		'Profile',
+		'Account' => array(
+			'AccountSummary'
+		),
+		'Post' => array(
+			'PostAttachment' => array(
+				'fields' => array('id', 'name'),
+				'PostAttachmentHistory' => array(
+					'HistoryNotes' => array(
+						'fields' => array('id', 'note')
+					)
+				)
+			),
+			'Tag' => array(
+				'conditions' => array('Tag.name LIKE' => '%happy%')
+			)
+		)
+	)
+));
+</pre> 
+
+<p>
+Keep in mind that <code>contain</code> key is only used once in the main model, you don't to use 'contain' again for related models
+</p>
+
+<p class="note">When using 'fields' and 'contain' options - be careful to  include all foreign keys that your query directly or indirectly requires. Please also note that because Containable must be attached to all models used in containment, you may consider attaching it to your AppModel.</p>

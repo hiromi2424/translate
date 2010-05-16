@@ -1,0 +1,122 @@
+<p>To see how Containable works, let's look at a few examples. First, we'll start off with a find() call on a model named Post. Let's say that Post hasMany Comment, and Post hasAndBelongsToMany Tag. The amount of data fetched in a normal find() call is rather extensive:</p>
+
+<pre>
+debug($this->Post->find('all'));
+</pre>
+
+<pre class="plain">
+[0] => Array
+        (
+            [Post] => Array
+                (
+                    [id] => 1
+                    [title] => First article
+                    [content] => aaa
+                    [created] => 2008-05-18 00:00:00
+                )
+            [Comment] => Array
+                (
+                    [0] => Array
+                        (
+                            [id] => 1
+                            [post_id] => 1
+                            [author] => Daniel
+                            [email] => dan@example.com
+                            [website] => http://example.com
+                            [comment] => First comment
+                            [created] => 2008-05-18 00:00:00
+                        )
+                    [1] => Array
+                        (
+                            [id] => 2
+                            [post_id] => 1
+                            [author] => Sam
+                            [email] => sam@example.net
+                            [website] => http://example.net
+                            [comment] => Second comment
+                            [created] => 2008-05-18 00:00:00
+                        )
+                )
+            [Tag] => Array
+                (
+                    [0] => Array
+                        (
+                            [id] => 1
+                            [name] => Awesome
+                        )
+                    [1] => Array
+                        (
+                            [id] => 2
+                            [name] => Baking
+                        )
+                )
+        )
+[1] => Array
+        (
+            [Post] => Array
+                (...
+</pre>
+
+<p>For some interfaces in your application, you may not need that much information from the Post model. One thing the <code>ContainableBehavior</code> does is help you cut down on what find() returns.</p>
+
+<p>For example, to get only the post-related information, you can do the following:</p>
+
+<pre>
+$this->Post->contain();
+$this->Post->find('all');
+</pre>
+
+<p>You can also invoke Containable's magic from inside the find() call:</p>
+
+<pre>
+$this->Post->find('all', array('contain' => false));
+</pre>
+
+<p>Having done that, you end up with something a lot more concise:</p>
+
+<pre class="plain">
+[0] => Array
+        (
+            [Post] => Array
+                (
+                    [id] => 1
+                    [title] => First article
+                    [content] => aaa
+                    [created] => 2008-05-18 00:00:00
+                )
+        )
+[1] => Array
+        (
+            [Post] => Array
+                (
+                    [id] => 2
+                    [title] => Second article
+                    [content] => bbb
+                    [created] => 2008-05-19 00:00:00
+                )
+        )
+</pre>
+
+<p>This sort of help isn't new: in fact, you can do that without the <code>ContainableBehavior</code> doing something like this:</p>
+
+<pre>
+$this->Post->recursive = -1;
+$this->Post->find('all');
+</pre>
+
+<p>Containable really shines when you have complex associations, and you want to pare down things that sit at the same level. The model's <code>$recursive</code> property is helpful if you want to hack off an entire level of recursion, but not when you want to pick and choose what to keep at each level. Let's see how it works by using the <code>contain()</code> method.</p>
+
+<p>The contain method's first argument accepts the name, or an array of names, of the models to keep in the find operation. If we wanted to fetch all posts and their related tags (without any comment information), we'd try something like this:</p>
+
+<pre>
+$this->Post->contain('Tag');
+$this->Post->find('all');
+</pre>
+
+<p>Again, we can use the contain key inside a find() call:</p>
+
+<pre>
+$this->Post->find('all', array('contain' => 'Tag'));
+</pre>
+
+<p>Without Containable, you'd end up needing to use the <code>unbindModel()</code> method of the model, multiple times if you're paring off multiple models. Containable creates a cleaner way to accomplish this same task.</p>

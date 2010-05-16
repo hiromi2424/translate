@@ -1,0 +1,12 @@
+<p>Here's an example of how to contain associations when paginating.<p>
+
+<pre>
+$this->paginate['User'] = array(
+    'contain' => array('Profile', 'Account'),
+    'order' => 'User.username'
+);
+
+$users = $this->paginate('User');
+</pre>
+
+<p>By including the 'contain' parameter in the <code>$paginate</code> property it will apply to both the find('count') and the find('all') done on the model</p>
