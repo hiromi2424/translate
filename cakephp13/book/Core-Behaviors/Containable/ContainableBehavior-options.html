@@ -1,8 +1,7 @@
-<p><code>ContainableBehavior</code>には、いくつかのオプションがあり、このビヘイビアがモデルに結び付けられる(<em>attached</em>)ときにセットされます。
- has a number of options that can be set when the Behavior is attached to a model. The settings allow you to fine tune the behavior of Containable and work with other behaviors more easily.</p>
+<p><code>ContainableBehavior</code>には、いくつかのオプションがあり、このビヘイビアがモデルに結び付けられる(<em>attached</em>)ときにセットされます。これらの設定はコンテイナブルの振る舞いの微調整と、他のビヘイビアとの共存をより簡単にすることができます。</p>
 
 <ul>
-	<li><strong>recursive</strong> (boolean, optional) set to true to allow containable to automatically determine the recursiveness level needed to fetch specified models, and set the model recursiveness to this level. setting it to false disables this feature. The default value is <code>true</code>.</li>
+	<li><strong>recursive</strong> (boolean, 任意) trueに設定すると、コンテイナブルが指定されたモデル群を取得するのに必要なrecursiveの値を自動的に決定し、モデルにそのrecursiveの値をセットします。falseに設定するとこの機能を無効にできます。デフォルトは<code>true</code>です。</li>
 	<li><strong>notices</strong> (boolean, optional) issues E_NOTICES for bindings referenced in a containable call that are not valid. The default value is <code>true</code>.</li>
 	<li><strong>autoFields</strong>: (boolean, optional) auto-add needed fields to fetch requested bindings. The default value is <code>true</code>.</li>
 </ul>
