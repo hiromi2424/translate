@@ -1,4 +1,4 @@
-<p>Here's an example of how to contain associations when paginating.<p>
+<p>次のものは、ページ付けを行う際のアソシエーションの抑制を行うという例です。<p>
 
 <pre>
 $this->paginate['User'] = array(
@@ -7,6 +7,6 @@ $this->paginate['User'] = array(
 );
 
 $users = $this->paginate('User');
-</pre>
+</pre> 
 
-<p>By including the 'contain' parameter in the <code>$paginate</code> property it will apply to both the find('count') and the find('all') done on the model</p>
+<p>'contain'パラメータを<code>$paginate</code>プロパティに含めることによって、ページ付けのために行われるfind('count')とfind('all')の両方に対して適応されます。</p>

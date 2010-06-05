@@ -1,8 +1,6 @@
-<p>A new addition to the CakePHP 1.2 core is the <code>ContainableBehavior</code>. This model behavior allows you to filter and limit model find operations. Using Containable will help you cut down on needless wear and tear on your database, increasing the speed and overall performance of your application. The class will also help you search and filter your data for your users in a clean and consistent way.</p>
+<p>ContainableBehavior は CakePHP のコアの新機能です。このビヘイビアは find を実行するときに関連したモデルを選別したり限定したりするために使用します。コンテイナブル(<em>Containable</em>)は、データベース中の不要なものを削減し、アプリケーションの速度やパフォーマンスを改善します。このクラスを使うと、ユーザに対するデータの検索とフィルタを、美しく一貫した方法で行うこともできます。</p>
 
-<p>Containable allows you to streamline and simplify operations on your model bindings.  It works by temporarily or permanently altering the associations of your models.  It does this by using the supplied containments to generate a series of <code>bindModel</code> and <code>unbindModel</code> calls.</p>
-
-<p>To use the new behavior, you can add it to the $actsAs property of your model:</p>
+<p>新しいビヘイビアを使用する場合は、モデルの $actsAs にビヘイビアの指定を追加します。</p>
 
 <pre>
 class Post extends AppModel {
@@ -10,7 +8,7 @@ class Post extends AppModel {
 }
 </pre>
 
-<p>You can also attach the behavior on the fly:</p>
+<p>動的にビヘイビアを追加することもできます。</p>
 
 <pre>
 $this->Post->Behaviors->attach('Containable');

@@ -1,4 +1,4 @@
-<p>Containable also goes a step deeper: you can filter the data of the <em>associated</em> models. If you look at the results of the original find() call, notice the author field in the Comment model. If you are interested in the posts and the names of the comment authors &mdash; and nothing else &mdash; you could do something like the following:</p>
+<p>さらに進んだ使い方があります。コンテイナブルには、<em>アソシエーション</em>で関連付いたモデルのデータをフィルタリングするというさらに進んだ使い方もあります。最初の例で find() を呼び出した結果のうち、 Comment モデルの author フィールドに注目してください。投稿(<em>post</em>)のうち、コメントをした人の名前(<em>author</em>)を取得し、他は取得したくない場合、次のようにします。</p>
 
 <pre>
 $this->Post->contain('Comment.author');
@@ -9,7 +9,8 @@ $this->Post->find('all');
 $this->Post->find('all', array('contain' => 'Comment.author'));
 </pre>
 
-<p>Here, we've told Containable to give us our post information, and just the author field of the associated Comment model. The output of the find call might look something like this:</p>
+<p>ここまでで、コンテイナブルで投稿(post)の情報を取得し、アソシエーションで関連付いた Comment モデルのうち author フィールドだけを取得する方法を説明しました。find() による出力は、次のようになるでしょう。</p>
+
 
 <pre class="plain">
 [0] => Array
@@ -17,7 +18,7 @@ $this->Post->find('all', array('contain' => 'Comment.author'));
             [Post] => Array
                 (
                     [id] => 1
-                    [title] => First article
+                    [title] => 最初の記事
                     [content] => aaa
                     [created] => 2008-05-18 00:00:00
                 )
@@ -25,12 +26,12 @@ $this->Post->find('all', array('contain' => 'Comment.author'));
                 (
                     [0] => Array
                         (
-                            [author] => Daniel
+                            [author] => ダニエル
                             [post_id] => 1
                         )
                     [1] => Array
                         (
-                            [author] => Sam
+                            [author] => サム
                             [post_id] => 1
                         )
                 )
@@ -39,20 +40,20 @@ $this->Post->find('all', array('contain' => 'Comment.author'));
         (...
 </pre>
 
-<p>As you can see, the Comment arrays only contain the author field (plus the post_id which is needed by CakePHP to map the results).</p>
+<p>Comment 配列に author フィールドだけが含まれていることが確認できると思います。ただし、 CakePHP が結果をマップするために必要な post_id は含まれます。</p>
 
-<p>You can also filter the associated Comment data by specifying a condition:</p>
+<p>条件(<em>condition</em>)を定義して、アソシエーションで関連付いた Comment のデータにフィルタをかけることもできます。</p>
 
 <pre>
-$this->Post->contain('Comment.author = "Daniel"');
+$this->Post->contain('Comment.author = "ダニエル"');
 $this->Post->find('all');
 
-//or...
+// または
 
-$this->Post->find('all', array('contain' => 'Comment.author = "Daniel"'));
+$this->Post->find('all', array('contain' => 'Comment.author = "ダニエル"'));
 </pre>
 
-<p>This gives us a result that gives us posts with comments authored by Daniel:</p>
+<p>これにより、投稿(<em>post</em>)とダニエルによるコメントを取得できます。</p>
 
 <pre class="plain">
 [0] => Array
@@ -60,7 +61,7 @@ $this->Post->find('all', array('contain' => 'Comment.author = "Daniel"'));
             [Post] => Array
                 (
                     [id] => 1
-                    [title] => First article
+                    [title] => 最初の記事
                     [content] => aaa
                     [created] => 2008-05-18 00:00:00
                 )
@@ -70,33 +71,33 @@ $this->Post->find('all', array('contain' => 'Comment.author = "Daniel"'));
                         (
                             [id] => 1
                             [post_id] => 1
-                            [author] => Daniel
+                            [author] => ダニエル
                             [email] => dan@example.com
                             [website] => http://example.com
-                            [comment] => First comment
+                            [comment] => 最初のコメント
                             [created] => 2008-05-18 00:00:00
                         )
                 )
         )
 </pre>
 
-<p>Additional filtering can be performed by supplying the standard <code><a href="/view/66/models#find-449">Model->find()</a></code> options:</p>
+<p>フィルタを追加するには、標準的な <code><a href="/ja/view/66/Models">Model->find()</a></code> のオプションを与えます。</p>
 
 <pre>
 $this->Post->find('all', array('contain' => array(
     'Comment' => array(
-        'conditions' => array('Comment.author =' => "Daniel"),
+        'conditions' => array('Comment.author =' => "ダニエル"),
         'order' => 'Comment.created DESC'
     )
 )));
 </pre>
 
 <p>
-Here's an example of using the <code>ContainableBehavior</code> when you've got deep and complex model relationships. 
+より深い recursive と複雑なモデルの関連の時にコンテイナブルビヘイビアを使う方法の例は次のようになります。
 </p>
 
 <p>
-Let's consider the following model associations:
+モデル間のアソシエーションは次のようになっているとします。
 </p>
 
 <pre class="plain">
@@ -107,7 +108,7 @@ User->Post->Tag
 </pre>
 
 <p>
-This is how we retrieve the above associations with Containable:
+上述のアソシエーションにおいてコンテイナブルを使った検索は次のように行います。
 </p>
 
 <pre>
@@ -135,7 +136,7 @@ $this->User->find('all', array(
 </pre> 
 
 <p>
-Keep in mind that <code>contain</code> key is only used once in the main model, you don't to use 'contain' again for related models
+メインのモデルで「contain」キーは一度しか使わないことに留意してください。関連したモデルにでもう一度「contain」は使いません。
 </p>
 
-<p class="note">When using 'fields' and 'contain' options - be careful to  include all foreign keys that your query directly or indirectly requires. Please also note that because Containable must be attached to all models used in containment, you may consider attaching it to your AppModel.</p>
+<p class="note">'fields' と 'contain' オプションを使う場合は、クエリが直接的あるいは間接的に使う外部キーを含めるよう注意してください。また、Containable ビヘイビアは、この機能を使って出力を抑制するモデルの全てに付与しなければなりません。そのため、AppModel で Containable ビヘイビアを付与することを検討すべきかもしれないということも留意してください。</p>
