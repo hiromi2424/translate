@@ -18,25 +18,7 @@ http://hiromi2424.lv9.org/translate/
   HTMLファイルが列挙されています。
   なるべくタグの内容を破壊せず、Inner or Outer Textを変更します。
 
-・訳注の追加
-  各HTMLの一番下に
-<hr />
-<h3>訳注</h3>
-<ul id"ref">
-	<li><a name="ref1" id="ref1">*1.</a> 説明</li>
-</ul>
-  のようにして訳注のリファレンスを作ります。
-  また、本文中に、訳注をつけたい単語・フレーズの”終わり”に、
-  <a href="#ref1">(*1)</a>
-  と付け加えます。
-
-・文中の他ページへのリンク
-例
-  <a href=
-  "/projects/42648/13-new-features-plugin-assets">New plugin and
-  theme assets</a>
-  ↓
-  <a href="./13-new-features-plugin-assets">新機能 &gt; plugin assets</a>
-
-  アンカータグのInner Textは意訳しています。メニューとは非同期です。
-
+・現在cookbookの翻訳の作業領域としてのリポジトリになっています。
+・bookディレクトリに配置しています。
+・「origin」がオリジナルテキストです。
+・ディレクトリ配置は適当です。空気を読んでください。
