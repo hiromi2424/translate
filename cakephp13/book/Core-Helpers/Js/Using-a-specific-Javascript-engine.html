@@ -1,0 +1,32 @@
+<title>Using a specific Javascript engine</title>
+<p>First of all download your preferred javascript library and place it in <code>app/webroot/js</code></p>
+
+<p>Then you must include the library in your page. To include it in all
+pages, add this line to the &lt;head&gt; section of 
+<code>app/views/layouts/default.ctp</code> (copy this file from
+<code>cake/libs/view/layouts/default.ctp</code> if you have not created
+your own).</p>
+
+<p><pre>
+echo $this->Html->script('jquery'); // Include jQuery library
+</pre></p>
+
+<p>Replace <code>jquery</code> with the name of your library file (.js will be added to the name).</p>
+
+<p>By default scripts are cached, and you must explicitly print out the cache. To do this at the end of each page, include this line just before the ending 
+<code>&lt;/body&gt;</code> tag</p>
+<p><pre>
+echo $js->writeBuffer(); // Write cached scripts
+</pre></p>
+
+<p>Javascript engine selection is declared when you include the
+helper in your controller.</p>
+<p><pre>
+var $helpers = array('Js' => array('Jquery'));
+</pre></p>
+
+<p>The above would use the Jquery Engine in the instances of
+JsHelper in your views. If you do not declare a specific engine,
+the jQuery engine will be used as the default. As mentioned before,
+there are three engines implemented in the core, but we encourage
+the community to expand the library compatibility.</p>

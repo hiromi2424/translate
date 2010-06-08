@@ -1,0 +1,41 @@
+<title>Making Ajax Links</title>
+<p>Before you can create ajax links you must include the Javascript
+library that matches the adapter you are using with
+<code>JsHelper</code>. By default the <code>JsHelper</code> uses
+jQuery. So in your layout include jQuery (or whichever library you
+are using)</p>
+<pre>
+echo $this->Html->script('jquery');
+</pre>
+<p>Similar to 1.2 you need to tell the <code>PaginatorHelper</code>
+that you want to make Javascript enhanced links instead of plain
+HTML ones. To do so you use <code>options()</code></p>
+<pre>
+$this->Paginator->options(array(
+    'update' => '#content',
+    'evalScripts' => true
+));
+</pre>
+<p>The <code>PaginatorHelper</code> now knows to make javascript
+enhanced links, and that those links should update the
+<code>#content</code> element. Of course this element must exist,
+and often times you want to wrap <code>$content_for_layout</code>
+with a div matching the id used for the <code>update</code> option.
+You also should set <code>evalScripts</code> to true if you are
+using the Mootools or Prototype adapters, without
+<code>evalScripts</code> these libraries will not be able to chain
+requests together. The <code>indicator</code> option is not
+supported by <code>JsHelper</code> and will be ignored.</p>
+<p>You then create all the links as needed for your pagination
+features. Since the <code>JsHelper</code> automatically buffers all
+generated script content to reduce the number of
+<code>&lt;script&gt;</code> tags in your source code you
+<strong>must</strong> call write the buffer out. At the bottom of
+your view file. Be sure to include:</p>
+<pre>
+echo $this->Js->writeBuffer();
+</pre>
+<p>If you omit this you will <strong>not</strong> be able to chain
+ajax pagination links. When you write the buffer, it is also
+cleared, so you don't have worry about the same Javascript being
+output twice.</p>

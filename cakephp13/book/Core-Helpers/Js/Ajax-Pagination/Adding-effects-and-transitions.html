@@ -1,0 +1,37 @@
+<title>Adding effects and transitions</title>
+<p>Since <code>indicator</code> is no longer supported, you must
+add any indicator effects yourself.</p>
+<pre>
+<html>
+    <head>
+        <?php echo $this->Html->script('jquery'); ?>
+        //more stuff here.
+    </head>
+    <body>
+    <div id="content">
+        <?php echo $content_for_layout; ?>
+    </div>
+    <?php echo $this->Html->image('indicator.gif', array('id' => 'busy-indicator')); ?>
+    </body>
+</html>
+</pre>
+
+<p>Remember to place the indicator.gif file inside app/webroot/img folder. You may see a situation where the indicator.gif displays immediately upon the page load. You need to put in this css <code>#busy-indicator { display:none; }</code> in your main css file.</p>
+
+<p>With the above layout, we've included an indicator image file,
+that will display a busy indicator animation that we will show and
+hide with the <code>JsHelper</code>. To do that we need to update
+our <code>options()</code> function.</p>
+<pre>
+$this->Paginator->options(array(
+    'update' => '#content',
+    'evalScripts' => true,
+    'before' => $this->Js->get('#busy-indicator')->effect('fadeIn', array('buffer' => false)),
+    'complete' => $this->Js->get('#busy-indicator')->effect('fadeOut', array('buffer' => false)),
+));
+</pre>
+<p>This will show/hide the busy-indicator element before and after
+the <code>#content</code> div is updated. Although
+<code>indicator</code> has been removed, the new features offered
+by <code>JsHelper</code> allow for more control and more complex
+effects to be created.</p>

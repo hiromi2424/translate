@@ -1,0 +1,29 @@
+<title>Javascript engine usage</title>
+<p>The <code>JsHelper</code> provides a few methods, and acts as a
+facade for the the Engine helper. You should not directly access
+the Engine helper except in rare occasions. Using the facade
+features of the <code>JsHelper</code> allows you to leverage the
+buffering and method chaining features built-in; (method chaining
+only works in PHP5).</p>
+
+<p>The <code>JsHelper</code> by default buffers almost all script
+code generated, allowing you to collect scripts throughout the
+view, elements and layout, and output it in one place. Outputting
+buffered scripts is done with <code>$js-&gt;writeBuffer();</code>
+this will return the buffer contents in a script tag. You can
+disable buffering wholesale with the <code>$bufferScripts</code>
+property or setting <code>buffer =&gt; false</code> in methods
+taking <code>$options</code>.</p>
+
+<p>Since most methods in Javascript begin with a selection of
+elements in the DOM, <code>$js-&gt;get()</code> returns a $this,
+allowing you to chain the methods using the selection. Method chaining allows you to write shorter, more expressive code.  It should be noted that method chaining <strong>Will not</strong> work in PHP4</p>
+<pre>
+$js->get('#foo')->event('click', $eventCode);
+</pre>
+<p>Is an example of method chaining. Method chaining is not
+possible in PHP4 and the above sample would be written like</p>
+<pre>
+$js->get('#foo');
+$js->event('click', $eventCode);
+</pre>
