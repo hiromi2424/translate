@@ -1,0 +1,81 @@
+<p>CakePHPは、展開した状態ではmod_rewriteを使用するようになっており、自分のシステムでうまく動作するまで苦労するユーザもいます。</p>
+<p>次に、正しく動作させるために行うことをいくつか示します。まず始めにhttpd.confを見てください（ユーザーやサイト独自のhttpd.confではなく、システムのhttpd.confを編集しているかを確かめてください）。</p>
+
+<ol>
+<li><p>.htaccessのオーバーライドが許可されていること、正確なDocumentRootに対してAllowOverrideがAllに設定されていることを確かめてください。以下のようなものになるはずです。</p>
+<pre>
+#
+# Each directory to which Apache has access can be configured with respect
+# to which services and features are allowed and/or disabled in that
+# directory (and its subdirectories). 
+#
+# First, we configure the "default" to be a very restrictive set of 
+# features.  
+#
+<Directory />
+    Options FollowSymLinks
+    AllowOverride All
+#    Order deny,allow
+#    Deny from all
+</Directory>
+</pre></li>
+<li>mod_rewriteを正しく読み込んでいることを確認してください。以下のようになるはずです。</p>
+<pre>LoadModule rewrite_module libexec/apache2/mod_rewrite.so</pre>
+
+<p>In many systems these will be commented out (by being prepended with a #) by default, so you may just need to remove those leading # symbols.</p>
+<p>After you make changes, restart Apache to make sure the settings are active.</p>
+Verify that you your .htaccess files are actually in the right directories.<p></p> This can happen during copying because some operating systems treat files that start with '.' as hidden and therefore won't see them to copy. </li>
+<li><p>Make sure your copy of CakePHP is from the downloads section of the site or our GIT repository, and has been unpacked correctly by checking for .htaccess files.</p>
+<p>Cake root directory (needs to be copied to your document, this redirects everything to your Cake app):</p>
+<pre>
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   RewriteRule    ^$ app/webroot/    [L]
+   RewriteRule    (.*) app/webroot/$1 [L]
+</IfModule>
+</pre>
+<p>Cake app directory (will be copied to the top directory of your application by bake):</p>
+<pre>
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteRule    ^$    webroot/    [L]
+    RewriteRule    (.*) webroot/$1    [L]
+ </IfModule>
+</pre>
+<p>Cake webroot directory (will be copied to your application's web root by bake):</p>
+<pre>
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
+</pre>
+<p>For many hosting services (GoDaddy, 1and1), your web server is actually being served from a user directory that already uses mod_rewrite. If you are installing CakePHP into a user directory (http://example.com/~username/cakephp/), or any other URL structure that already utilizes mod_rewrite, you'll need to add RewriteBase statements to the .htaccess files CakePHP uses (/.htaccess, /app/.htaccess, /app/webroot/.htaccess). </p>
+<p>This can be added to the same section with the RewriteEngine directive, so for example your webroot .htaccess file would look like:<p>
+<pre>
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
+</pre>
+<p>The details of those changes will depend on your setup, and can include additional things that are not Cake related. Please refer to Apache's online documentation for more information.</p></li>
+</ol>
+
+<p>
+	CakePHPは、展開した状態ではmod_rewriteを使用するようになっており、自分のシステムでうまく動作するまで苦労するユーザもいます。次に、正しく動作させるために行うことをいくつか示します。
+</p>
+<ul>
+	<li>.htaccessのオーバーライドが許可されていることを確認しましょう。場所は、httpd.confの中の、サーバのディレクトリを定義している場所です。正しいドキュメントルートのAllowOverrideがAllになっていることを確かめてください。
+	</li>
+	<li>ユーザやサイト特有のhttpd.confではなく、システムのhttpd.confを編集してください。
+	</li>
+	<li>CakePHPが必要な.htaccessを見つけられないでいるでしょうか。オペレーティングシステムの中には、'.'ではじまるファイルを隠しファイルとして扱うため、コピーや移動の際に、この現象が発生することがあります。CakePHPのファイルを、サイトのダウンロードセクションからか、SVNリポジトリから入手して、正しく展開するようにしてください。
+	</li>
+	<li>mod_rewriteを正しく読み込んでいることを確認してください。<em>LoadModule rewrite_module libexec/httpd/mod_rewrite.so</em>(Unix/Linux ユーザは <em>AddModule mod_rewrite.c</em> という場合もあります) が、httpd.conf の中にあることを確認してください。また、これらの行がコメントアウトされていない(行頭に「#」が付いていない)ことも確認してください。設定を有効にするには、 Apache を再起動します。
+	</li>
+	<li>CakePHP をユーザディレクトリ(http://example.com/~username/cakephp/)や、すでに mod_rewrite を利用しているその他の URL 構造の中にインストールする場合は、CakePHP が使用している .htaccess ファイル(/.htaccess, /app/.htaccess, /app/webroot/.htaccess)に、 RewriteBase ステートメントを追加してください。これらの変更の詳細については、セットアップの方法に依存します。より詳しい情報は、 Apache のオンライン文書を参照してください。</li>
+</ul>
