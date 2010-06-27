@@ -1,0 +1,34 @@
+<p>Many applications require an administration section where privileged users can make changes. This is often done through a special URL such as <kbd>/admin/users/edit/5</kbd>. In CakePHP, prefix routing can be enabled from within the core configuration file by setting the prefixes with Routing.prefixes.</p>
+
+<pre>Configure::write('Routing.prefixes', array('admin'));</pre>
+
+<p>In your controller, any action with an <code>admin_</code> prefix will be called. Using our users example, accessing the url <kbd>/admin/users/edit/5</kbd> would call the method <code>admin_edit</code> of our <code>UsersController</code> passing 5 as the first parameter. The view file used would be <kbd>app/views/users/admin_edit.ctp</kbd></p>
+
+<p>You can map the url <kbd>/admin</kbd> to your <code>admin_index</code> action of pages controller using following route</p>
+
+<pre>Router::connect('/admin', array('controller' => 'pages', 'action' => 'index', 'admin' => true)); </pre>
+
+<p>You can configure the Router to use multiple prefixes too.  By adding additional prefixes by adding additional values to <code>Routing.prefixes</code>.  If you set</p>
+
+<pre>Configure::write('Routing.prefixes', array('admin', 'manager'));</pre>
+
+<p>Cake will automatically generate routes for both the admin and manager prefixes.  Each configured prefix will have the following routes generated for it.</p>
+
+<pre>
+$this->connect("/{$prefix}/:plugin/:controller", array('action' => 'index', 'prefix' => $prefix, $prefix => true));
+$this->connect("/{$prefix}/:plugin/:controller/:action/*", array('prefix' => $prefix, $prefix => true));
+Router::connect("/{$prefix}/:controller", array('action' => 'index', 'prefix' => $prefix, $prefix => true));
+Router::connect("/{$prefix}/:controller/:action/*", array('prefix' => $prefix, $prefix => true));
+</pre>
+
+<p>Much like admin routing all prefix actions should be prefixed with the prefix name.  So <code>/manager/posts/add</code> would map to <code>PostsController::manager_add()</code>.</p>
+
+<p>When using prefix routes its important to remember, using the HTML helper to build your links will help maintain the prefix calls. Here's how to build this link using the HTML helper:</p>
+
+<pre>
+// Go into a prefixed route.
+echo $html->link('Manage posts', array('manager' => true, 'controller' => 'posts', 'action' => 'add'));
+
+// leave a prefix
+echo $html->link('View Post', array('manager' => false, 'controller' => 'posts', 'action' => 'view', 5));
+</pre>

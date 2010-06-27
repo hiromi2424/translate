@@ -1,0 +1,13 @@
+<p>Plugin routing uses the <strong>plugin</strong> key.  You can create links that point to a plugin, but adding the plugin key to your url array.</p>
+
+<pre>
+echo $html->link('New todo', array('plugin' => 'todo', 'controller' => 'todo_items', 'action' => 'create'));
+</pre>
+
+<p>Conversely if the active request is a plugin request and you want to create a link that has no plugin you can do the following.</p>
+
+<pre>
+echo $html->link('New todo', array('plugin' => null, 'controller' => 'users', 'action' => 'profile'));
+</pre>
+
+<p>By setting <code>plugin => null</code> you tell the Router that you want to create a link that is not part of a plugin.</p>

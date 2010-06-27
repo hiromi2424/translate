@@ -1,0 +1,25 @@
+<p>To handle different file extensions with your routes, you need one extra line in your routes config file:</p>
+
+<pre>
+Router::parseExtensions('html', 'rss');
+</pre>
+
+<p>This will tell the router to remove any matching file extensions, and then parse what remains.</p>
+
+<p>If you want to create a URL such as /page/title-of-page.html you would create your route as illustrated below:</p>
+
+<pre>
+	Router::connect(
+		'/page/:title',
+		array('controller' => 'pages', 'action' => 'view'),
+		array(
+			'pass' => array('title')
+		)
+	);	
+</pre>
+
+<p>Then to create links which map back to the routes simply use:</p>
+
+<pre>
+$html->link('Link title', array('controller' => 'pages', 'action' => 'view', 'title' => Inflector::slug('text to slug', '-'), 'ext' => 'html'))
+</pre>

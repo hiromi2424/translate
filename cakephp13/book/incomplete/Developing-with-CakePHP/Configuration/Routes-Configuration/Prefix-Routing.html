@@ -1,0 +1,11 @@
+<p>たいていのアプリケーションには、権限のあるユーザだけが情報を変更できる管理画面が必要です。そのために <kbd>/admin/users/edit/5</kbd> のような特別な URL を準備することがよくあります。CakePHP では、コア設定ファイル内の Routing.admin に管理パスを設定して admin ルーティングを有効にできます。</p>
+<pre>Configure::write('Routing.admin', 'admin');</pre>
+<p>コントローラ(controller)内では、プリフィックスとして <code>admin_</code> をメソッドの前につけたすべてのアクション(action)が呼び出されます。users を例にすると、<kbd>/admin/users/edit/5</kbd> というURLへのアクセスで、<code>UsersController</code> の <code>admin_edit</code> メソッドが、引数5で呼び出されます。</p>
+<p>URL <kbd>/admin</kbd> を、pagesコントローラの <code>admin_index</code>アクションにマップするには次のような route を使います。</p>
+<pre>Router::connect('/admin', array('controller' => 'pages', 'action' => 'index', 'admin' => true)); </pre>
+<p>複数のプレフィックスを使うように Router を設定することもできます。</p>
+
+<pre>Router::connect('/profiles/:controller/:action/*', array('prefix' => 'profiles', 'profiles' => true)); </pre>
+<p>profiles に対するすべての呼び出しは、<code>profiles_</code> プレフィックスのついたメソッドを探して呼び出します。usersを例にとると、<kbd>/profiles/users/edit/5</kbd> などの構造を持つURLは、<code>UsersController</code> の <code>profiles_edit</code> メソッドを呼び出します。また、重要な点として、HTML ヘルパーを使用してリンクを作成するなら、プレフィックスを用いた呼び出しの管理も楽になります。HTML ヘルパーを使ったリンクの例は次のようになります。</p>
+<pre>echo $html->link('Edit your profile', array('profiles' => true, 'controller' => 'users', 'action' => 'edit', 'id' => 5)); </pre>
+<p>この方法を使うと、複数のプレフィックスルートを定義することができ、柔軟な URL 構造を持つアプリケーションを作成できます。</p>

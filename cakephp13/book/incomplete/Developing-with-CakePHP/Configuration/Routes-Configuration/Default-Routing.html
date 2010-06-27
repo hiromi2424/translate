@@ -1,0 +1,7 @@
+<p>独自のルートを設定する前に、CakePHP のデフォルトのルートについて知っておく必要があります。CakePHP のデフォルトルーティングによって、どんなアプリケーションでもうまく動くようになっています。URL の中に、アクション名を置くことで、アクションに直接アクセスすることができます。コントローラのアクションに URL を使うことでパラメータを渡すこともできます。</p>
+<pre class="plain">
+    デフォルトのroutesのURLパターン：
+    http://example.com/コントローラ名/アクション名/パラメータ１/パラメータ２/パラメータ３
+</pre>
+<p> /posts/view という URL は、PostsController の view() アクションにマップされます。 /products/view_clearance は、ProductsController の viewClearance() アクションにマップされます。URL でアクション名が指定されていない場合には、index() メソッドが用いられます。</p>
+<p>デフォルトのルーティングでは、URLを使ってアクションにパラメータを渡すこともできます。例えば、/posts/view/25 というリクエストは、PostsController 上で view(25) として呼ぶのと同じことになります。</p>

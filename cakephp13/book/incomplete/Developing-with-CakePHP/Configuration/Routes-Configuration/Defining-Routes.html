@@ -1,0 +1,67 @@
+<p>独自ルートの定義により、アプリケーションを指定した URL で動作させることができるようになります。独自のルーティングは、<kbd>/app/config/routes.php</kbd> ファイルで <code>Router::connect()</code> メソッドを使用して定義します。 </p>
+<p><code>connect()</code> メソッドは３つのパラメータからなっています。対応させたい URL、独自のルート要素のデフォルトの値、要素と対応させるための正規表現ルールです。</p>
+<p>ルート定義の基本的な形式は次のようになります。：</p>
+<pre>
+Router::connect(
+    'URL',
+    array('paramName' => 'デフォルト値'),
+    array('paramName' => '正規表現')
+)
+</pre>
+<p>最初のパラメータで、制御する URL をルータ(Router)に伝えます。URL は、通常のスラッシュで分けられた文字列です。しかし、ワイルドカード(*)や、独自の route 要素(コロンで始まる変数名)を含むことができます。ワイルドカードで対応させたい URL を指定し、route 要素の指定で、コントローラアクションのためのパラメータを集めることができます。</p>
+<p>URLを指定した後、<code>connect()</code> の次の２つのパラメータを使って、リクエストが対応した場合に何を行うのかを CakePHP に伝えます。2番目のパラメータは連想配列です。配列のキーは、URL の route 要素にちなんだものか、デフォルト要素（:controller, :action, :plugin）にしてください。配列内の値は、それらのキーに対するデフォルト値です。connect() の3番目のパラメータを考える前に、基本的な例をいくつか見てみましょう。</p>
+<pre>
+Router::connect(
+    '/pages/*',
+    array('controller' => 'pages', 'action' => 'display')
+);
+</pre>
+<p>CakePHP の routes.php ファイルの中（40行目）に、この route が書かれています。このルートは、<kbd>/pages/</kbd> ではじまるすべての URL にマッチし、それを <code>PagesController();</code> の <code>display()</code> メソッドに渡します。例えば、 <kbd>/pages/products</kbd> というリクエストは、<code>PagesController->display('products')</code> にマップされます。</p>
+<pre>
+Router::connect(
+    '/government',
+    array('controller' => 'products', 'action' => 'display', 5)
+);
+</pre>
+<p>この2つ目の例は、<code>connect()</code> の2番目のパラメータでデフォルトパラメータを定義する方法を示しています。それぞれのお客様向けに異なる製品がある場合などに route を作成することを考えることができるでしょう。この例では、<kbd>/products/display/5</kbd> としなくても、<kbd>/government</kbd> という URL でアクセスできるようになります。</p>
+<p>一般的な Router の他の使い方は、コントローラの別名(alias)を定義することです。通常の <kbd>/users/someAction/5</kbd> という URL の代わりに、<kbd>/cooks/someAction/5</kbd> でアクセスさせたいとしましょう。このようなルートの設定は、次のようにすることで簡単に実現できます。</p>
+<pre>
+Router::connect(
+    '/cooks/:action/*', array('controller' => 'users', 'action' => 'index')
+);
+</pre>
+<p>この設定は、 Router が <kbd>/cooks/</kbd> で始まる URL を、全て users コントローラに送ることを表しています。</p>
+<p class="info">URL が生成されるときも、ルートの設定が適用されます。上述の例にあるルートが最初にマッチした場合、URL として <code>array('controller' => 'users', 'action' => 'someAction', 5)</code> のように指定すると、<kbd>/cooks/someAction/5</kbd> というURL が生成されます。</p>
+<p>ルートの中で独自の名前を持つパラメータを使うつもりならば、<code>Router::connectNamed</code> を用いて Router にそれを伝える必要があります。上述の例にあるルートに <code>/cooks/someAction/type:chef</code> のようなURLをマッチさせたい場合は、次のようにします。</p>
+<pre>
+Router::connectNamed(array('type'));
+Router::connect(
+    '/cooks/:action/*', array('controller' => 'users', 'action' => 'index')
+);
+</pre>
+<p>さらに柔軟な追加機能として、カスタム route 要素を指定できます。この機能により、コントローラアクション用のパラメータが、URL のどこにあるのかを定義できるようになります。リクエストがあると、このカスタム route 要素は、コントローラの $this->params の中に入ります。これは、パラメータに名前を付けるのとは異なる仕方で扱われます。違いに注意してください。パラメータに名前を付けた（/コントローラ/アクション/名前:値）ものは、$this->passedArgs の中に入りますが、カスタム route 要素のデータは、$this->params の中に入ります。カスタム route 要素を定義する際には、正規表現によって、URL が正しく作られているか、作られていないかを CakePHP が判断できるようにします。 </p>
+<pre>
+Router::connect(
+    '/:controller/:id',
+    array('action' => 'view'),
+    array('id' => '[0-9]+')
+);
+</pre>
+<p>これは、/コントローラ名/id という形で、どんなコントローラからでもモデルを表示（view）できるようにする例です。connect() に指定されている URL には２つの route 要素があります。controller と :id です。:controller 要素は、CakePHP のデフォルト route 要素です。ルータは URL 内のコントローラ名を見つけることができます。:id 要素はカスタム route 要素なので、connect() の３番目のパラメータ内の正規表現で、どうやってマッチさせるのかを明示する必要があります。こうすることで、CakePHP はアクション名ではないと区別でき、URL 内の ID を見つけることができます。 </p>
+<p>この route が定義されると、/apples/5 というリクエストは、/apples/view/5 としたのと同じことになります。どちらも、ApplesController の view() メソッドを呼びます。view() メソッド内では、<code>$this->params['id']</code> を使って渡された ID を知ることができます。</p>
+<p>この例も知れば、routing の達人です。</p>
+<pre>
+Router::connect(
+    '/:controller/:year/:month/:day',
+    array('action' => 'index', 'day' => null),
+    array(
+        'year' => '[12][0-9]{3}',
+        'month' => '0[1-9]|1[012]',
+        'day' => '0[1-9]|[12][0-9]|3[01]'
+    )
+);
+</pre>
+<p>ややこしいものですが、route が非常に強力であることを示す例です。この URL では、4つの要素があります。最初のものはよく知っているもので、まずコントローラ名が来ることを CakePHP に伝えます。</p>
+<p>次に、いくつかのデフォルト値を指定します。コントローラ名に関係なく、index() アクションが呼ばれるようにします。そして、day パラメーター（URL の４つ目の要素）のデフォルト値を null として、これがオプションであることを設定します。</p>
+<p>最後に、年(year)、月(month)、日(day)の数値にマッチする正規表現を指定します。 </p>
+<p>設定すると、この route は、/articles/2007/02/01、/posts/2004/11/16、/products/2001/05 （day パラメータは、オプション）といった URL にマッチするようになります。対応するコントローラの index() アクションに渡し、$this->params の中にはカスタム指定した日付パラメータを入れます。</p>

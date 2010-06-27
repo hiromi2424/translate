@@ -1,0 +1,13 @@
+<p>Custom route classes allow you to extend and change how individual routes parse requests and handle reverse routing.  A route class should extend <code>CakeRoute</code> and implement one or both of <code>match()</code> and <code>parse()</code>.  Parse is used to parse requests and match is used to handle reverse routing.</p>
+
+<p>You can use a custom route class when making a route by using the <code>routeClass</code> option, and loading the file containing your route before trying to use it.</p>
+
+<pre>
+Router::connect(
+     '/:slug', 
+     array('controller' => 'posts', 'action' => 'view'),
+     array('routeClass' => 'SlugRoute')
+);
+</pre>
+
+<p>This route would create an instance of <code>SlugRoute</code> and allow you to implement custom parameter handling</p>

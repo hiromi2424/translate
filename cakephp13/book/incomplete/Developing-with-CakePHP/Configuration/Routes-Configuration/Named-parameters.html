@@ -1,0 +1,26 @@
+<p>
+	CakePHP 1.2 の新機能には、パラメータに名前を付けられる、というものがあります。URL を使ってパラメータに名前を付けて、その値を渡すことができます。/posts/view/title:first+post/category:generalというリクエストでは、PostsController の view() アクションが呼ばれます。このアクションでは、title と category というパラメータの値を、それぞれ、$this-&gt;passedArgs[‘title’] と $this-&gt;passedArgs[‘category’] として受け取ることができます。
+</p>
+<p>
+	参考例としていくつか挙げてみます。
+</p>
+<pre class="plain">
+デフォルトのルーティングを使用した、URL からコントローラへのアクションマッピング：
+    
+URL: /monkeys/jump
+Mapping: MonkeysController->jump();
+ 
+URL: /products
+Mapping: ProductsController->index();
+ 
+URL: /tasks/view/45
+Mapping: TasksController->view(45);
+ 
+URL: /donations/view/recent/2001
+Mapping: DonationsController->view('recent', '2001');
+
+URL: /contents/view/chapter:models/section:associations
+Mapping: ContentsController->view();
+$this->passedArgs['chapter'] = 'models';
+$this->passedArgs['section'] = 'associations';
+</pre>

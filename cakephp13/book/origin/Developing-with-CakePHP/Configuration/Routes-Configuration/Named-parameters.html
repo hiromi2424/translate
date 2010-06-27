@@ -1,0 +1,36 @@
+<p>
+You can name parameters and send their values using the URL. A request for /posts/view/title:first+post/category:general would result in a call to the view() action of the PostsController. In that action, you’d find the values of the title and category parameters inside $this-&gt;passedArgs[‘title’] and $this-&gt;passedArgs[‘category’] respectively.  You can also access named parameters from <code>$this->params['named']</code>.  <code>$this->params['named']</code> contains an array of named parameters indexed by their name.
+</p>
+
+<p>Some summarizing examples for default routes might prove helpful.</p>
+
+<pre class="plain">
+URL to controller action mapping using default routes:  
+    
+URL: /monkeys/jump
+Mapping: MonkeysController->jump();
+ 
+URL: /products
+Mapping: ProductsController->index();
+ 
+URL: /tasks/view/45
+Mapping: TasksController->view(45);
+ 
+URL: /donations/view/recent/2001
+Mapping: DonationsController->view('recent', '2001');
+
+URL: /contents/view/chapter:models/section:associations
+Mapping: ContentsController->view();
+$this->passedArgs['chapter'] = 'models';
+$this->passedArgs['section'] = 'associations';
+$this->params['named']['chapter'] = 'models';
+$this->params['named']['section'] = 'associations';
+</pre>
+
+<p>When making custom routes, a common pitfall is that using named parameters will break your custom routes.  In order to solve this you should inform the Router about which parameters are intended to be named parameters.  Without this knowledge the Router is unable to determine whether named parameters are intended to actually be named parameters or routed parameters, and defaults to assuming you intended them to be routed parameters. To connect named parameters in the router use <code>Router::connectNamed()</code>.</p>
+
+<pre>
+Router::connectNamed(array('chapter', 'section'));
+</pre>
+
+<p>Will ensure that your chapter and section parameters reverse route correctly.</p>

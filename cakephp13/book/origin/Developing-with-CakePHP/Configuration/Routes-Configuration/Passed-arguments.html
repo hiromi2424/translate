@@ -1,0 +1,7 @@
+<p>Passed arguments are additional arguments or path segments that are used when making a request.  They are often used to pass parameters to your controller methods.</p>
+
+<pre class="plain">
+http://localhost/calendars/view/recent/mark
+</pre>
+
+<p>In the above example, both <code>recent</code> and <code>mark</code> are passed arguments to <code>CalendarsController::view()</code>.  Passed arguments are given to your controllers in two ways.  First as arguments to the action method called, and secondly they are available in <code>$this->params['pass']</code> as a numerically indexed array.  When using custom routes you can force particular parameters to go into the passed arguments as well. See <a href="/view/945/Routes-Configuration#Passing-parameters-to-action-949">passing parameters to an action</a> for more information.</p>

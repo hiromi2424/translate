@@ -1,0 +1,7 @@
+<p>Before you learn about configuring your own routes, you should know that CakePHP comes configured with a default set of routes. CakePHP’s default routing will get you pretty far in any application. You can access an action directly via the URL by putting its name in the request. You can also pass parameters to your controller actions using the URL.</p>
+<pre class="plain">
+    URL pattern default routes: 
+    http://example.com/controller/action/param1/param2/param3
+</pre>
+<p>The URL /posts/view maps to the view() action of the PostsController, and /products/view_clearance maps to the view_clearance() action of the ProductsController. If no action is specified in the URL, the index() method is assumed.</p>
+<p>The default routing setup also allows you to pass parameters to your actions using the URL. A request for /posts/view/25 would be equivalent to calling view(25) on the PostsController, for example.</p>

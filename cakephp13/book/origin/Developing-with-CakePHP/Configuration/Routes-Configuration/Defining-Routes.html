@@ -1,0 +1,69 @@
+<p>Defining your own routes allows you to define how your application will respond to a given URL. Define your own routes in the <kbd>/app/config/routes.php</kbd> file using the <code>Router::connect()</code> method.</p>
+<p>The <code>connect()</code> method takes up to three parameters: the URL you wish to match, the default values for your route elements, and regular expression rules to help the router match elements in the URL.</p>
+<p>The basic format for a route definition is:</p>
+<pre>
+Router::connect(
+    'URL',
+    array('paramName' => 'defaultValue'),
+    array('paramName' => 'matchingRegex')
+)
+</pre>
+<p>The first parameter is used to tell the router what sort of URL you're trying to control. The URL is a normal slash delimited string, but can also contain a wildcard (*) or route elements (variable names prefixed with a colon). Using a wildcard tells the router what sorts of URLs you want to match, and specifying route elements allows you to gather parameters for your controller actions.</p>
+<p>Once you've specified a URL, you use the last two parameters of <code>connect()</code> to tell CakePHP what to do with a request once it has been matched. The second parameter is an associative array. The keys of the array should be named after the route elements in the URL, or the default elements: :controller, :action, and :plugin. The values in the array are the default values for those keys. Let's look at some basic examples before we start using the third parameter of connect().</p>
+<pre>
+Router::connect(
+    '/pages/*',
+    array('controller' => 'pages', 'action' => 'display')
+);
+</pre>
+<p>This route is found in the routes.php file distributed with CakePHP (line 40). This route matches any URL starting with <kbd>/pages/</kbd> and hands it to the <code>display()</code> method of the <code>PagesController();</code> The request <kbd>/pages/products</kbd> would be mapped to <code>PagesController-&gt;display('products')</code>, for example.</p>
+<pre>
+Router::connect(
+    '/government',
+    array('controller' => 'products', 'action' => 'display', 5)
+);
+</pre>
+<p>This second example shows how you can use the second parameter of <code>connect()</code> to define default parameters. If you built a site that features products for different categories of customers, you might consider creating a route. This allows you link to <kbd>/government</kbd> rather than <kbd>/products/display/5</kbd>.</p>
+<p>Another common use for the Router is to define an "alias" for a controller. Let's say that instead of accessing our regular URL at <kbd>/users/someAction/5</kbd>, we'd like to be able to access it by <kbd>/cooks/someAction/5</kbd>. The following route easily takes care of that:</p>
+<pre>
+Router::connect(
+    '/cooks/:action/*', array('controller' => 'users', 'action' => 'index')
+);
+</pre>
+<p>This is telling the Router that any url beginning with  <kbd>/cooks/</kbd> should be sent to the users controller. </p>
+<p class="info">When generating urls, routes are used too. Using <code>array('controller' => 'users', 'action' => 'someAction', 5)</code> as a url will output <kbd>/cooks/someAction/5</kbd> if the above route is the first match found</p>
+
+<p>If you are planning to use custom named arguments with your route, you have to make the router aware of it using the <code>Router::connectNamed</code> function. So if you want the above route to match urls like <code>/cooks/someAction/type:chef</code> we do:</p>
+<pre>
+Router::connectNamed(array('type'));
+Router::connect(
+    '/cooks/:action/*', array('controller' => 'users', 'action' => 'index')
+);
+</pre>
+
+<p>You can specify your own route elements, doing so gives you the power to define places in the URL where parameters for controller actions should lie. When a request is made, the values for these route elements are found in $this-&gt;params of the controller. This is different than named parameters are handled, so note the difference: named parameters (/controller/action/name:value) are found in $this-&gt;passedArgs, whereas custom route element data is found in $this-&gt;params. When you define a custom route element, you also need to specify a regular expression - this tells CakePHP how to know if the URL is correctly formed or not.</p>
+<pre>
+Router::connect(
+    '/:controller/:id',
+    array('action' => 'view'),
+    array('id' => '[0-9]+')
+);
+</pre>
+<p>This simple example illustrates how to create a quick way to view models from any controller by crafting a URL that looks like /controllername/id. The URL provided to connect() specifies two route elements: :controller and :id. The :controller element is a CakePHP default route element, so the router knows how to match and identify controller names in URLs. The :id element is a custom route element, and must be further clarified by specifying a matching regular expression in the third parameter of connect(). This tells CakePHP how to recognize the ID in the URL as opposed to something else, such as an action name.</p>
+<p>Once this route has been defined, requesting /apples/5 is the same as requesting /apples/view/5. Both would call the view() method of the ApplesController. Inside the view() method, you would need to access the passed ID at <code>$this-&gt;params['id']</code>.</p>
+<p>One more example, and you'll be a routing pro.</p>
+<pre>
+Router::connect(
+    '/:controller/:year/:month/:day',
+    array('action' => 'index', 'day' => null),
+    array(
+        'year' => '[12][0-9]{3}',
+        'month' => '0[1-9]|1[012]',
+        'day' => '0[1-9]|[12][0-9]|3[01]'
+    )
+);
+</pre>
+<p>This is rather involved, but shows how powerful routes can really become. The URL supplied has four route elements. The first is familiar to us: it's a default route element that tells CakePHP to expect a controller name.</p>
+<p>Next, we specify some default values. Regardless of the controller, we want the index() action to be called. We set the day parameter (the fourth element in the URL) to null to flag it as being optional.</p>
+<p>Finally, we specify some regular expressions that will match years, months and days in numerical form. Note that parenthesis (grouping) are not supported in the regular expressions. You can still specify alternates, as above, but not grouped with parenthesis.</p>
+<p>Once defined, this route will match /articles/2007/02/01, /posts/2004/11/16, and /products/2001/05 (as defined, the day parameter is optional as it has a default), handing the requests to the index() actions of their respective controllers, with the date parameters in $this-&gt;params.</p>
