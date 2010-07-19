@@ -1,21 +1,17 @@
-<p>The below is a "hit list" of features for the CakePHP.</p> 
-<h2>Prioritized List</h2> 
+<p>以下はCakePHPの機能の「やっつけリスト」（訳注："hit list"）になります。</p> 
+<h2>優先順位リスト</h2> 
 <ul> 
-<li>Compliance with E_STRICT</li> 
-<li>Apply proper visibility and fix visibility violations in cake
-itself.</li> 
-<li>Remove PHP4 hacks.</li> 
-<li>Remove deprecated classes and features.</li> 
-<li>Replace file and folder class with SplFileObject</li> 
-<li>Deprecate File class</li> 
-<li>Deprecate Folder class</li> 
-<li>use Spl where possible</li> 
-<li>Fix XML, its horrible. SimpleXml will provide almost everything
-we need.</li> 
-<li>Lazy loading and construction of models, helpers and
-components.</li> 
-<li>Use exceptions, interfaces, and abstract classes where possible
-and logical.</li> 
+<li>E_STRICTへの準拠</li> 
+<li>適切なアクセス修飾子の適応とCake自身のアクセス修飾子違反の修正</li> 
+<li>PHP4ハック（訳注：PHP4にないPHP5の機能・振る舞いのためのハック）の削除</li> 
+<li>非推奨のクラスと機能の削除</li> 
+<li>FileクラスとFolderクラスのSplFileObjectを用いた置き換え</li> 
+<li>Fileクラスの非推奨化</li> 
+<li>Folderクラスの非推奨化</li> 
+<li>可能なところはSplを使う</li> 
+<li>XMLの悲惨な状況の修正。SimpleXmlが必要なほとんどのものを提供することになるでしょう。</li> 
+<li>モデル、ヘルパー、コンポーネントのLazy loadingと初期化</li> 
+<li>可能なところは例外処理、インターフェース、抽象クラスを使う</li> 
 <li>Clean up the global namespace. ClassRegistry is heavily abused
 right now. It basically makes N global symbols. Global symbols are
 evil, and removing them improves decoupling.</li> 
@@ -25,44 +21,41 @@ is a perfect example of this.</li>
 </ul> 
 <h2>Unsorted</h2> 
 <ul> 
-<li>Further decouple the framework</li> 
-<li>Aliases for Helpers
+<li>フレームワークのより良い分離</li> 
+<li>ヘルパのエイリアス
 <ul> 
-<li>Example: <code>$helpers = array('Html' =&gt;
-'MyCustomHtml');</code></li> 
+<li>例: <code>$helpers = array('Html' =&gt; 'MyCustomHtml');</code></li> 
 </ul> 
 </li> 
-<li>Aliases for Behaviors
+<li>ビヘイビアのエイリアス
 <ul> 
-<li>Example: <code>$actsAs = array('Containable' =&gt;
-'MyCustomContainable');</code></li> 
+<li>例: <code>$actsAs = array('Containable' =&gt; 'MyCustomContainable');</code></li> 
 </ul> 
 </li> 
-<li>Aliases for Components
+<li>コンポーネントのエイリアス
 <ul> 
-<li>Example: <code>$components = array('Html' =&gt;
-'MyCustomHtml');</code></li> 
+<li>例: <code>$components = array('Html' =&gt; 'MyCustomHtml');</code></li> 
 </ul> 
 </li> 
-<li>Model rewrite
+<li>モデルの書き直し
 <ul> 
-<li>Returning objects</li> 
-<li>Modelling closer to DataMapper pattern</li> 
+<li>オブジェクトを返り値とする（訳注：find()の戻り値、例：$data->user_nameや$data->Group->idなどとなる？）</li> 
+<li>DataMapperパターンに近いモデリング</li> 
 </ul> 
 </li> 
-<li>Behaviors
+<li>ビヘイビア
 <ul> 
-<li>Remove them from the ClassRegistry</li> 
+<li>ClassRegistryから削除</li> 
 </ul> 
 </li> 
 <li>DboSource
 <ul> 
-<li>Fix visibility issuess / accesses</li> 
+<li>可視性の問題・アクセスの修正</li> 
 </ul> 
 </li> 
-<li>Containable Behavior
+<li>Containableビヘイビア
 <ul> 
-<li>Fix visibility issuess / accesses</li> 
+<li>可視性の問題・アクセスの修正</li> 
 </ul> 
 </li> 
 </ul>
