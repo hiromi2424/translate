@@ -1,0 +1,244 @@
+<p>This page summarises the changes from CakePHP 1.3 that will
+assist in a project migration to 2.0, as well as for a developer
+reference to get up to date with the changes made to the core since
+the CakePHP 1.3 branch.</p> 
+<h2>Summary</h2> 
+<ul> 
+<li>PHP Version Support</li> 
+<li>Internationalisation / Localisation</li> 
+<li>getMicrotime() Removed</li> 
+<li>AjaxHelper and JavascriptHelper removed</li> 
+<li>PHPUnit for testing</li> 
+</ul> 
+<h2>PHP Version Support</h2> 
+<p>CakePHP 2.x supports PHP Version 5.2 and above. PHP4 support has
+been dropped.<br> 
+For developers that are still working with production PHP4
+environments, the CakePHP 1.x versions continue to support PHP4 for
+the lifetime of their development and support lifetime.</p> 
+<p>The move to PHP 5 means all methods and properties have been
+updated with visibility keywords. If your code is attempting access
+to private or protected methods from a public scope, you will
+encounter errors.<br> 
+While this does not really constitute a large framework change, it
+means that access to tighter visibility methods and variables is
+now not possible.</p> 
+<h2>Internationalisation / Localisation</h2> 
+<p><code>__()</code> (Double underscore shortcut function) now
+returns by default.</p> 
+<p>This means all code that used:</p> 
+<pre> 
+<code>__('My Message', true);</code> 
+</pre> 
+<p>now becomes:</p> 
+<pre> 
+<code>__('My Message');</code> 
+</pre> 
+<p>If you want to echo the result of the translation, use:</p> 
+<pre> 
+<code>echo __('My Message');</code> 
+</pre> 
+<p>This change includes all shortcut translation methods:<br></p> 
+<pre> 
+<code><code>__( )
+__n( )
+__d( )
+__dn( )
+__dc( )
+__dcn( )
+__c( )</code></code> 
+</pre> 
+<h2>Basics.php</h2> 
+<ul> 
+<li><code>getMicrotime()</code> has been removed. Use the native
+<code>microtime(true)</code> instead.</li> 
+<li><code>e()</code> was removed. Use <code>echo</code>.</li> 
+<li><code>r()</code> was removed. Use
+<code>str_replace</code>.</li> 
+<li><code>a()</code> was removed. Use <code>array()</code></li> 
+<li><code>aa()</code> was removed. Use <code>array()</code></li> 
+<li><code>up()</code> was removed. Use
+<code>strtoupper()</code></li> 
+<li><code>low()</code> was removed. Use
+<code>strtolower()</code></li> 
+<li><code>params()</code> was removed. It was not used anywhere in
+CakePHP.</li> 
+<li><code>ife()</code> was removed. Use a ternary operator.</li> 
+<li>Compatibility functions for PHP4 have been removed.</li> 
+<li><code>PHP5</code> constant has been removed.</li> 
+</ul> 
+<h3>CakeRequest</h3> 
+<p>This new class encapsulates the parameters and functions related
+to an incoming request. It replaces many features inside
+<code>Dispatcher</code>, <code>RequestHandlerComponent</code> and
+<code>Controller</code>. It also replaces
+<code>$this-&gt;params</code> array in all places. CakeRequest
+implements <code>ArrayAccess</code> so many interactions with the
+old params array do not need to change. See the [CakeRequest new
+features](BROKEN LINK) for more information.</p> 
+<h2>Components</h2> 
+<h3>AclComponent</h3> 
+<ul> 
+<li>AclComponent implementations are now required to implement
+<code>AclInterface</code>.</li> 
+<li>AclComponent::adapter() has been added to allow runtime
+modification of the ACL implementation the component uses.</li> 
+<li>AclComponent::grant() has been deprecated, it will be removed
+in a future version. Use AclComponent::allow() instead.</li> 
+<li>AclComponent::revoke() has been deprecated, it will be removed
+in a future version. Use AclComponent::deny() instead.</li> 
+</ul> 
+<h3>RequestHandlerComponent</h3> 
+<ul> 
+<li> 
+<p>Many of RequestHandlerComponent's methods are just proxies for
+<code>CakeRequest</code> methods. The following methods have been
+deprecated and will be removed in future versions:</p> 
+<ul> 
+<li>isSsl()</li> 
+<li>isAjax()</li> 
+<li>isPost()</li> 
+<li>isPut()</li> 
+<li>isDelete()</li> 
+<li>getReferer()</li> 
+<li>getClientIp()</li> 
+</ul> 
+</li> 
+<li> 
+<p>accepts(), prefers(), requestedWith() All deal in mapped content
+types now. They no longer work with mime-types. You can use
+<code>RequestHandler::setContent()</code> to create new content
+types.</p> 
+</li> 
+<li><code>RequestHandler::setContent()</code> no longer accepts an
+array as a single argument, you must supply both arguments.</li> 
+</ul> 
+<h2>Lib classes</h2> 
+<h3>CakeLog</h3> 
+<ul> 
+<li>Log streams now need to implement
+<code>CakeLogInterface</code>. Exceptions will be raised if a
+configured logger does not.</li> 
+</ul> 
+<h3>Cache</h3> 
+<ul> 
+<li>Cache is now a static class, it no longer has a
+<code>getInstance()</code> method.</li> 
+<li>CacheEngine is now an abstract class. You cannot directly
+create instances of it anymore.</li> 
+<li>CacheEngine implementations must extend CacheEngine, exceptions
+will be raised if a configured class does not.</li> 
+<li>FileCache now requires trailing slashes to be added to the path
+setting when you are modifying a cache configuration.</li> 
+</ul> 
+<h3>Router</h3> 
+<ul> 
+<li>You can no longer modify named parameter settings with
+Router::setRequestInfo();</li> 
+<li>Router no longer has a getInstance() method. It is a static
+class, call its methods and properties statically.</li> 
+<li><code>Router::getNamedExpressions()</code>is deprecated. Use
+the new router constants. <code>Router::ACTION</code>,
+<code>Router::YEAR</code>, <code>Router::MONTH</code>,
+<code>Router::DAY</code>, <code>Router::ID</code>, and
+<code>Router::UUID</code> instead.</li> 
+</ul> 
+<h3>Dispatcher</h3> 
+<ul> 
+<li><code>Dispather::parseParams()</code> now only accepts a
+<code>CakeRequest</code> object.</li> 
+<li><code>Dispatcher::baseUrl()</code> has been removed.</li> 
+<li><code>Dispatcher::getUrl()</code> has been removed.</li> 
+<li><code>Dispatcher::uri()</code> has been removed.</li> 
+</ul> 
+<h3>Configure</h3> 
+<ul> 
+<li><code>Configure::read()</code> with no parameter no longer
+returns the value of 'debug' instead it returns all values in
+Configure. Use <code>Configure::read('debug');</code> if you want
+the value of debug.</li> 
+</ul> 
+<h2>Helpers</h2> 
+<p>The following properties on helpers are deprecated, you should
+use the request object properties or Helper methods instead of
+directly accessing these properties as they will be removed in a
+future release.</p> 
+<ul> 
+<li><code>Helper::$webroot</code> is deprecated, use the request
+object's webroot property.</li> 
+<li><code>Helper::$base</code> is deprecated, use the request
+object's base property.</li> 
+<li><code>Helper::$here</code> is deprecated, use the request
+object's here property.</li> 
+<li><code>Helper::$data</code> is deprecated, use the request
+object's data property.</li> 
+<li><code>Helper::$params</code> is deprecated, use the
+<code>$this-&gt;request</code> instead.</li> 
+</ul> 
+<h3>AjaxHelper and JavascriptHelper removed</h3> 
+<p>The AjaxHelper and JavascriptHelper have been removed as they
+were deprecated in version 1.3</p> 
+<p>They are replaced with the JsHelper and HtmlHelper.</p> 
+<p>Further documentation can be found in the <a href=
+"http://book.cakephp.org/view/1561/Migrating-from-CakePHP-1-2-to-1-3"
+title="Migrating from CakePHP 1.2 to CakePHP 1.3 Guide">Migrating
+from CakePHP 1.2 to CakePHP 1.3 Guide</a></p> 
+<h3>JsHelper</h3> 
+<ul> 
+<li><code>JsBaseEngineHelper</code> is now abstract, you will need
+to implement all the methods that previously generated errors.</li> 
+</ul> 
+<h2>Controller</h2> 
+<ul> 
+<li>Controller's constructor now takes an optional CakeRequest
+object. This object will be used to populate several deprecated
+properties and will be set to $request inside the controller.</li> 
+<li><code>Controller::$webroot</code> is deprecated, use the
+request object's webroot property.</li> 
+<li><code>Controller::$base</code> is deprecated, use the request
+object's base property.</li> 
+<li><code>Controller::$here</code> is deprecated, use the request
+object's here property.</li> 
+<li><code>Controller::$data</code> is deprecated, use the request
+object's data property.</li> 
+<li><code>Controller::$params</code> is deprecated, use the
+<code>$this-&gt;request</code> instead.</li> 
+</ul> 
+<h2>PHPUnit instead of SimpleTest</h2> 
+<p>All of the core test cases and supporting infrastructure have
+been ported to use PHPUnit. Of course you can continue to use
+SimpleTest in your application by replacing the related files. No
+further support will be given for SimpleTest and it is recommended
+that you migrate to PHPUnit as well. For some additional
+information on how to migrate your tests see <a href=
+"/projects/42648/phpunit-migration-hints">PHPUnit migration
+hints</a></p> 
+<h3>No more group tests</h3> 
+<p>PHPUnit does not differentiate between group tests and single
+test cases in the runner. Because of this, the group test options,
+and support for old style group tests has been removed. It is
+recommended that GroupTests be ported to
+PHPUnit_Framework_Testsuite subclasses. You can find several
+examples of this in CakePHP's test suite. Group test related
+methods on <code>TestManager</code> have also been removed.</p> 
+<h3>Testsuite shell</h3> 
+<p>The testsuite shell has had its invocation simplified and
+expanded. You no longer need to differentiate between
+<code>case</code> and <code>group</code>. It is assumed that all
+tests are cases. In the past you would have done <code>cake
+testsuite app case models/post</code> you can now do <code>cake
+testsuite app models/post</code>.</p> 
+<p>The testsuite shell have been refactored to use the PHPUnit cli
+tool, it now support all the command line options supported by
+PHPUnit. <code>cake testsuite help&acute; will show you a list of
+all possible modifiers.</code></p> 
+<h2>Models</h2> 
+<p>As now models relationships are lazy loaded you can run into
+situation when assigning a value to an inexistent model property
+will throw errors</p> 
+<p>$Model-&gt;inexistentProperty[] = 'value';</p> 
+<p>will throw the error "Notice: Indirect modification of
+overloaded property $inexistentProperty has no effect". Assigning
+an initial value to the property solves the issue:</p> 
+<p>$Model-&gt;inexistentProperty = array();
+$Model-&gt;inexistentProperty[] = 'value';</p>

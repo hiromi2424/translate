@@ -1,0 +1,45 @@
+<h2>Models</h2> 
+<p>The model construction process has been made lighter. Models
+associations are now lazy loaded, applications with lots of models
+and associations will see great time reductions in the bootstrap
+process.</p> 
+<p>Now models won't require a database connection in the
+construction process, database will be accessed for the first time
+only when a find operation is issued or information for one of the
+columns is required.</p> 
+<h2>Behaviors</h2> 
+<p>--</p> 
+<h2>Helpers</h2> 
+<h3>HtmlHelper</h3> 
+<ul> 
+<li><code>getCrumbsList()</code> Creates breadcrumb links wrapped
+in <code>&lt;li&gt;</code> elements. See <a href=
+"/projects/42648/tickets/856" title="Ticket #856">#856</a></li> 
+</ul> 
+<h2>Libs</h2> 
+<h3>CakeRequest</h3> 
+<p><code>CakeRequest</code> is a new class introduced in 2.0. It
+encapsulates commonly used request introspection methods and
+replaces the <code>params</code> array with a more useful
+object.</p> 
+<h2>Components</h2> 
+<h3>RequestHandler</h3> 
+<p>RequestHandler was heavily refactored do to the introduction of
+<code>CakeRequest</code>. These changes allowed for some new
+features to be introduced as well.</p> 
+<h4>Automatic parsing of Accept headers</h4> 
+<p>If a client sends a single <code>Accept</code> mime type that
+matches one of the extensions enabled in <code>Router</code>,
+RequestHandler will treat it the same an extension. This expands
+CakePHP's support for REST style endpoints. To use this feature
+start off by enabling extensions in
+<code>config/routes.php</code></p> 
+<pre> 
+<code>Router::parseExtensions('json', 'xml');</code> 
+</pre> 
+<p>Once you have created layouts and views for your extensions, you
+will be able to visit a url like <code>posts/view/1</code> and send
+<code>Accept: application/json</code> in the headers to receive the
+json version of that url.</p> 
+<h2>Controller</h2> 
+<p>--</p>

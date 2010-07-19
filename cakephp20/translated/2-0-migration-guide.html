@@ -1,0 +1,223 @@
+<p>このページはプロジェクトを2.0に移行する手助けをする、CakePHP 1.3からの変更点の要約をします。またこれは、コアへのCakePHP 1.3ブランチからの変更点への最新の開発者リファレンスともなります。</p> 
+<h2>概要</h2> 
+<ul> 
+<li>サポートするPHPバージョン</li> 
+<li>多言語化・地域化（訳注：i18n,l10n）</li> 
+<li>getMicrotime()の削除</li> 
+<li>AjaxHelperとJavascriptHelperの削除</li> 
+<li>PHPUnit for testing</li> 
+</ul> 
+<h2>サポートするPHPバージョン</h2> 
+<p>CakePHP 2.xはPHP 5.2以上をサポートします。PHP4のサポートは止めることになります。<br>
+いまだPHP4環境での案件で働いている開発者のために、PHP4の開発とサポートの継続期間のうちまで、CakePHP1.xは続けてPHP4をサポートします。</p> 
+<p>PHP5に移行するということは、全てのメソッドとプロパティはアクセス修飾子を伴うように書き直されるということです。コード内でprivateもしくはprotectedメソッドをpublicスコープから参照しようと試みると、エラーに遭遇することになります。<br>
+これは実際にはフレームワークに多大な変更を与えるわけではありませんが、現在、より厳しくなった可視性を持つメソッドと変数へのアクセスが不可能となったことを意味します。</p> 
+<h2>多言語化・地域化（訳注：i18n,l10n）</h2> 
+<p><code>__()</code> (二つのアンダースコアでのショートカット関数)はデフォルトで返り値を返すようになりました。</p> 
+<p>これは昔はこう書いたものが:</p> 
+<pre> 
+<code>__('My Message', true);</code> 
+</pre> 
+<p>こう書くようになったということです:</p> 
+<pre> 
+<code>__('My Message');</code> 
+</pre> 
+<p>翻訳の結果を表示させたい場合は、</p> 
+<pre> 
+<code>echo __('My Message');</code> 
+</pre> 
+<p>としてください。この変更は全ての翻訳のショートカット関数を含みます:<br></p> 
+<pre> 
+<code><code>__( )
+__n( )
+__d( )
+__dn( )
+__dc( )
+__dcn( )
+__c( )</code></code> 
+</pre> 
+<h2>Basics.php</h2> 
+<ul> 
+<li><code>getMicrotime()</code>は削除されました。代わりにネイティブの<code>microtime(true)</code>を使用してください。</li> 
+<li><code>e()</code>は削除されました。<code>echo</code>を使用してください。</li> 
+<li><code>r()</code>は削除されました。<code>str_replace</code>を使用してください。</li> 
+<li><code>a()</code>は削除されました。<code>array()</code>を使用してください。</li> 
+<li><code>aa()</code>は削除されました。<code>array()</code>を使用してください。</li> 
+<li><code>up()</code>は削除されました。<code>strtoupper()</code>を使用してください。</li> 
+<li><code>low()</code>は削除されました。<code>strtolower()</code>を使用してください。</li> 
+<li><code>params()</code>は削除されました。これはCakePHP内で使われることはありませんでした。</li> 
+<li><code>ife()</code>は削除されました。 Use a ternary operator.</li> 
+<li>PHP4互換のための関数は削除されました。</li> 
+<li><code>PHP5</code>定数は削除されました。</li> 
+</ul> 
+<h3>CakeRequest</h3>
+<p>This new class encapsulates the parameters and functions related
+to an incoming request. It replaces many features inside
+<code>Dispatcher</code>, <code>RequestHandlerComponent</code> and
+<code>Controller</code>. It also replaces
+<code>$this-&gt;params</code> array in all places. CakeRequest
+implements <code>ArrayAccess</code> so many interactions with the
+old params array do not need to change. See the [CakeRequest new
+features](BROKEN LINK) for more information.</p> 
+<h2>Components</h2> 
+<h3>AclComponent</h3> 
+<ul> 
+<li>AclComponent implementations are now required to implement
+<code>AclInterface</code>.</li> 
+<li>AclComponent::adapter() has been added to allow runtime
+modification of the ACL implementation the component uses.</li> 
+<li>AclComponent::grant() has been deprecated, it will be removed
+in a future version. Use AclComponent::allow() instead.</li> 
+<li>AclComponent::revoke() has been deprecated, it will be removed
+in a future version. Use AclComponent::deny() instead.</li> 
+</ul> 
+<h3>RequestHandlerComponent</h3> 
+<ul> 
+<li> 
+<p>Many of RequestHandlerComponent's methods are just proxies for
+<code>CakeRequest</code> methods. The following methods have been
+deprecated and will be removed in future versions:</p> 
+<ul> 
+<li>isSsl()</li> 
+<li>isAjax()</li> 
+<li>isPost()</li> 
+<li>isPut()</li> 
+<li>isDelete()</li> 
+<li>getReferer()</li> 
+<li>getClientIp()</li> 
+</ul> 
+</li> 
+<li> 
+<p>accepts(), prefers(), requestedWith() All deal in mapped content
+types now. They no longer work with mime-types. You can use
+<code>RequestHandler::setContent()</code> to create new content
+types.</p> 
+</li> 
+<li><code>RequestHandler::setContent()</code> no longer accepts an
+array as a single argument, you must supply both arguments.</li> 
+</ul> 
+<h2>Lib classes</h2> 
+<h3>CakeLog</h3> 
+<ul> 
+<li>Log streams now need to implement
+<code>CakeLogInterface</code>. Exceptions will be raised if a
+configured logger does not.</li> 
+</ul> 
+<h3>Cache</h3> 
+<ul> 
+<li>Cache is now a static class, it no longer has a
+<code>getInstance()</code> method.</li> 
+<li>CacheEngine is now an abstract class. You cannot directly
+create instances of it anymore.</li> 
+<li>CacheEngine implementations must extend CacheEngine, exceptions
+will be raised if a configured class does not.</li> 
+<li>FileCache now requires trailing slashes to be added to the path
+setting when you are modifying a cache configuration.</li> 
+</ul> 
+<h3>Router</h3> 
+<ul> 
+<li>You can no longer modify named parameter settings with
+Router::setRequestInfo();</li> 
+<li>Router no longer has a getInstance() method. It is a static
+class, call its methods and properties statically.</li> 
+<li><code>Router::getNamedExpressions()</code>is deprecated. Use
+the new router constants. <code>Router::ACTION</code>,
+<code>Router::YEAR</code>, <code>Router::MONTH</code>,
+<code>Router::DAY</code>, <code>Router::ID</code>, and
+<code>Router::UUID</code> instead.</li> 
+</ul> 
+<h3>Dispatcher</h3> 
+<ul> 
+<li><code>Dispather::parseParams()</code> now only accepts a
+<code>CakeRequest</code> object.</li> 
+<li><code>Dispatcher::baseUrl()</code> has been removed.</li> 
+<li><code>Dispatcher::getUrl()</code> has been removed.</li> 
+<li><code>Dispatcher::uri()</code> has been removed.</li> 
+</ul> 
+<h3>Configure</h3> 
+<ul> 
+<li><code>Configure::read()</code> with no parameter no longer
+returns the value of 'debug' instead it returns all values in
+Configure. Use <code>Configure::read('debug');</code> if you want
+the value of debug.</li> 
+</ul> 
+<h2>Helpers</h2> 
+<p>The following properties on helpers are deprecated, you should
+use the request object properties or Helper methods instead of
+directly accessing these properties as they will be removed in a
+future release.</p> 
+<ul> 
+<li><code>Helper::$webroot</code> is deprecated, use the request
+object's webroot property.</li> 
+<li><code>Helper::$base</code> is deprecated, use the request
+object's base property.</li> 
+<li><code>Helper::$here</code> is deprecated, use the request
+object's here property.</li> 
+<li><code>Helper::$data</code> is deprecated, use the request
+object's data property.</li> 
+<li><code>Helper::$params</code> is deprecated, use the
+<code>$this-&gt;request</code> instead.</li> 
+</ul> 
+<h3>AjaxHelperとJavascriptHelperは削除されました。</h3> 
+<p>AjaxHelperとJavascriptHelperは1.3バージョンから非推奨となったため削除されました。</p> 
+<p>これらはJsHelperとHtmlHelperに置き換えられました。</p> 
+<p>より良いドキュメントは<a href="http://book.cakephp.org/ja/view/1561/Migrating-from-CakePHP-1-2-to-1-3" title="CakePHP 1.2からCakePHP 1.3への移行ガイド">CakePHP1.2から1.3への移行ガイド</a>で見つけることができます。</p> 
+<h3>JsHelper</h3> 
+<ul> 
+<li><code>JsBaseEngineHelper</code> is now abstract, you will need
+to implement all the methods that previously generated errors.</li> 
+</ul> 
+<h2>Controller</h2> 
+<ul> 
+<li>Controller's constructor now takes an optional CakeRequest
+object. This object will be used to populate several deprecated
+properties and will be set to $request inside the controller.</li> 
+<li><code>Controller::$webroot</code> is deprecated, use the
+request object's webroot property.</li> 
+<li><code>Controller::$base</code> is deprecated, use the request
+object's base property.</li> 
+<li><code>Controller::$here</code> is deprecated, use the request
+object's here property.</li> 
+<li><code>Controller::$data</code> is deprecated, use the request
+object's data property.</li> 
+<li><code>Controller::$params</code> is deprecated, use the
+<code>$this-&gt;request</code> instead.</li> 
+</ul> 
+<h2>PHPUnit instead of SimpleTest</h2> 
+<p>All of the core test cases and supporting infrastructure have
+been ported to use PHPUnit. Of course you can continue to use
+SimpleTest in your application by replacing the related files. No
+further support will be given for SimpleTest and it is recommended
+that you migrate to PHPUnit as well. For some additional
+information on how to migrate your tests see <a href=
+"/projects/42648/phpunit-migration-hints">PHPUnit migration
+hints</a></p> 
+<h3>No more group tests</h3> 
+<p>PHPUnit does not differentiate between group tests and single
+test cases in the runner. Because of this, the group test options,
+and support for old style group tests has been removed. It is
+recommended that GroupTests be ported to
+PHPUnit_Framework_Testsuite subclasses. You can find several
+examples of this in CakePHP's test suite. Group test related
+methods on <code>TestManager</code> have also been removed.</p> 
+<h3>Testsuite shell</h3> 
+<p>The testsuite shell has had its invocation simplified and
+expanded. You no longer need to differentiate between
+<code>case</code> and <code>group</code>. It is assumed that all
+tests are cases. In the past you would have done <code>cake
+testsuite app case models/post</code> you can now do <code>cake
+testsuite app models/post</code>.</p> 
+<p>The testsuite shell have been refactored to use the PHPUnit cli
+tool, it now support all the command line options supported by
+PHPUnit. <code>cake testsuite help&acute; will show you a list of
+all possible modifiers.</code></p> 
+<h2>Models</h2> 
+<p>As now models relationships are lazy loaded you can run into
+situation when assigning a value to an inexistent model property
+will throw errors</p> 
+<p>$Model-&gt;inexistentProperty[] = 'value';</p> 
+<p>will throw the error "Notice: Indirect modification of
+overloaded property $inexistentProperty has no effect". Assigning
+an initial value to the property solves the issue:</p> 
+<p>$Model-&gt;inexistentProperty = array();
+$Model-&gt;inexistentProperty[] = 'value';</p>
