@@ -1,0 +1,68 @@
+<p>The below is a "hit list" of features for the CakePHP.</p> 
+<h2>Prioritized List</h2> 
+<ul> 
+<li>Compliance with E_STRICT</li> 
+<li>Apply proper visibility and fix visibility violations in cake
+itself.</li> 
+<li>Remove PHP4 hacks.</li> 
+<li>Remove deprecated classes and features.</li> 
+<li>Replace file and folder class with SplFileObject</li> 
+<li>Deprecate File class</li> 
+<li>Deprecate Folder class</li> 
+<li>use Spl where possible</li> 
+<li>Fix XML, its horrible. SimpleXml will provide almost everything
+we need.</li> 
+<li>Lazy loading and construction of models, helpers and
+components.</li> 
+<li>Use exceptions, interfaces, and abstract classes where possible
+and logical.</li> 
+<li>Clean up the global namespace. ClassRegistry is heavily abused
+right now. It basically makes N global symbols. Global symbols are
+evil, and removing them improves decoupling.</li> 
+<li>Remove magic that thwarts 'What you type is what you get'
+<a href="/projects/42648/tickets/858" title="Ticket #858">#858</a> 
+is a perfect example of this.</li> 
+</ul> 
+<h2>Unsorted</h2> 
+<ul> 
+<li>Further decouple the framework</li> 
+<li>Aliases for Helpers
+<ul> 
+<li>Example: <code>$helpers = array('Html' =&gt;
+'MyCustomHtml');</code></li> 
+</ul> 
+</li> 
+<li>Aliases for Behaviors
+<ul> 
+<li>Example: <code>$actsAs = array('Containable' =&gt;
+'MyCustomContainable');</code></li> 
+</ul> 
+</li> 
+<li>Aliases for Components
+<ul> 
+<li>Example: <code>$components = array('Html' =&gt;
+'MyCustomHtml');</code></li> 
+</ul> 
+</li> 
+<li>Model rewrite
+<ul> 
+<li>Returning objects</li> 
+<li>Modelling closer to DataMapper pattern</li> 
+</ul> 
+</li> 
+<li>Behaviors
+<ul> 
+<li>Remove them from the ClassRegistry</li> 
+</ul> 
+</li> 
+<li>DboSource
+<ul> 
+<li>Fix visibility issuess / accesses</li> 
+</ul> 
+</li> 
+<li>Containable Behavior
+<ul> 
+<li>Fix visibility issuess / accesses</li> 
+</ul> 
+</li> 
+</ul>
