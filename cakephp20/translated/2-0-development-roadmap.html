@@ -12,14 +12,10 @@
 <li>XMLの悲惨な状況の修正。SimpleXmlが必要なほとんどのものを提供することになるでしょう。</li> 
 <li>モデル、ヘルパー、コンポーネントのLazy loadingと初期化</li> 
 <li>可能なところは例外処理、インターフェース、抽象クラスを使う</li> 
-<li>Clean up the global namespace. ClassRegistry is heavily abused
-right now. It basically makes N global symbols. Global symbols are
-evil, and removing them improves decoupling.</li> 
-<li>Remove magic that thwarts 'What you type is what you get'
-<a href="/projects/42648/tickets/858" title="Ticket #858">#858</a> 
-is a perfect example of this.</li> 
+<li>グローバル名前空間のクリーンナップ。今現在はClassRegistryが大量に酷使されている。これは基本的にN個のグローバルなシンボルを作る。グローバルなシンボルは悪魔であり、これらを取り除くことはデカップリング（分離）を向上させる。</li> 
+<li>「タイプした通りのものが得られる」ことを阻害するマジックの削除。<a href="http://cakephp.lighthouseapp.com/projects/42648/tickets/858" title="Ticket #858">#858</a>はこれの完璧な例です。</li> 
 </ul> 
-<h2>Unsorted</h2> 
+<h2>雑多なもの</h2> 
 <ul> 
 <li>フレームワークのより良い分離</li> 
 <li>ヘルパのエイリアス
@@ -39,7 +35,7 @@ is a perfect example of this.</li>
 </li> 
 <li>モデルの書き直し
 <ul> 
-<li>オブジェクトを返り値とする（訳注：find()の戻り値、例：$data->user_nameや$data->Group->idなどとなる？）</li> 
+<li>オブジェクトを返り値とする（訳注：find()の戻り値など）</li> 
 <li>DataMapperパターンに近いモデリング</li> 
 </ul> 
 </li> 
