@@ -36,6 +36,13 @@ __dc( )
 __dcn( )
 __c( )</code></code> 
 </pre> 
+<h2>Renamed files</h2> 
+<ul> 
+<li><code>cake/libs/error.php</code> -&gt;
+<code>cake/libs/error_handler.php</code></li> 
+<li><code>cake/console/error.php</code> -&gt;
+<code>cake/console/console_error_handler.php</code></li> 
+</ul> 
 <h2>Basics.php</h2> 
 <ul> 
 <li><code>getMicrotime()</code>は削除されました。代わりにネイティブの<code>microtime(true)</code>を使用してください。</li> 
@@ -49,34 +56,23 @@ __c( )</code></code>
 <li><code>ife()</code>は削除されました。 Use a ternary operator.</li> 
 <li>PHP4互換のための関数は削除されました。</li> 
 <li><code>PHP5</code>定数は削除されました。</li> 
+<li>グローバル変数 $TIME_START は削除されました。代わりに $_SERVER['REQUEST_TIME'] を使用してください。</li> 
 </ul> 
 <h3>CakeRequest</h3>
-<p>This new class encapsulates the parameters and functions related
-to an incoming request. It replaces many features inside
-<code>Dispatcher</code>, <code>RequestHandlerComponent</code> and
-<code>Controller</code>. It also replaces
-<code>$this-&gt;params</code> array in all places. CakeRequest
-implements <code>ArrayAccess</code> so many interactions with the
-old params array do not need to change. See the [CakeRequest new
-features](BROKEN LINK) for more information.</p> 
-<h2>Components</h2> 
+<p>この新しいクラスはやってくるリクエストに紐付けられたパラメータと作用をカプセル化します。これは<code>Dispatcher</code>、<code>RequestHandlerComponent</code>、<code>Controller</code>の中にある多くの機能を置き換えます。また、全ての場所での<code>$this-&gt;params</code>配列を置き換えます。CakeRequestは<code>ArrayAccess</code>を実装するので、古いパラメータ配列を用いる多くの相互作用は変更する必要がありません。更なる情報は[新機能CakeRequest](リンクが壊れている（訳注：後々このセクションが書かれると思われる）)を見てください。</p> 
+<h2>Components</h2>
+<p><code>Component</code>は、全てのコンポーネントが必須とする基底クラスになりました。更なる情報は、<a href="http://cakephp.lighthouseapp.com/projects/42648/20-helper-behavior-component-and-task-refactor">コンポーネントのリファクタリング</a>ページを見てください。</p> 
 <h3>AclComponent</h3> 
 <ul> 
-<li>AclComponent implementations are now required to implement
-<code>AclInterface</code>.</li> 
-<li>AclComponent::adapter() has been added to allow runtime
-modification of the ACL implementation the component uses.</li> 
-<li>AclComponent::grant() has been deprecated, it will be removed
-in a future version. Use AclComponent::allow() instead.</li> 
-<li>AclComponent::revoke() has been deprecated, it will be removed
-in a future version. Use AclComponent::deny() instead.</li> 
+<li>AclComponent の実装部分は、<code>AclInterface</code>の実装が必要となりました。</li> 
+<li>このコンポーネントが使うACLの実装部分をランタイムで変更できるように、AclComponent::adapter() が追加されました。</li> 
+<li>AclComponent::grant() は非推奨となりました。将来のバージョンでは削除されることになります。代わりに AclComponent::allow() を使用してください。</li> 
+<li>AclComponent::revoke() は非推奨となりました。将来のバージョンでは削除されることになります。代わりに AclComponent::deny() を使用してください。</li> 
 </ul> 
 <h3>RequestHandlerComponent</h3> 
 <ul> 
 <li> 
-<p>Many of RequestHandlerComponent's methods are just proxies for
-<code>CakeRequest</code> methods. The following methods have been
-deprecated and will be removed in future versions:</p> 
+<p>多くのRequestHandlerコンポーネントのメソッドは単に<code>CakeRequest</code>のメソッドの代用品となりました。以下のメソッドは非推奨となりました。将来のバージョンでは削除されることになります。:</p> 
 <ul> 
 <li>isSsl()</li> 
 <li>isAjax()</li> 
@@ -96,6 +92,19 @@ types.</p>
 <li><code>RequestHandler::setContent()</code> no longer accepts an
 array as a single argument, you must supply both arguments.</li> 
 </ul> 
+<h2>cakeError removed</h2> 
+<p>The <code>cakeError()</code> method has been removed. Its
+recommended that you switch all uses of <code>cakeError</code> to
+<a href="/projects/42648/20-exceptions-errors">use exceptions</a>.
+<code>cakeError</code> was removed because it was simulating
+exceptions. Instead of simulation, real exceptions are used in
+CakePHP 2.0</p> 
+<h2>Error handling</h2> 
+<p>The error handling implementation has dramatically changed in
+2.0. Exceptions have been introduced throughout the framework, and
+error handling has been updated to handle exceptions. You can read
+more <a href="/projects/42648/20-exceptions-errors">in the
+exceptions and error handling section</a></p> 
 <h2>Lib classes</h2> 
 <h3>CakeLog</h3> 
 <ul> 
@@ -141,6 +150,38 @@ returns the value of 'debug' instead it returns all values in
 Configure. Use <code>Configure::read('debug');</code> if you want
 the value of debug.</li> 
 </ul> 
+<h3>File</h3> 
+<ul> 
+<li>This class has been deprecated, use SplFileObject instead.</li> 
+</ul> 
+<h3>Folder</h3> 
+<ul> 
+<li><code>Folder::pwd()</code> has been removed. Use
+$folder-&gt;path instead.</li> 
+<li><code>Folder::read()</code> has been removed. Use
+DirectoryIterator instead.</li> 
+<li><code>Folder::normalizePath()</code> has been removed.</li> 
+<li><code>Folder::correctSlashFor()</code> has been removed.</li> 
+<li><code>Folder::slashTerm()</code> has been removed.</li> 
+<li><code>Folder::isSlashTerm()</code> has been removed.</li> 
+<li><code>Folder::addPathElement()</code> has been removed.</li> 
+<li><code>Folder::dirsize()</code> renamed to
+<code>Folder::dirSize()</code>.</li> 
+</ul> 
+<h3>Xml</h3> 
+<ul> 
+<li>The class Xml was completely re-factored. Now this class does
+not manipulate data anymore, and it is a wrapper to
+SimpleXMLElement. You can use the follow methods:</li> 
+<li><code>Xml::build()</code>: static method that you can pass a
+xml string, array, path to file or url. The result will be a
+SimpleXMLElement instance or an exception will be thrown in case of
+error.</li> 
+<li><code>Xml::fromArray()</code>: static method that returns a
+SimpleXMLElement from an array.</li> 
+<li><code>Xml::toArray()</code>: static method that returns an
+array from SimpleXMLElement.</li> 
+</ul> 
 <h2>Helpers</h2> 
 <p>The following properties on helpers are deprecated, you should
 use the request object properties or Helper methods instead of
@@ -182,7 +223,34 @@ object's here property.</li>
 object's data property.</li> 
 <li><code>Controller::$params</code> is deprecated, use the
 <code>$this-&gt;request</code> instead.</li> 
+<li><code>Controller::$Component</code> has been moved to
+<code>Controller::$Components</code>.</li> 
 </ul> 
+<p>The deprecated properties on Controller will be accessible
+through a <code>__get()</code> method. This method will be removed
+in future versions, so its recommended that you update your
+application.</p> 
+<h2>View</h2> 
+<ul> 
+<li><code>View::$webroot</code> is deprecated, use the request
+object's webroot property.</li> 
+<li><code>View::$base</code> is deprecated, use the request
+object's base property.</li> 
+<li><code>View::$here</code> is deprecated, use the request
+object's here property.</li> 
+<li><code>View::$data</code> is deprecated, use the request
+object's data property.</li> 
+<li><code>View::$params</code> is deprecated, use the
+<code>$this-&gt;request</code> instead.</li> 
+<li><code>View::$loaded</code> has been removed. Use the <a href=
+"/projects/42648/20-helper-behavior-component-and-task-refactor">HelperCollection</a> 
+to access loaded helpers.</li> 
+<li><code>View::_loadHelpers()</code> has been removed, used
+<code>View::loadHelpers()</code> instead.</li> 
+</ul> 
+<p>The deprecated properties on View will be accessible through a
+<code>__get()</code> method. This method will be removed in future
+versions, so its recommended that you update your application.</p> 
 <h2>PHPUnit instead of SimpleTest</h2> 
 <p>All of the core test cases and supporting infrastructure have
 been ported to use PHPUnit. Of course you can continue to use
@@ -215,9 +283,38 @@ all possible modifiers.</code></p>
 <p>As now models relationships are lazy loaded you can run into
 situation when assigning a value to an inexistent model property
 will throw errors</p> 
-<p>$Model-&gt;inexistentProperty[] = 'value';</p> 
+<pre> 
+<code>$Model-&gt;inexistentProperty = array();
+$Model-&gt;inexistentProperty[] = 'value';</code> 
+</pre> 
 <p>will throw the error "Notice: Indirect modification of
 overloaded property $inexistentProperty has no effect". Assigning
 an initial value to the property solves the issue:</p> 
-<p>$Model-&gt;inexistentProperty = array();
-$Model-&gt;inexistentProperty[] = 'value';</p>
+<pre> 
+<code>$Model-&gt;inexistentProperty = array();
+$Model-&gt;inexistentProperty[] = 'value';</code> 
+</pre> 
+<h2>BehaviorCollection</h2> 
+<ul> 
+<li><code>BehaviorCollection</code> no longer
+<code>strtolower()</code>'s mappedMethods. Behavior mappedMethods
+are now case sensitive.</li> 
+</ul> 
+<h2>Plugins</h2> 
+<p>Plugins no longer magically append their plugin prefix to
+components, helpers and models used within them. You must be
+explicit with the components, models, and helpers you wish to use.
+In the past</p> 
+<pre> 
+<code>var $components = array('Session', 'Comments');</code> 
+</pre> 
+<p>Would look in the controller's plugin before checking app/core
+components, it will now only look in the app/core components. If
+you wish to use objects from a plugin you must put the plugin
+name.</p> 
+<pre> 
+<code>var $components = array('Session', 'Comment.Comments');</code> 
+</pre> 
+<p>This was done to reduce hard to debug issues caused by magic
+misfiring. It also improves consistency in an application, as
+objects have one authoritative way to reference them.</p>

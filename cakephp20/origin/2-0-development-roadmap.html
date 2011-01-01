@@ -1,68 +1,127 @@
-<p>The below is a "hit list" of features for the CakePHP.</p> 
-<h2>Prioritized List</h2> 
-<ul> 
-<li>Compliance with E_STRICT</li> 
+<p>The below is a "hit list" of features for the CakePHP.</p>
+<h2>Prioritized List</h2>
+<ul>
+<li>Compliance with E_STRICT</li>
 <li>Apply proper visibility and fix visibility violations in cake
-itself.</li> 
-<li>Remove PHP4 hacks.</li> 
-<li>Remove deprecated classes and features.</li> 
-<li>Replace file and folder class with SplFileObject</li> 
-<li>Deprecate File class</li> 
-<li>Deprecate Folder class</li> 
-<li>use Spl where possible</li> 
-<li>Fix XML, its horrible. SimpleXml will provide almost everything
-we need.</li> 
-<li>Lazy loading and construction of models, helpers and
-components.</li> 
+itself.</li>
+<li>Remove PHP4 hacks.</li>
+<li>Remove deprecated classes and features.</li>
+<li>Replace file and folder class with SplFileObject</li>
+<li>Deprecate File class</li>
+<li>Deprecate Folder class</li>
+<li>use Spl where possible</li>
+<li><del>Fix XML, its horrible. SimpleXml will provide almost
+everything we need.</del></li>
+<li><del>Lazy loading and construction of models, helpers and
+components.</del></li>
 <li>Use exceptions, interfaces, and abstract classes where possible
-and logical.</li> 
+and logical.</li>
 <li>Clean up the global namespace. ClassRegistry is heavily abused
 right now. It basically makes N global symbols. Global symbols are
-evil, and removing them improves decoupling.</li> 
+evil, and removing them improves decoupling.</li>
 <li>Remove magic that thwarts 'What you type is what you get'
-<a href="/projects/42648/tickets/858" title="Ticket #858">#858</a> 
-is a perfect example of this.</li> 
-</ul> 
-<h2>Unsorted</h2> 
-<ul> 
-<li>Further decouple the framework</li> 
-<li>Aliases for Helpers
-<ul> 
-<li>Example: <code>$helpers = array('Html' =&gt;
-'MyCustomHtml');</code></li> 
-</ul> 
-</li> 
-<li>Aliases for Behaviors
-<ul> 
-<li>Example: <code>$actsAs = array('Containable' =&gt;
-'MyCustomContainable');</code></li> 
-</ul> 
-</li> 
-<li>Aliases for Components
-<ul> 
-<li>Example: <code>$components = array('Html' =&gt;
-'MyCustomHtml');</code></li> 
-</ul> 
-</li> 
-<li>Model rewrite
-<ul> 
-<li>Returning objects</li> 
-<li>Modelling closer to DataMapper pattern</li> 
-</ul> 
-</li> 
-<li>Behaviors
-<ul> 
-<li>Remove them from the ClassRegistry</li> 
-</ul> 
-</li> 
+<a href="/projects/42648/tickets/858" title="Ticket #858">#858</a>
+is a perfect example of this.</li>
+</ul>
+<h3>Components</h3>
+<ul>
+<li><del>Separate CSRF and form tampering features in
+SecurityComponent</del></li>
+<li><del>Clean up how session configuration works, and make session
+configuration more powerful/flexible</del></li>
+<li>
+<p>Extract the case switches inside AuthComponent, to use
+polymorphism. This will make the component more flexible.</p>
+<ul>
+<li>Extract out how access checks are done</li>
+<li>Extract out how identity is verified, allowing things like
+basic auth, form post, and openid possible.</li>
+</ul>
+</li>
+<li>
+<p>Make EmailComponent features available in other parts of an
+application, like a shell.</p>
+</li>
+<li>Make IniAcl work with AuthComponent, right now it is
+non-functional. It should work.</li>
+<li><del>Extract pagination into a component. Split paginate() into
+smaller methods that will allow more extensibility.</del></li>
+<li>PaginatorComponent should allow behaviors to define
+<code>paginate()</code> and <code>paginateCount()</code>.
+(markstory)</li>
+<li>PaginatorComponent should be able to use querystring parameters
+for paging. (markstory)</li>
+</ul>
+<h3>Controller</h3>
+<ul>
+<li><del>Refactor out Response and Request objects</del></li>
+<li><del>Add escaping to Scaffold views.</del></li>
+</ul>
+<h3>View</h3>
+<ul>
+<li><del>Move callbacks, to allow more control over view vars, and
+view flow.</del></li>
+<li><del>Allow helpers to be loaded at runtime.</del></li>
+</ul>
+<h3>Helpers</h3>
+<ul>
+<li><del>Add html5 support to FormHelper</del></li>
+<li><del>Create a way to fix the delete as a GET request
+issue.</del></li>
+<li><del>Decouple CacheHelper from View.</del></li>
+<li>PaginatorHelper should be able to use querystring parameters
+for paging. (markstory)</li>
+</ul>
+<h3>Console</h3>
+<ul>
+<li><del>Make Shell option parsing and help text generation
+simpler.</del></li>
+<li><del>Coloured output.</del></li>
+<li><del>Make help not hell to generate</del></li>
+<li><del>Provide argument/option validation</del></li>
+<li><del>Support various levels of output (verbose,
+quiet)</del></li>
+<li><del>Add app/console.</del></li>
+<li><del>Rebuild the directory structure to make sense.</del></li>
+<li><del>Move shells out of <code>app/vendors</code> and into
+<code>app/console</code>.</del></li>
+<li><del>Move shell paths into App. The current shellPaths stuff is
+not so hot.</del></li>
+<li><del>Create Shell::runShell() to replace the current approach
+to running other shells, from shells.</del></li>
+<li><del>Bake output should include output escaping.</del></li>
+</ul>
+<h2>Libs</h2>
+<ul>
+<li><del>Drop cakeError and convert errors into exceptions where it
+makes sense.</del></li>
+</ul>
+<h2>Datasources</h2>
+<ul>
+<li><del>Convert datasources to use PDO where possible.</del></li>
+</ul>
+<h2>Unsorted</h2>
+<ul>
+<li>Further decouple the framework</li>
+<li>
+<p>Aliases for Helpers. Behaviors, and Components. Aliases would be
+provided as a 'setting' much like 'enabled' is. e.g <code>$helpers
+= array('MyHtml' =&gt; array('alias' =&gt; 'Html'));</code></p>
+</li>
+<li>
+<p>Behaviors</p>
+<ul>
+<li>Remove them from the ClassRegistry (markstory)</li>
+</ul>
+</li>
 <li>DboSource
-<ul> 
-<li>Fix visibility issuess / accesses</li> 
-</ul> 
-</li> 
+<ul>
+<li>Fix visibility issuess / accesses</li>
+</ul>
+</li>
 <li>Containable Behavior
-<ul> 
-<li>Fix visibility issuess / accesses</li> 
-</ul> 
-</li> 
+<ul>
+<li>Fix visibility issuess / accesses</li>
+</ul>
+</li>
 </ul>
