@@ -133,9 +133,9 @@ update your <code>app/webroot/index.php</code> file.</li>
 <code>CakeRequest</code> object or a subclass thereof,</li>
 <li><code>Dispather::parseParams()</code> now only accepts a
 <code>CakeRequest</code> object.</li>
-<li><code>Dispatcher::baseUrl()</code> has been removed.</li>
-<li><code>Dispatcher::getUrl()</code> has been removed.</li>
-<li><code>Dispatcher::uri()</code> has been removed.</li>
+<li><code>Dispatcher::baseUrl()</code>は削除されました。</li>
+<li><code>Dispatcher::getUrl()</code>は削除されました。</li>
+<li><code>Dispatcher::uri()</code>は削除されました。</li>
 </ul>
 <h3>Configure</h3>
 <ul>
@@ -153,8 +153,7 @@ information.</li>
 </ul>
 <h3>Scaffold</h3>
 <ul>
-<li>Scaffold 'edit' views should be renamed to 'form'. This was
-done to make scaffold and bake templates consistent.
+<li>Scaffoldの'edit'ビューは'form'に名前を変えるべきです。これはScaffoldとBakeのテンプレートに矛盾がないようにするために為されました。</li>
 <ul>
 <li><code>views/scaffolds/edit.ctp</code> -&gt;
 <code>views/scaffolds/form.ctp</code></li>
@@ -165,55 +164,35 @@ done to make scaffold and bake templates consistent.
 </ul>
 <h3>File</h3>
 <ul>
-<li>This class has been deprecated, use SplFileObject instead.</li>
+<li>このクラスは非推奨となりました。代わりにSplFileObjectを使ってください。</li>
 </ul>
 <h3>Folder</h3>
 <ul>
-<li><code>Folder::pwd()</code> has been removed. Use
-$folder-&gt;path instead.</li>
-<li><code>Folder::read()</code> has been removed. Use
-DirectoryIterator instead.</li>
-<li><code>Folder::normalizePath()</code> has been removed.</li>
-<li><code>Folder::correctSlashFor()</code> has been removed.</li>
-<li><code>Folder::slashTerm()</code> has been removed.</li>
-<li><code>Folder::isSlashTerm()</code> has been removed.</li>
-<li><code>Folder::addPathElement()</code> has been removed.</li>
-<li><code>Folder::dirsize()</code> renamed to
-<code>Folder::dirSize()</code>.</li>
+<li><code>Folder::pwd()</code>は削除されました。代わりに $folder-&gt;path を使ってください。</li>
+<li><code>Folder::read()</code>は削除されました。代わりに DirectoryIterator を使ってください。</li>
+<li><code>Folder::normalizePath()</code>は削除されました。</li>
+<li><code>Folder::correctSlashFor()</code>は削除されました。</li>
+<li><code>Folder::slashTerm()</code>は削除されました。</li>
+<li><code>Folder::isSlashTerm()</code>は削除されました。</li>
+<li><code>Folder::addPathElement()</code>は削除されました。</li>
+<li><code>Folder::dirsize()</code>は<code>Folder::dirSize()</code>に改名されました。</li>
 </ul>
 <h3>Xml</h3>
 <ul>
-<li>The class Xml was completely re-factored. Now this class does
-not manipulate data anymore, and it is a wrapper to
-SimpleXMLElement. You can use the follow methods:</li>
-<li><code>Xml::build()</code>: static method that you can pass a
-xml string, array, path to file or url. The result will be a
-SimpleXMLElement instance or an exception will be thrown in case of
-error.</li>
-<li><code>Xml::fromArray()</code>: static method that returns a
-SimpleXMLElement from an array.</li>
-<li><code>Xml::toArray()</code>: static method that returns an
-array from SimpleXMLElement.</li>
+<li>Xmlクラスは完全に書き直されました。もはやこのクラスはデータを整形せず、SimpleXMLElementのラッパーになりました。以下のメソッヂが使えます：</li>
+<li><code>Xml::build()</code>: 静的なメソッドで、XML文字列、配列、ファイルまたはURLのパスを渡せます。SimpleXMLElementのインスタンスを返すか、エラーの場合は例外が投げられます。</li>
+<li><code>Xml::fromArray()</code>: 静的なメソッドで、配列を元にSimpleXMLElementを返します。</li>
+<li><code>Xml::toArray()</code>: 静的なメソッドで、SimpleXMLElementを元に配列を返します。</li>
 </ul>
-<p>You should see the <a href="/projects/42648/20-xml">Xml features
-page</a> for more information on the changes made to the Xml
-class.</p>
-<h2>Helpers</h2>
-<p>The following properties on helpers are deprecated, you should
-use the request object properties or Helper methods instead of
-directly accessing these properties as they will be removed in a
-future release.</p>
+<p>Xmlクラスになされた変更における更なる情報は、<a href="20-xml">XML機能のページ</a>を見るべきです。</p>
+<h2>ヘルパー</h2>
+<p>以下のヘルパのプロパティは非推奨となります。将来のリリースで削除される予定のこれらのプロパティに直接アクセスする代わりに、Requestオブジェクトのプロパティまたはヘルパーのメソッドを使ってください。</p>
 <ul>
-<li><code>Helper::$webroot</code> is deprecated, use the request
-object's webroot property.</li>
-<li><code>Helper::$base</code> is deprecated, use the request
-object's base property.</li>
-<li><code>Helper::$here</code> is deprecated, use the request
-object's here property.</li>
-<li><code>Helper::$data</code> is deprecated, use the request
-object's data property.</li>
-<li><code>Helper::$params</code> is deprecated, use the
-<code>$this-&gt;request</code> instead.</li>
+<li><code>Helper::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
+<li><code>Helper::$base</code>は削除されました。代わりにRequestオブジェクトのbaseプロパティを使用してください。</li>
+<li><code>Helper::$here</code>は削除されました。代わりにRequestオブジェクトのhereプロパティを使用してください。</li>
+<li><code>Helper::$data</code>は削除されました。代わりにRequestオブジェクトのdataプロパティを使用してください。</li>
+<li><code>Helper::$params</code>は削除されました。代わりに<code>$this-&gt;request</code>を使用してください。</li>
 </ul>
 <h3>AjaxHelperとJavascriptHelperは削除されました。</h3>
 <p>AjaxHelperとJavascriptHelperは1.3バージョンから非推奨となったため削除されました。</p>
@@ -262,16 +241,11 @@ View changes</a></p>
 <li>Controller's constructor now takes an optional CakeRequest
 object. This object will be used to populate several deprecated
 properties and will be set to $request inside the controller.</li>
-<li><code>Controller::$webroot</code> is deprecated, use the
-request object's webroot property.</li>
-<li><code>Controller::$base</code> is deprecated, use the request
-object's base property.</li>
-<li><code>Controller::$here</code> is deprecated, use the request
-object's here property.</li>
-<li><code>Controller::$data</code> is deprecated, use the request
-object's data property.</li>
-<li><code>Controller::$params</code> is deprecated, use the
-<code>$this-&gt;request</code> instead.</li>
+<li><code>Controller::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
+<li><code>Controller::$base</code>は削除されました。代わりにRequestオブジェクトのbaseプロパティを使用してください。</li>
+<li><code>Controller::$here</code>は削除されました。代わりにRequestオブジェクトのhereプロパティを使用してください。</li>
+<li><code>Controller::$data</code>は削除されました。代わりにRequestオブジェクトのdataプロパティを使用してください。</li>
+<li><code>Controller::$params</code>は削除されました。代わりに<code>$this-&gt;request</code>を使用してください。</li>
 <li><code>Controller::$Component</code> has been moved to
 <code>Controller::$Components</code>.</li>
 </ul>
@@ -284,16 +258,11 @@ limit is set to 100, but can be overridden in the $paginate
 options.</p>
 <h2>View</h2>
 <ul>
-<li><code>View::$webroot</code> is deprecated, use the request
-object's webroot property.</li>
-<li><code>View::$base</code> is deprecated, use the request
-object's base property.</li>
-<li><code>View::$here</code> is deprecated, use the request
-object's here property.</li>
-<li><code>View::$data</code> is deprecated, use the request
-object's data property.</li>
-<li><code>View::$params</code> is deprecated, use the
-<code>$this-&gt;request</code> instead.</li>
+<li><code>View::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
+<li><code>View::$base</code>は削除されました。代わりにRequestオブジェクトのbaseプロパティを使用してください。</li>
+<li><code>View::$here</code>は削除されました。代わりにRequestオブジェクトのhereプロパティを使用してください。</li>
+<li><code>View::$data</code>は削除されました。代わりにRequestオブジェクトのdataプロパティを使用してください。</li>
+<li><code>View::$params</code>は削除されました。代わりに<code>$this-&gt;request</code>を使用してください。</li>
 <li><code>View::$loaded</code> has been removed. Use the <a href=
 "/projects/42648/20-helper-behavior-component-and-task-refactor">HelperCollection</a>
 to access loaded helpers.</li>
@@ -414,7 +383,7 @@ handle that now.</li>
 <li>Shells lazy load tasks, and use <code>TaskCollection</code> to
 provide an interface similar to that used for Helpers, Components,
 and Behaviors for on the fly loading of tasks.</li>
-<li><code>Shell::$shell</code> has been removed.</li>
+<li><code>Shell::$shell</code>は削除されました。</li>
 <li><code>Shell::_checkArgs()</code> has been removed. Configure a
 <code>ConsoleOptionParser</code></li>
 <li>Shells no longer have direct access to
@@ -427,10 +396,10 @@ instead. If you need to dispatch other shells, see the section on
 <ul>
 <li><code>ShellDispatcher</code> no longer has stdout, stdin,
 stderr file handles.</li>
-<li><code>ShellDispatcher::$shell</code> has been removed.</li>
+<li><code>ShellDispatcher::$shell</code>は削除されました。</li>
 <li><code>ShellDispatcher::$shellClass</code> has been
 removed.</li>
-<li><code>ShellDispatcher::$shellName</code> has been removed.</li>
+<li><code>ShellDispatcher::$shellName</code>は削除されました。</li>
 <li><code>ShellDispatcher::$shellCommand</code> has been
 removed.</li>
 <li><code>ShellDispatcher::$shellPaths</code> has been removed, use
