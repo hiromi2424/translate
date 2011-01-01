@@ -1,6 +1,4 @@
-<p>このページはプロジェクトを2.0に移行する手助けをする、CakePHP 1.3からの変更点の要約をします。またこれは、コアへのCakePHP 1.3ブランチからの変更点への最新の開発者リファレンスともなります。
-Be sure to read the other pages in this
-guide for all the new features and API changes.</p>
+<p>このページはプロジェクトを2.0に移行する手助けをする、CakePHP 1.3からの変更点の要約をします。またこれは、コアへのCakePHP 1.3ブランチからの変更点への最新の開発者リファレンスともなります。必ずこのガイドにある新機能とAPIの変更の全てのページを読んでください。</p>
 <h2>サポートするPHPバージョン</h2>
 <p>CakePHP 2.xはPHP 5.2.6以上をサポートします。PHP4のサポートは止めることになります。<br>
 いまだPHP4環境での案件で働いている開発者のために、PHP4の開発とサポートの継続期間のうちまで、CakePHP1.xは続けてPHP4をサポートします。</p>
@@ -22,19 +20,14 @@ __dc( )
 __dcn( )
 __c( )</code>
 </pre>
-<p>Alongside this, if you pass additional parameters, the
-translation will call <a href=
-"http://php.net/manual/en/function.sprintf.php">sprintf</a> with
-these parameters before returning. For example:</p>
+<p>これに併せて、オプションパラメータを渡しているなら、翻訳はパラメータを用いて<a href="http://php.net/manual/ja/function.sprintf.php">sprintf</a>を値を返す前に呼び出します。以下は一例です。</p>
 <pre>
-<code>// Will return something like "Called: MyClass:myMethod"
+<code>// "Called: MyClass:myMethod" のようなものを返す
 echo __('Called: %s:%s', $className, $methodName);</code>
 </pre>
-<p>It is valid for all shortcut translation methods.</p>
-<p>More information about the specifiers, you can see in <a href=
-"http://php.net/manual/en/function.sprintf.php">sprintf
-function</a>.</p>
-<h2>Renamed files</h2>
+<p>これは全てのショートカット翻訳メソッドに関して同じことが言えます。</p>
+<p>指定子に関する更なる情報に関しては、<a href="http://php.net/manual/ja/function.sprintf.php">sprintf関数</a>を見てください。</p>
+<h2>変更されたファイル名</h2>
 <ul>
 <li><code>cake/libs/error.php</code> -&gt;
 <code>cake/libs/error_handler.php</code></li>
@@ -45,18 +38,8 @@ function</a>.</p>
 <li><code>cake/console/libs/*</code> -&gt;
 <code>cake/console/shells/*</code></li>
 </ul>
-<h2>Class location and constants changed</h2>
-<p>Bootstrapping CakePHP no longer uses PHP's
-<code>include_path</code> by default any more. Instead you should
-define <code>CAKE_CORE_INCLUDE_PATH</code> in
-<code>app/webroot/index.php</code>, and
-<code>app/webroot/test.php</code>, or use symlinks if you have
-CakePHP in a shared directory. You can also use bake to generate
-projects with all the paths setup. This change was done primarily
-to make the <code>APP_PATH</code> and <code>CORE_PATH</code>
-constants have consistent values between the web and console
-environments. You can still use PHP's <code>include_path</code> by
-setting <code>CAKE_CORE_INCLUDE_PATH</code> to an empty value.</p>
+<h2>変更されたクラスの場所と定数</h2>
+<p>CakePHPの起動(<em>bootstrapping</em>)はもはやPHPの<code>include_path</code>を使いません。代わりに、<code>app/webroot/index.php</code>と<code>app/webroot/test.php</code>に<code>CAKE_CORE_INCLUDE_PATH</code>を定義するか、CakePHPが共有ディレクトリにあるなら、シンボリックリンクを使うべきです。また、Bakeを使って全てのパスがセットアップされたプロジェクトを生成することもできます。この変更は主に、<code>APP_PATH</code>と<code>CORE_PATH</code>定数がWEBとコンソールの環境で矛盾のない値とすることの為になされました。今までどおり、<code>CAKE_CORE_INCLUDE_PATH</code>を空値にすることによってPHPの<code>include_path</code>を使うこともできます。</p>
 <h2>Basics.php</h2>
 <ul>
 <li><code>getMicrotime()</code>は削除されました。代わりにネイティブの<code>microtime(true)</code>を使用してください。</li>
@@ -67,9 +50,8 @@ setting <code>CAKE_CORE_INCLUDE_PATH</code> to an empty value.</p>
 <li><code>up()</code>は削除されました。<code>strtoupper()</code>を使用してください。</li>
 <li><code>low()</code>は削除されました。<code>strtolower()</code>を使用してください。</li>
 <li><code>params()</code>は削除されました。これはCakePHP内で使われることはありませんでした。</li>
-<li><code>ife()</code>は削除されました。 Use a ternary operator.</li>
-<li><code>uses()</code> was removed. Use App::import()
-instead.</li>
+<li><code>ife()</code>は削除されました。 三項演算子を使ってください。</li>
+<li><code>uses()</code>は削除されました。代わりにApp::import()を使ってください。</li>
 <li>PHP4互換のための関数は削除されました。</li>
 <li><code>PHP5</code>定数は削除されました。</li>
 <li>グローバル変数 $TIME_START は削除されました。代わりに $_SERVER['REQUEST_TIME'] を使用してください。</li>
@@ -79,14 +61,14 @@ instead.</li>
 "20-cakerequest">新機能CakeRequest</a>を見てください。</p>
 <h2>コンポーネント</h2>
 <p><code>Component</code>は、全てのコンポーネントが必須とする基底クラスになりました。更なる情報は、<a href="20-helper-behavior-component-and-task-refactor">コンポーネントのリファクタリング</a>ページを見てください。</p>
-<h3>AclComponent</h3>
+<h3>Aclコンポーネント</h3>
 <ul>
-<li>AclComponent の実装部分は、<code>AclInterface</code>の実装が必要となりました。</li>
+<li>Aclコンポーネントの実装部分は、<code>AclInterface</code>の実装が必要となりました。</li>
 <li>このコンポーネントが使うACLの実装部分をランタイムで変更できるように、AclComponent::adapter() が追加されました。</li>
 <li>AclComponent::grant() は非推奨となりました。将来のバージョンでは削除されることになります。代わりに AclComponent::allow() を使用してください。</li>
 <li>AclComponent::revoke() は非推奨となりました。将来のバージョンでは削除されることになります。代わりに AclComponent::deny() を使用してください。</li>
 </ul>
-<h3>RequestHandlerComponent</h3>
+<h3>RequestHandlerコンポーネント</h3>
 <ul>
 <li>
 <p>多くのRequestHandlerコンポーネントのメソッドは単に<code>CakeRequest</code>のメソッドの代用品となりました。以下のメソッドは非推奨となりました。将来のバージョンでは削除されることになります。:</p>
@@ -101,55 +83,33 @@ instead.</li>
 </ul>
 </li>
 <li>
-<p>accepts(), prefers(), requestedWith() All deal in mapped content
-types now. They no longer work with mime-types. You can use
-<code>RequestHandler::setContent()</code> to create new content
-types.</p>
+<p>accepts()、prefers()、requestedWith() は全てマッピングされたコンテンツタイプを扱うようになりました。MIMEタイプでは動作しないようになりました。新しいコンテントタイプを作成するためには、<code>RequestHandler::setContent()</code>を使うことができます。</p>
 </li>
-<li><code>RequestHandler::setContent()</code> no longer accepts an
-array as a single argument, you must supply both arguments.</li>
+<li><code>RequestHandler::setContent()</code>は配列を一つの引数として指定することができないようになりました。両方の引数を与える必要があります。</li>
 </ul>
-<h2>cakeError removed</h2>
-<p>The <code>cakeError()</code> method has been removed. Its
-recommended that you switch all uses of <code>cakeError</code> to
-<a href="/projects/42648/20-exceptions-errors">use exceptions</a>.
-<code>cakeError</code> was removed because it was simulating
-exceptions. Instead of simulation, real exceptions are used in
-CakePHP 2.0</p>
-<h2>Error handling</h2>
-<p>The error handling implementation has dramatically changed in
-2.0. Exceptions have been introduced throughout the framework, and
-error handling has been updated to offer more control and
-flexibility. You can read more <a href=
-"/projects/42648/20-exceptions-errors">in the exceptions and error
-handling section</a></p>
-<h2>Lib classes</h2>
+<h2>cakeErrorの削除</h2>
+<p><code>cakeError()</code>メソッドは削除されました。<code>cakeError</code>の使用から<a href="20-exceptions-errors">例外を使う</a>ように切り替えることが推奨されています。</a>.
+<code>cakeError</code>が削除されたのは、それが例外のシミュレーションであった為です。CakePHP2.0では実際の例外が使われます。</p>
+<h2>エラーハンドリング</h2>
+<p>エラーハンドリングの実装は2.0で劇的に変わりました。フレームワークの至るところに例外が導入され、エラーハンドリングはよりコントロールできるように、柔軟に書き直されました。更なることは、<a href="20-exceptions-errors">例外とエラーハンドリングのセクション</a>を読むことができます。</p>
+<h2>ライブラリクラス</h2>
 <h3>CakeLog</h3>
 <ul>
-<li>Log streams now need to implement
-<code>CakeLogInterface</code>. Exceptions will be raised if a
-configured logger does not.</li>
+<li>ログのストリームは<code>CakeLogInterface</code>を実装(<em>implement</em>)することが必要になりました。設定されたロガークラスがこれをしないと、例外が発生します。</li>
 </ul>
 <h3>Cache</h3>
 <ul>
-<li>Cache is now a static class, it no longer has a
-<code>getInstance()</code> method.</li>
-<li>CacheEngine is now an abstract class. You cannot directly
-create instances of it anymore.</li>
-<li>CacheEngine implementations must extend CacheEngine, exceptions
-will be raised if a configured class does not.</li>
-<li>FileCache now requires trailing slashes to be added to the path
-setting when you are modifying a cache configuration.</li>
-<li>Cache no longer retains the name of the last configured cache
-engine. This means that operations you want to occur on a specific
-engine need to have the $config parameter equal to the config name
-you want the operation to occur on.</li>
+<li>Cacheは静的なクラスになり、<code>getInstance()</code>メソッドをもたないようになりました。</li>
+<li>CacheEngineは抽象(<em>abstract</em>)クラスになりました。直接そのクラスを作ることはもうできなくなりました。</li>
+<li>CacheEngineの実装はCacheEngineを継承する必要があります。設定されたクラスがそれをしないと、例外が発生します。</li>
+<li>FileCacheはキャッシュの設定を変更する際に、パスの設定の末尾にスラッシュを付けることを必要とするようになりました。</li>
+<li>Cacheは最後に設定されたエンジンの名前を保有しないようになりました。これはエンジンを指定する操作をしたいときは、$configパラメータが指定したい設定名と同一でなければいけないということを意味します。</li>
 </ul>
 <pre>
     Cache::config('something');
     Cache::write('key, $value);
     
-    // would become
+    // 上記は、以下のようになることでしょう。
     Cache::write('key', $value, 'something');
 </pre>
 <h3>Router</h3>
