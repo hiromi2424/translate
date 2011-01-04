@@ -1,0 +1,156 @@
+<h2>モデル</h2>
+<p>モデルの初期化プロセスは軽量化されました。モデルのアソシエーションは遅延読み込みがされるようになり、多量のモデルやアソシエーションをもつアプリケーションは顕著に起動処理の時間を減少させることでしょう。</p>
+<p>モデルは初期化プロセス時にデータベースのコネクションを必要としなくなり、find操作が発生するとき、またはカラムの情報が必要となった時のみ、データベースに初めてアクセスがなされます。</p>
+<h2>ビヘイビア</h2>
+<p>--</p>
+<h2>ヘルパー</h2>
+<h3>Htmlヘルパー</h3>
+<ul>
+<li><code>getCrumbsList()</code>は<code>&lt;li&gt;</code>エレメントでラップされたぱんくずリストのリンクを生成します。<a href="http://cakephp.lighthouseapp.com/projects/42648/tickets/856" title="Ticket #856">#856</a>を見てください。</li>
+</ul>
+<h3>Formヘルパー</h3>
+<ul>
+<li>Formヘルパーは全てのHTML5インプット(<em>input</em>)の種類と、カスタムインプットをサポートします。使用したいインプットをこのヘルパーのメソッドとして呼び出してください。一例として、<code>$this-&gt;Form-&gt;range()</code>はtype = rangeとなるインプットを生成するでしょう。</li>
+<li><code>postLink()</code>と<code>postButton()</code>はHTTPのPOSTメソッドを使ってなんらかのページにアクセスするリンク・ボタンを生成します。これを用いて、コントローラではGETメソッドを用いたアクション、例えばdeleteのようなアクションを無視することができるようになります。</li>
+</ul>
+<h2>ライブラリ</h2>
+<h3>CakeRequest</h3>
+<p><code>CakeRequest</code>は2.0で導入された新しいクラスです。このクラスは、共通に使われるリクエスト内部判定メソッドをカプセル化し、<code>params</code>配列をより有用なオブジェクトに書き換えます。<a href="20-cakerequest">CakeRequestについて詳しく見る</a></p>
+<h3>CakeResponse</h3>
+<p><code>CakeResponse</code>は2.0で導入された新しいクラスです。このクラスは、アプリケーションのHTTPレスポンスの生成で共通に使われるメソッドとプロパティとカプセル化したものです。これはCakePHPのいくつかの機能を統合したものです。<a href="20-cakeresponse">CakeResponseについて詳しく見る</a></p>
+<h3>CakeSession、Sessionコンポーネント</h3>
+<p>CakeSessionとSessionコンポーネントは数多くの変更があります。更なる情報は、<a href="20-session">セッションのセクション</a>を見て下さい。</p>
+<h3>Router</h3>
+<h4>フルURLを返せるようになったルート</h4>
+<p>ルートオブジェクトはフルURLを返せるようになりました。また、ルーターはクエリ文字列とフラグメント識別子（訳注：#anchor_nameのこと）を付け加える以上のことはしません。これは例えば、サブドメインやHTTPS/HTTPのフラグを扱うルートを作成するのに使用することができます。以下はサブドメインをサポートするルートクラスの一例です。</p>
+<pre>
+&lt;?php
+
+class SubdomainRoute extends CakeRoute {
+
+    public function match ($params) {
+        $subdomain = isset($params['subdomain']) ? $params['subdomain'] : null;
+        unset($params['subdomain']);
+        $path = parent::match($params);
+        if ($subdomain) {
+            $path = 'http://' . $subdomain . '.localhost' . $path;
+        }
+        return $path;
+    }
+
+}
+?&gt;
+</pre>
+<p>リンクを生成するときにサブドメインを指定するには、以下のようにします。</p>
+<pre>
+<code>echo $this-&gt;Html-&gt;link(
+     'Other domain',
+     array('subdomain' =&gt; 'test', 'controller' =&gt; 'posts', 'action' =&gt; 'add')
+);</code>
+</pre>
+<p>上記はリンクを、<code>http://test.localhost/posts/add</code>をURLとして生成することでしょう。</p>
+<h3>Xml</h3>
+<p>Xmlは数多くの変更があります。<a href="20-xml">Xmlクラスについて詳しく見る</a></p>
+<h2>新しいライブラリの機能</h2>
+<h3>Configureリーダ</h3>
+<p>Configureは様々なソースやフォーマットから設定ファイルを読み込むことができるように設定可能になりました。<a href="20-configure">Configureの新しい機能</a>セクションにはConfigureへの変更についてより詳しい情報があります。</p>
+<p>引数無しで<code>Configure::read()</code>を呼ぶと、デバッグ値の代わりに、設定の全ての値を読み込むことができるようになりました。</p>
+<h3>エラーと例外のハンドリング</h3>
+<p>CakePHP 2.0は<a href="20-exceptions-error">エラーと例外のハンドリング</a>を再構築し、より柔軟に、より強い力を開発者に与えます。</p>
+<h3>String::wrap()</h3>
+<p>テキストの横幅の調整を便利にするものとして、<code>String::wrap()</code>が追加されました。これはシェルで<code>Shell::wrapText()</code>を使う時に必ず使われます。</p>
+<h3>debug()</h3>
+<p><code>debug()</code>はコンソールでHTMLを吐き出さないようになりました。代わりに以下のような出力をします。</p>
+<pre>
+<code>########## DEBUG ##########
+Array
+(
+    [0] =&gt; test
+)
+###########################</code>
+</pre>
+<p>これはコマンドラインでの<code>debug()</code>の可読性を向上させるでしょう。</p>
+<h2>コンポーネント</h2>
+<p>コンポーネントはヘルパーやビヘイビアと同じような扱いを享受し、<code>Component</code>がコンポーネントの基底クラスになりました。
+<a href="20-helper-behavior-component-and-task-refactor">コンポーネントの変更について詳しく見る</a></p>
+<h3>RequestHandler</h3>
+<p>RequestHandlerは<code>CakeRequest</code>の導入によりかなりの修正がありました。また、この変更はいくつかの新しい機能を導入することを可能にしました。</p>
+<h4>Acceptヘッダーの自動解析</h4>
+<p>もしクライアントが送った<code>Accept</code>が単一のMIMEタイプで、それに対応する拡張子が<code>Router</code>で有効となっているものと一致するならば、RequestHandlerはそれを拡張子と同じものとして扱うでしょう。これはCakePHPのRESTスタイルのエンドポイントのサポートを拡張します。この機能を使うには、まず<code>config/routes.php</code>で拡張子を有効にしてください。</p>
+<pre>
+<code>Router::parseExtensions('json', 'xml');</code>
+</pre>
+<p>いったん拡張子に対応するビューとレイアウトを作成すれば、<code>posts/view/1</code>のようなURLに<code>Accept: application/json</code>を含んだヘッダーを送ることで、そのURLのJSONバージョンを受け取ることができるようになるでしょう。</p>
+<h3>Cookieコンポーネント</h3>
+<p>CookieコンポーネントはHTTPのみのクッキー制限をサポートするようになりました。<code>$this-&gt;Cookie-&gt;httpOnly =
+true;</code>を設定することによってそれを有効とすることができます。HTTPのみのクッキーにすることは、ブラウザーからクッキーにアクセスすることができないようにすることでしょう。（訳注：Javascriptなどから。参考: <a href="http://jp.php.net/manual/ja/function.setcookie.php" title="php function setcookie">setcookie</a>）</p>
+<h3>SecurityコンポーネントのCSRF分離</h3>
+<p>CakePHPは1.2からCSRF対策を持つようになりました。2.0では既存のCSRFはより猜疑的なモードと、独立した機能を持つようになりました。以前は、CSRF機能はフォームの改ざん対策とセットでした。開発者はたびたび<code>validatePost</code>を動的なフォームの為に無効にしていましたが、CSRF対策も同時に無効化されていました。2.0では、CSRFチェックはフォーム改ざん対策と分離され、強くコントロールすることができるようになりました。</p>
+<h4>CakePHP 2.0でCSRF対策をする</h4>
+<p>単にcomponentsの配列に<code>SecurityComponent</code>を加えることによって、それが提供するCSRF対策の恩恵を享受できます。デフォルトでは、CSRFの検証文字列は30分有効です。このコンポーネントの<code>csrfExpires</code>を設定することによってどれだけの間トークンが残るかを操作できます。</p>
+<pre>
+<code>$components = array(
+    'Security' =&gt; array(
+        'csrfExpires' =&gt; '+1 hour'
+    )
+);</code>
+</pre>
+<p>また、コントローラの<code>beforeFilter</code>でこのプロパティを指定することもできます。</p>
+<pre>
+<code>function beforeFilter() {
+    $this-&gt;Security-&gt;csrfExpires = '+1 hour';
+    ...
+}</code>
+</pre>
+<p>この<code>csrfExpires</code>プロパティは<code>strtotime()</code>と互換などのような値にもなり得ます。デフォルトでは、コンポーネントが有効な時<code>FormHelper</code>はCSRFトークンを含む<code>data[_Token][key]</code>を全てのフォームに追加します。</p>
+<h4>Handling missing or expired tokens</h4>
+<p>Missing or expired tokens are handled similar to in previous
+versions. The SecurityComponent's <code>blackHoleCallback</code>
+will be called, but with a 'csrf' parameter instead of 'auth' as in
+previous versions. This helps you better filter out CSRF token
+failures.</p>
+<h4>Using per-session tokens instead of one-time use tokens</h4>
+<p>By default a new CSRF token is generated for each request, and
+each token can only be used one. If a token is used twice, it will
+be blackholed. Sometimes, this behaviour is not desirable, as it
+can create issues with single page applications. You can toggle on
+longer, multi-use tokens by setting <code>csrfUseOnce</code> to
+false. This can be done in the components array, or in the
+<code>beforeFilter</code> of your controller.</p>
+<pre>
+<code>var $components = array(
+    'Security' =&gt; array(
+        'csrfUseOnce' =&gt; false
+    )
+);</code>
+</pre>
+<p>This will tell the component that you want to re-use a CSRF
+token until it expires. If you are having issues with expired
+tokens, this is a good balance between security and ease of
+use.</p>
+<h4>Disabling the CSRF protection</h4>
+<p>There may be cases where you want to disable CSRF protection on
+your forms for some reason. If you do want to disable this feature,
+you can set <code>$this-&gt;Security-&gt;csrfCheck = false;</code>
+in your beforeFilter or use the components array. By default CSRF
+protection is enabled, and configured to use one-use tokens.</p>
+<h2>Controller</h2>
+<p>Controllers now have access to request and response objects. You
+can read more about these objects on their specific pages.</p>
+<h2>Console</h2>
+<p>The console for CakePHP 2.0 was almost entirely rebuilt. Several
+new features as well as some backwards incompatible changes were
+made. <a href="20-console">Read more about console
+changes</a></p>
+<h2>Pagination</h2>
+<p>Pagination now provides a default maxLimit for pagination at
+100.</p>
+<p>This limit can be overridden with the paginate variable on
+Controller.</p>
+<pre>
+<code>$this-&gt;paginate = array('maxLimit' =&gt; 1000);</code>
+</pre>
+<p>This default is provided to prevent user URL manipulation
+causing excessive strain on the database for subsequent requests,
+where a user would edit the 'limit' parameter to a very large
+number.</p>

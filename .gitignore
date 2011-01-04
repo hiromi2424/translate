@@ -1,0 +1,7 @@
+*.php
+*.bat
+*.css
+*.js
+*.ico
+*.log
+.htaccess

@@ -1,0 +1,284 @@
+<h2>Helper, Behavior, Component and Task refactor</h2>
+<p>Helpers, behaviors, components, and tasks were restructured for
+2.0. After examining the various things these objects did, there
+were some striking similarities. All the object types except Tasks
+provided callbacks and custom methods. However, the loading and
+usage of callbacks was slightly different in each case. For 2.0
+these different loading/callback triggering API's were simplified
+and made uniform. Using <code>BehaviorCollection</code> as the base
+of how things should work. Each object type now has a Collection
+object. This collection object is responsible for loading,
+unloading and triggering callbacks. The Collection object API looks
+like:</p>
+<ul>
+<li><code>load()</code> - Load a new object, and add it to the
+collection</li>
+<li><code>unload()</code> - Remove an object from the
+collection</li>
+<li><code>trigger()</code> - Trigger a callback on all objects in
+the collection.</li>
+<li><code>enable()</code> - Enables a disabled object in the
+collection</li>
+<li><code>disable()</code> - Disable an object in the
+collection</li>
+<li><code>attached()</code> - Get the names of the attached
+objects, or find out if a specific object is attached.</li>
+<li><code>enabled()</code> - Get the names of the enabled objects,
+or find out if a specific object is enabled.</li>
+</ul>
+<h3>HelperCollection</h3>
+<p>After examining the responsibilities of each class involved in
+the View layer, it became clear that View was handling much more
+than a single task. The responsibility of creating helpers, is not
+central to what View does, and was moved into HelperCollection.
+HelperCollection is responsible for loading and constructing
+helpers, as well as triggering callbacks on helpers. By default
+View creates a HelperCollection in its constructor, and uses it for
+subsequent operations. The HelperCollection for a view can be found
+at <code>$this-&gt;Helpers</code></p>
+<p>The motivations for refactoring this functionality came from a
+few issues.</p>
+<ul>
+<li>View being registered in ClassRegistry could cause registry
+poisoning issues when requestAction or the EmailComponent were
+used.</li>
+<li>View being accessible as a global symbol invited abuse.</li>
+<li>Helpers were not self contained. After constructing a helper,
+you had to manually construct several other objects in order to get
+a functioning object.</li>
+</ul>
+<p>The refactoring to HelperCollection solved all of the above
+issues as well as provided additional new features, such as lazy
+loading.</p>
+<h3>Using HelperCollection</h3>
+<p>HelperCollection provides an API similar to
+<code>BehaviorCollection</code>, but for managing helpers.</p>
+<ul>
+<li><code>load($name, $settings = array())</code> Load is used to
+load individual helpers, and provide them with settings.</li>
+<li><code>unload($name)</code> Remove a helper from the
+collection.</li>
+<li><code>attached()</code> Get a list of attached helpers.</li>
+<li><code>enabled($name)</code> Get a list of enabled helpers.
+Helpers that are not enabled will not have callbacks fired on them.
+If a name is passed in a boolean will be returned indicating
+whether or not the helper is enabled.</li>
+<li><code>enable($name)</code> Re-enables a helper. Enabled helpers
+have callbacks fired on them.</li>
+<li><code>disable($name)</code> Disables a helper. Disabled helpers
+do not have callbacks fired on them.</li>
+<li><code>trigger($callback, $params)</code> Trigger a callback on
+all the enabled helpers.</li>
+</ul>
+<p>All of the following are run from inside a
+view/element/layout.</p>
+<h4>Loading helpers on demand in the View</h4>
+<p>You can now load individual Helpers on-demand using
+<code>View::loadHelper()</code>. This method attaches the Helper to
+the HelperCollection and returns the helper as well.</p>
+<pre>
+$Media = $this-&gt;loadHelper('Media.Media');
+// or
+$Media = $this-&gt;Helpers-&gt;load('Media');
+</pre>
+<p>The Media helper will now be inside <code>$Media</code> and
+available as <code>$this-&gt;Media</code>. View::loadHelper() is
+provided as a wrapper method to be used by helpers to load
+additional helpers. Both load methods also takes an array of
+settings as the second parameter for helpers that need
+configuration arrays.</p>
+<h4>Disabling callbacks on a helper</h4>
+<pre>
+$this-&gt;Helpers-&gt;disable('Html');
+</pre>
+<p>The HtmlHelper will no longer have view callbacks triggered on
+it. You will however be able to use its methods normally.</p>
+<h3>View no longer registered in ClassRegistry</h3>
+<p>The view being registered ClassRegistry invited abuse and
+effectively created a global symbol. In 2.0 each Helper receives
+the current <code>View</code> instance in its constructor. This
+allows helpers access to the view in a similar fashion as in the
+past, without creating global symbols. You can access the view
+instance at <code>$this-&gt;_View</code> in any helper.</p>
+<h3>Helper constructors changed</h3>
+<p>In order to facilitate the changes made above, helper
+constructors should now have a signature like</p>
+<pre>
+function __construct(View $View, $settings = array())
+</pre>
+<p>When overriding the constructor you should always call
+<code>parent::__construct</code> as well.
+<code>Helper::__construct</code> stores the view instance at
+<code>$this-&gt;_View</code> for later reference. The settings are
+not handled by the parent constructor.</p>
+<h3>Helpers attributes format is more flexible</h3>
+<p>The Helper class have more 3 protected attributes:</p>
+<ul>
+<li><code>Helper::_minimizedAttributes</code>: array with minimized
+attributes (ie: <code>array('checked', 'selected',
+...)</code>);</li>
+<li><code>Helper::_attributeFormat</code>: how attributes will be
+generated (ie: <code>%s="%s"</code>);</li>
+<li><code>Helper::_minimizedAttributeFormat</code>: how minimized
+attributes will be generated: (ie <code>%s="%s")</code></li>
+</ul>
+<p>By default the values used in CakePHP 1.3 do not was changed.
+But now you can use boolean attributes from HTML, like
+<code>&lt;input type="checkbox" checked /&gt;</code>. To this, just
+change <code>$_minimizedAttributeFormat</code> in your AppHelper to
+<code>%s</code>.</p>
+<p>To use with Html/Form helpers and others, you can write:<br></p>
+<pre>
+<code>$this-&gt;Form-&gt;checkbox('field', array('checked' =&gt; true, 'value' =&gt; 'some_value'));</code>
+</pre>
+<p>Other facility is that minimized attributes can be passed as
+item and not as key. For example:<br></p>
+<pre>
+<code>$this-&gt;Form-&gt;checkbox('field', array('checked', 'value' =&gt; 'some_value'));</code>
+</pre>
+Note that <code>checked</code> have a numeric key.
+<h3>Helper of helpers load lazily</h3>
+<p>A benefit from using HelperCollection to manage Helpers, is that
+Helpers inside helpers now load lazily. This should help create
+faster running scripts when all the inner helpers are not accessed.
+The first time a helper's helper is accessed it will be
+created/loaded from the View's HelperCollection. These changes do
+not affect that only one of each helper is loaded per
+HelperCollection. As in previous versions of CakePHP, all helpers
+of the same name are references to one another.</p>
+<h3>View API changes</h3>
+<p>As methods were moved around <code>View</code> lost some
+methods, and gained a few others.</p>
+<h4>Removed methods</h4>
+<ul>
+<li><code>View::_triggerHelpers()</code> Use
+<code>$this-&gt;Helpers-&gt;trigger()</code> instead.</li>
+<li><code>View::_loadHelpers()</code> Use
+<code>$this-&gt;loadHelpers()</code> instead. Helpers now lazy load
+their own helpers now.</li>
+</ul>
+<h4>Added methods</h4>
+<ul>
+<li><code>View::loadHelper($name, $settings = array());</code> Load
+a single helper.</li>
+<li><code>View::loadHelpers()</code> Loads all the helpers
+indicated in <code>View::$helpers</code>.</li>
+</ul>
+<h3>View-&gt;Helpers</h3>
+<p>By default View objects contain a <code>HelperCollection</code>
+in <code>$this-&gt;Helpers</code>.</p>
+<h2>Component Refactor</h2>
+<p>Components were refactored in 2.0 to solve a number of
+inconsistencies and provide a more uniform API. In the past
+<code>Component</code> was the loader and manager of Components for
+a Controller. In 2.0 <code>ComponentCollection</code> takes over
+that responsibility and <code>Component</code> is now a base class
+for components. This unifies the API between Helpers and Components
+as a collection.</p>
+<h3>$this-&gt;Component --&gt; $this-&gt;Components</h3>
+<p>Inside a controller <code>$this-&gt;Component</code> has been
+renamed to <code>$this-&gt;Components</code> this makes it more
+uniform with Behaviors and Helpers.
+<code>$this-&gt;Components</code> is a ComponentCollection
+instance. ComponentCollection provides the following methods.</p>
+<ul>
+<li><code>load($name, $settings = array())</code> Load is used to
+load individual components, and provide them with settings.</li>
+<li><code>unload($name)</code> Remove a component from the
+collection.</li>
+<li><code>attached()</code> Get a list of attached components.</li>
+<li><code>enabled($name)</code> Get a list of enabled components.
+Components that are not enabled will not have callbacks fired on
+them. If a name is passed in a boolean will be returned indicating
+whether or not the component is enabled.</li>
+<li><code>enable($name)</code> Re-enables a component. Enabled
+components have callbacks fired on them.</li>
+<li><code>disable($name)</code> Disables a component. Disabled
+components do not have callbacks fired on them.</li>
+<li><code>trigger($callback, $params)</code> Trigger a callback on
+all the enabled components.</li>
+</ul>
+<h4>Disabling callbacks on a component</h4>
+<pre>
+$this-&gt;Components-&gt;disable('Cookie');
+</pre>
+<p>The CookieComponent will no longer have view callbacks triggered
+on it. You will however be able to use its methods normally.</p>
+<h3>Deprecated callbacks removed</h3>
+<p>All the deprecated callbacks in Component have not been
+transferred to ComponentCollection. Instead you should use the
+<code>trigger()</code> method to interact with callbacks. If you
+need to trigger a callback you could do so by calling</p>
+<pre>
+$this-&gt;Components-&gt;trigger('someCallback', array(&amp;$this));
+</pre>
+<p>Keep in mind that all components must implement the callbacks
+you want to trigger. If they don't an error will be raised.</p>
+<h3>Component as a base class and a new constructor</h3>
+<p>All userland components should now extend
+<code>Component</code>. In addition if your components declare a
+constructor, you should be sure to update that constructor to
+reflect the new signature.</p>
+<pre>
+function __construct(ComponentCollection $collection, $settings = array()) {
+    
+}
+</pre>
+<p>As with helpers is important to call
+<code>parent::__construct()</code> in components with overridden
+constructors. Settings for a component are also passed into the
+constructor now, and not the <code>initialize()</code> callback.
+This makes getting well constructed objects easier, and allows the
+base class to handle setting the properties up.</p>
+<p>Since settings have been moved to the component constructor, the
+<code>initialize()</code> callback no longer receives
+<code>$settings</code> as its 2nd parameter. You should update your
+components to use the following method signature:</p>
+<pre>
+function initialize($controller) { }
+</pre>
+<p>Additionally, the initialize() method is only called on
+components that are enabled. This usually means components that are
+directly attached to the controller object.</p>
+<h3>Component components are now loaded lazily</h3>
+<p>Components used by a Component are now lazy loaded through
+<code>__get()</code>. All components of the same name are still
+references of each other, and each component will only be
+constructed once per request.</p>
+<h3>Loading Components on demand</h3>
+<p>Much like helpers you can now create Components on demand easily
+by using the load method of the ComponentCollection.</p>
+<pre>
+$Prg = $this-&gt;Components-&gt;load('Prg');
+</pre>
+<p>By default, all runtime loaded components will have all future
+callbacks triggered on them. You can exclude components from
+callbacks by either using
+<code>$this-&gt;Components-&gt;disable('Prg');</code> or by
+including the <code>enabled = false</code> key in your
+settings.</p>
+<pre>
+$Prg = $this-&gt;Components-&gt;load('Prg', array('enabled' =&gt; false));
+</pre>
+<h4>Changes in disabling components</h4>
+<p>In the past you were able to disable components via
+<code>$this-&gt;Auth-&gt;enabled = false;</code> for example. In
+CakePHP 2.0 you should use the ComponentCollection's disable
+method, <code>$this-&gt;Components-&gt;disable('Auth');</code>.
+Using the enabled property will not work properly.</p>
+<h3>Task Refactor</h3>
+<p>Tasks have also been removed from the ClassRegistry. Instead
+Tasks are put into a <code>TaskCollection</code> object attached to
+the Shell for a given command. The TaskCollection for a command is
+used to load and construct tasks. In addition you can use it to
+load tasks at runtime. If you need to access the TaskCollection
+inside a shell, use <code>$this-&gt;Tasks-&gt;method()</code>.</p>
+<h4>Using plugin tasks</h4>
+<p>With TaskCollection, using plugin tasks is quite simple. You
+just declare them in the $tasks array like any other Task. The
+TaskCollection, will find and construct the desired task. You
+should always use the plugin dot syntax to indicate plugin
+tasks.</p>
+<pre>
+public $tasks = array('ProgressBar.Updater');
+</pre>

@@ -1,0 +1,426 @@
+<p>このページはプロジェクトを2.0に移行する手助けをする、CakePHP 1.3からの変更点の要約をします。またこれは、コアへのCakePHP 1.3ブランチからの変更点への最新の開発者リファレンスともなります。必ずこのガイドにある新機能とAPIの変更の全てのページを読んでください。</p>
+<h2>サポートするPHPバージョン</h2>
+<p>CakePHP 2.xはPHP 5.2.6以上をサポートします。PHP4のサポートは止めることになります。<br>
+いまだPHP4環境での案件で働いている開発者のために、PHP4の開発とサポートの継続期間のうちまで、CakePHP1.xは続けてPHP4をサポートします。</p>
+<p>PHP5に移行するということは、全てのメソッドとプロパティはアクセス修飾子を伴うように書き直されるということです。コード内でprivateもしくはprotectedメソッドをpublicスコープから参照しようと試みると、エラーに遭遇することになります。</p>
+<p>これは実際にはフレームワークに多大な変更を与えるわけではありませんが、現在、より厳しくなった可視性を持つメソッドと変数へのアクセスが不可能となったことを意味します。</p>
+<h2>多言語化・地域化（訳注：I18n, L10n）</h2>
+<p><code>__()</code><code>__()</code> (二つのアンダースコアでのショートカット関数)は常に翻訳を返り値として返すようになりました。（もはや出力はされません）</p>
+<p>翻訳の結果を表示させたい場合は、</p>
+<pre>
+<code>echo __('My Message');</code>
+</pre>
+<p>としてください。この変更は全ての翻訳のショートカット関数を含みます:</p>
+<pre>
+<code>__( )
+__n( )
+__d( )
+__dn( )
+__dc( )
+__dcn( )
+__c( )</code>
+</pre>
+<p>これに併せて、オプションパラメータを渡しているなら、翻訳はパラメータを用いて<a href="http://php.net/manual/ja/function.sprintf.php">sprintf</a>を値を返す前に呼び出します。以下は一例です。</p>
+<pre>
+<code>// "Called: MyClass:myMethod" のようなものを返す
+echo __('Called: %s:%s', $className, $methodName);</code>
+</pre>
+<p>これは全てのショートカット翻訳メソッドに関して同じことが言えます。</p>
+<p>指定子に関する更なる情報に関しては、<a href="http://php.net/manual/ja/function.sprintf.php">sprintf関数</a>を見てください。</p>
+<h2>変更されたファイル名</h2>
+<ul>
+<li><code>cake/libs/error.php</code> -&gt;
+<code>cake/libs/error_handler.php</code></li>
+<li><code>cake/console/error.php</code> -&gt;
+<code>cake/console/console_error_handler.php</code></li>
+<li><code>cake/dispatcher.php</code> -&gt;
+<code>cake/libs/dispatcher.php</code></li>
+<li><code>cake/console/libs/*</code> -&gt;
+<code>cake/console/shells/*</code></li>
+</ul>
+<h2>変更されたクラスの場所と定数</h2>
+<p>CakePHPの起動(<em>bootstrapping</em>)はもはやPHPの<code>include_path</code>を使いません。代わりに、<code>app/webroot/index.php</code>と<code>app/webroot/test.php</code>に<code>CAKE_CORE_INCLUDE_PATH</code>を定義するか、CakePHPが共有ディレクトリにあるなら、シンボリックリンクを使うべきです。また、Bakeを使って全てのパスがセットアップされたプロジェクトを生成することもできます。この変更は主に、<code>APP_PATH</code>と<code>CORE_PATH</code>定数がWEBとコンソールの環境で矛盾のない値とすることの為になされました。今までどおり、<code>CAKE_CORE_INCLUDE_PATH</code>を空値にすることによってPHPの<code>include_path</code>を使うこともできます。</p>
+<h2>Basics.php</h2>
+<ul>
+<li><code>getMicrotime()</code>は削除されました。代わりにネイティブの<code>microtime(true)</code>を使用してください。</li>
+<li><code>e()</code>は削除されました。<code>echo</code>を使用してください。</li>
+<li><code>r()</code>は削除されました。<code>str_replace</code>を使用してください。</li>
+<li><code>a()</code>は削除されました。<code>array()</code>を使用してください。</li>
+<li><code>aa()</code>は削除されました。<code>array()</code>を使用してください。</li>
+<li><code>up()</code>は削除されました。<code>strtoupper()</code>を使用してください。</li>
+<li><code>low()</code>は削除されました。<code>strtolower()</code>を使用してください。</li>
+<li><code>params()</code>は削除されました。これはCakePHP内で使われることはありませんでした。</li>
+<li><code>ife()</code>は削除されました。 三項演算子を使ってください。</li>
+<li><code>uses()</code>は削除されました。代わりにApp::import()を使ってください。</li>
+<li>PHP4互換のための関数は削除されました。</li>
+<li><code>PHP5</code>定数は削除されました。</li>
+<li>グローバル変数 $TIME_START は削除されました。代わりに $_SERVER['REQUEST_TIME'] を使用してください。</li>
+</ul>
+<h3>CakeRequest</h3>
+<p>この新しいクラスはやってくるリクエストに紐付けられたパラメータと作用をカプセル化します。これは<code>Dispatcher</code>、<code>RequestHandlerComponent</code>、<code>Controller</code>の中にある多くの機能を置き換えます。また、全ての場所での<code>$this-&gt;params</code>配列を置き換えます。CakeRequestは<code>ArrayAccess</code>を実装するので、古いパラメータ配列を用いる多くの相互作用は変更する必要がありません。更なる情報は<a href=
+"20-cakerequest">新機能CakeRequest</a>を見てください。</p>
+<h2>コンポーネント</h2>
+<p><code>Component</code>は、全てのコンポーネントが必須とする基底クラスになりました。更なる情報は、<a href="20-helper-behavior-component-and-task-refactor">コンポーネントのリファクタリング</a>ページを見てください。</p>
+<h3>Aclコンポーネント</h3>
+<ul>
+<li>Aclコンポーネントの実装部分は、<code>AclInterface</code>の実装が必要となりました。</li>
+<li>このコンポーネントが使うACLの実装部分をランタイムで変更できるように、AclComponent::adapter() が追加されました。</li>
+<li>AclComponent::grant() は非推奨となりました。将来のバージョンでは削除されることになります。代わりに AclComponent::allow() を使用してください。</li>
+<li>AclComponent::revoke() は非推奨となりました。将来のバージョンでは削除されることになります。代わりに AclComponent::deny() を使用してください。</li>
+</ul>
+<h3>RequestHandlerコンポーネント</h3>
+<ul>
+<li>
+<p>多くのRequestHandlerコンポーネントのメソッドは単に<code>CakeRequest</code>のメソッドの代用品となりました。以下のメソッドは非推奨となりました。将来のバージョンでは削除されることになります。:</p>
+<ul>
+<li>isSsl()</li>
+<li>isAjax()</li>
+<li>isPost()</li>
+<li>isPut()</li>
+<li>isDelete()</li>
+<li>getReferer()</li>
+<li>getClientIp()</li>
+</ul>
+</li>
+<li>
+<p>accepts()、prefers()、requestedWith() は全てマッピングされたコンテンツタイプを扱うようになりました。MIMEタイプでは動作しないようになりました。新しいコンテントタイプを作成するためには、<code>RequestHandler::setContent()</code>を使うことができます。</p>
+</li>
+<li><code>RequestHandler::setContent()</code>は配列を一つの引数として指定することができないようになりました。両方の引数を与える必要があります。</li>
+</ul>
+<h2>cakeErrorの削除</h2>
+<p><code>cakeError()</code>メソッドは削除されました。<code>cakeError</code>の使用から<a href="20-exceptions-errors">例外を使う</a>ように切り替えることが推奨されています。</a>.
+<code>cakeError</code>が削除されたのは、それが例外のシミュレーションであった為です。CakePHP2.0では実際の例外が使われます。</p>
+<h2>エラーハンドリング</h2>
+<p>エラーハンドリングの実装は2.0で劇的に変わりました。フレームワークの至るところに例外が導入され、エラーハンドリングはよりコントロールできるように、柔軟に書き直されました。更なることは、<a href="20-exceptions-errors">例外とエラーハンドリングのセクション</a>を読むことができます。</p>
+<h2>ライブラリクラス</h2>
+<h3>CakeLog</h3>
+<ul>
+<li>ログのストリームは<code>CakeLogInterface</code>を実装(<em>implement</em>)することが必要になりました。設定されたロガークラスがこれをしないと、例外が発生します。</li>
+</ul>
+<h3>Cache</h3>
+<ul>
+<li>Cacheは静的なクラスになり、<code>getInstance()</code>メソッドをもたないようになりました。</li>
+<li>CacheEngineは抽象(<em>abstract</em>)クラスになりました。直接そのクラスを作ることはもうできなくなりました。</li>
+<li>CacheEngineの実装はCacheEngineを継承する必要があります。設定されたクラスがそれをしないと、例外が発生します。</li>
+<li>FileCacheはキャッシュの設定を変更する際に、パスの設定の末尾にスラッシュを付けることを必要とするようになりました。</li>
+<li>Cacheは最後に設定されたエンジンの名前を保有しないようになりました。これはエンジンを指定する操作をしたいときは、$configパラメータが指定したい設定名と同一でなければいけないということを意味します。</li>
+</ul>
+<pre>
+    Cache::config('something');
+    Cache::write('key, $value);
+    
+    // 上記は、以下のようになることでしょう。
+    Cache::write('key', $value, 'something');
+</pre>
+<h3>Router</h3>
+<ul>
+<li>You can no longer modify named parameter settings with
+Router::setRequestInfo(). You should use Router::connectNamed() to
+configure how named parameters are handled.</li>
+<li>Router no longer has a getInstance() method. It is a static
+class, call its methods and properties statically.</li>
+<li><code>Router::getNamedExpressions()</code>is deprecated. Use
+the new router constants. <code>Router::ACTION</code>,
+<code>Router::YEAR</code>, <code>Router::MONTH</code>,
+<code>Router::DAY</code>, <code>Router::ID</code>, and
+<code>Router::UUID</code> instead.</li>
+</ul>
+<h3>Dispatcher</h3>
+<ul>
+<li>Dispatcher has been moved inside of cake/libs, you will have to
+update your <code>app/webroot/index.php</code> file.</li>
+<li><code>Dispatcher::dispatch()</code> now only accepts a
+<code>CakeRequest</code> object or a subclass thereof,</li>
+<li><code>Dispather::parseParams()</code> now only accepts a
+<code>CakeRequest</code> object.</li>
+<li><code>Dispatcher::baseUrl()</code>は削除されました。</li>
+<li><code>Dispatcher::getUrl()</code>は削除されました。</li>
+<li><code>Dispatcher::uri()</code>は削除されました。</li>
+</ul>
+<h3>Configure</h3>
+<ul>
+<li><code>Configure::read()</code> with no parameter no longer
+returns the value of 'debug' instead it returns all values in
+Configure. Use <code>Configure::read('debug');</code> if you want
+the value of debug.</li>
+<li><code>Configure::load()</code> now requires a ConfigReader to
+be setup. Read <a href="20-configure">Configure
+updates</a> for more information.</li>
+<li><code>Configure::store()</code> now writes values to a given
+Cache configuration. Read <a href=
+"20-configure">Configure updates</a> for more
+information.</li>
+</ul>
+<h3>Scaffold</h3>
+<ul>
+<li>Scaffoldの'edit'ビューは'form'に名前を変えるべきです。これはScaffoldとBakeのテンプレートに矛盾がないようにするために為されました。</li>
+<ul>
+<li><code>views/scaffolds/edit.ctp</code> -&gt;
+<code>views/scaffolds/form.ctp</code></li>
+<li><code>views/posts/scaffold.edit.ctp</code> -&gt;
+<code>views/posts/scaffold.form.ctp</code></li>
+</ul>
+</li>
+</ul>
+<h3>File</h3>
+<ul>
+<li>このクラスは非推奨となりました。代わりにSplFileObjectを使ってください。</li>
+</ul>
+<h3>Folder</h3>
+<ul>
+<li><code>Folder::pwd()</code>は削除されました。代わりに $folder-&gt;path を使ってください。</li>
+<li><code>Folder::read()</code>は削除されました。代わりに DirectoryIterator を使ってください。</li>
+<li><code>Folder::normalizePath()</code>は削除されました。</li>
+<li><code>Folder::correctSlashFor()</code>は削除されました。</li>
+<li><code>Folder::slashTerm()</code>は削除されました。</li>
+<li><code>Folder::isSlashTerm()</code>は削除されました。</li>
+<li><code>Folder::addPathElement()</code>は削除されました。</li>
+<li><code>Folder::dirsize()</code>は<code>Folder::dirSize()</code>に改名されました。</li>
+</ul>
+<h3>Xml</h3>
+<ul>
+<li>Xmlクラスは完全に書き直されました。もはやこのクラスはデータを整形せず、SimpleXMLElementのラッパーになりました。以下のメソッヂが使えます：</li>
+<li><code>Xml::build()</code>: 静的なメソッドで、XML文字列、配列、ファイルまたはURLのパスを渡せます。SimpleXMLElementのインスタンスを返すか、エラーの場合は例外が投げられます。</li>
+<li><code>Xml::fromArray()</code>: 静的なメソッドで、配列を元にSimpleXMLElementを返します。</li>
+<li><code>Xml::toArray()</code>: 静的なメソッドで、SimpleXMLElementを元に配列を返します。</li>
+</ul>
+<p>Xmlクラスになされた変更における更なる情報は、<a href="20-xml">XML機能のページ</a>を見てください。</p>
+<h2>ヘルパー</h2>
+<p>以下のヘルパのプロパティは非推奨となります。将来のリリースで削除される予定のこれらのプロパティに直接アクセスする代わりに、Requestオブジェクトのプロパティまたはヘルパーのメソッドを使ってください。</p>
+<ul>
+<li><code>Helper::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
+<li><code>Helper::$base</code>は削除されました。代わりにRequestオブジェクトのbaseプロパティを使用してください。</li>
+<li><code>Helper::$here</code>は削除されました。代わりにRequestオブジェクトのhereプロパティを使用してください。</li>
+<li><code>Helper::$data</code>は削除されました。代わりにRequestオブジェクトのdataプロパティを使用してください。</li>
+<li><code>Helper::$params</code>は削除されました。代わりに<code>$this-&gt;request</code>を使用してください。</li>
+</ul>
+<h3>AjaxHelperとJavascriptHelperは削除されました。</h3>
+<p>AjaxHelperとJavascriptHelperは1.3バージョンから非推奨となったため削除されました。</p>
+<p>これらはJsHelperとHtmlHelperに置き換えられました。</p>
+<p>より良いドキュメントは<a href="http://book.cakephp.org/ja/view/1561/Migrating-from-CakePHP-1-2-to-1-3" title="CakePHP 1.2からCakePHP 1.3への移行ガイド">CakePHP1.2から1.3への移行ガイド</a>で見つけることができます。</p>
+<h3>JsHelper</h3>
+<ul>
+<li><code>JsBaseEngineHelper</code> is now abstract, you will need
+to implement all the methods that previously generated errors.</li>
+</ul>
+<h3>FormHelper</h3>
+<h4>$selected parameter removed</h4>
+<p>The $selected parameter was removed from several methods in
+FormHelper. All methods now support a
+<code>$attributes['value']</code> key now which should be used in
+place of <code>$selected</code>. This change simplifies the
+FormHelper methods, reducing the number of arguments, and reduces
+the duplication that <code>$selected</code> created. The affected
+methods are:</p>
+<ul>
+<li>FormHelper::select()</li>
+<li>FormHelper::dateTime()</li>
+<li>FormHelper::year()</li>
+<li>FormHelper::month()</li>
+<li>FormHelper::day()</li>
+<li>FormHelper::hour()</li>
+<li>FormHelper::minute()</li>
+<li>FormHelper::meridian()</li>
+</ul>
+<h3>CacheHelper</h3>
+<p>CacheHelper has been fully decoupled from View, and uses helper
+callbacks to generate caches. You should remember to place
+CacheHelper after other helpers that modify content in their
+<code>afterRender</code> and <code>afterLayout</code> callbacks. If
+you don't some changes will not be part of the cached content.</p>
+<p>CacheHelper also no longer uses
+<code>&lt;cake:nocache&gt;</code> to indicate un-cached regions.
+Instead it uses special HTML/XML comments.
+<code>&lt;!--nocache--&gt;</code> and
+<code>&lt;!--/nocache--&gt;</code>. This helps CacheHelper generate
+valid markup and still perform the same functions as before. You
+can read more <a href="20-view">CacheHelper and
+View changes</a></p>
+<h2>Controller</h2>
+<ul>
+<li>Controller's constructor now takes an optional CakeRequest
+object. This object will be used to populate several deprecated
+properties and will be set to $request inside the controller.</li>
+<li><code>Controller::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
+<li><code>Controller::$base</code>は削除されました。代わりにRequestオブジェクトのbaseプロパティを使用してください。</li>
+<li><code>Controller::$here</code>は削除されました。代わりにRequestオブジェクトのhereプロパティを使用してください。</li>
+<li><code>Controller::$data</code>は削除されました。代わりにRequestオブジェクトのdataプロパティを使用してください。</li>
+<li><code>Controller::$params</code>は削除されました。代わりに<code>$this-&gt;request</code>を使用してください。</li>
+<li><code>Controller::$Component</code> has been moved to
+<code>Controller::$Components</code>.</li>
+</ul>
+<p>The deprecated properties on Controller will be accessible
+through a <code>__get()</code> method. This method will be removed
+in future versions, so its recommended that you update your
+application.</p>
+<p>Controller now defines a maxLimit for pagination. This maximum
+limit is set to 100, but can be overridden in the $paginate
+options.</p>
+<h2>View</h2>
+<ul>
+<li><code>View::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
+<li><code>View::$base</code>は削除されました。代わりにRequestオブジェクトのbaseプロパティを使用してください。</li>
+<li><code>View::$here</code>は削除されました。代わりにRequestオブジェクトのhereプロパティを使用してください。</li>
+<li><code>View::$data</code>は削除されました。代わりにRequestオブジェクトのdataプロパティを使用してください。</li>
+<li><code>View::$params</code>は削除されました。代わりに<code>$this-&gt;request</code>を使用してください。</li>
+<li><code>View::$loaded</code> has been removed. Use the <a href=
+"20-helper-behavior-component-and-task-refactor">HelperCollection</a>
+to access loaded helpers.</li>
+<li><code>View::_loadHelpers()</code> has been removed, used
+<code>View::loadHelpers()</code> instead.</li>
+<li>How <code>View::element()</code> uses caching has changed, see
+below for more information.</li>
+<li>View callbacks have been shifted around, see below for more
+information.</li>
+</ul>
+<p>The deprecated properties on View will be accessible through a
+<code>__get()</code> method. This method will be removed in future
+versions, so its recommended that you update your application.</p>
+<p>Element caching, and view callbacks have been changed in 2.0 to
+help provide you with more flexibility and consistency. <a href=
+"20-view">Read more about those changes</a></p>
+<h2>PHPUnit instead of SimpleTest</h2>
+<p>All of the core test cases and supporting infrastructure have
+been ported to use PHPUnit 3.5. Of course you can continue to use
+SimpleTest in your application by replacing the related files. No
+further support will be given for SimpleTest and it is recommended
+that you migrate to PHPUnit as well. For some additional
+information on how to migrate your tests see <a href=
+"phpunit-migration-hints">PHPUnit migration
+hints</a></p>
+<h3>No more group tests</h3>
+<p>PHPUnit does not differentiate between group tests and single
+test cases in the runner. Because of this, the group test options,
+and support for old style group tests has been removed. It is
+recommended that GroupTests be ported to
+PHPUnit_Framework_Testsuite subclasses. You can find several
+examples of this in CakePHP's test suite. Group test related
+methods on <code>TestManager</code> have also been removed.</p>
+<h3>Testsuite shell</h3>
+<p>The testsuite shell has had its invocation simplified and
+expanded. You no longer need to differentiate between
+<code>case</code> and <code>group</code>. It is assumed that all
+tests are cases. In the past you would have done <code>cake
+testsuite app case models/post</code> you can now do <code>cake
+testsuite app models/post</code>.</p>
+<p>The testsuite shell have been refactored to use the PHPUnit cli
+tool, it now support all the command line options supported by
+PHPUnit. <code>cake testsuite help</code> will show you a list of
+all possible modifiers.</p>
+<h2>Models</h2>
+<p>As now models relationships are lazy loaded. You can run into
+situation when assigning a value to an inexistent model property
+will throw errors</p>
+<pre>
+<code>$Post-&gt;inexistentProperty[] = 'value';</code>
+</pre>
+<p>will throw the error "Notice: Indirect modification of
+overloaded property $inexistentProperty has no effect". Assigning
+an initial value to the property solves the issue:</p>
+<pre>
+<code>$Post-&gt;inexistentProperty = array();
+$Post-&gt;inexistentProperty[] = 'value';</code>
+</pre>
+<p>Or just declare the property in the model class:</p>
+<pre>
+<code>class Post {
+    var $inexistantPropert = array();
+}</code>
+</pre>
+<p>Either of these approaches will solve the notice errors.</p>
+<h3>Database objets</h3>
+<p>DBOs were refactored for this version, being the use of PDO the
+major change. Check the <a href=
+"http://cakephp.lighthouseapp.com/projects/42648/20-dbo-changes">DBO
+changes page</a> for more information</p>
+<h3>BehaviorCollection</h3>
+<ul>
+<li><code>BehaviorCollection</code> no longer
+<code>strtolower()</code>'s mappedMethods. Behavior mappedMethods
+are now case sensitive.</li>
+</ul>
+<h2>Plugins</h2>
+<p>Plugins no longer magically append their plugin prefix to
+components, helpers and models used within them. You must be
+explicit with the components, models, and helpers you wish to use.
+In the past</p>
+<pre>
+<code>var $components = array('Session', 'Comments');</code>
+</pre>
+<p>Would look in the controller's plugin before checking app/core
+components, it will now only look in the app/core components. If
+you wish to use objects from a plugin you must put the plugin
+name.</p>
+<pre>
+<code>var $components = array('Session', 'Comment.Comments');</code>
+</pre>
+<p>This was done to reduce hard to debug issues caused by magic
+misfiring. It also improves consistency in an application, as
+objects have one authoritative way to reference them.</p>
+<h2>Console</h2>
+<p>Much of the console framework was rebuilt for 2.0 to address
+many of the following issues:</p>
+<ul>
+<li>Tightly coupled.</li>
+<li>It was difficult to make help text for shells.</li>
+<li>Parameters for shells were tedious to validate.</li>
+<li>Plugin tasks were not reachable.</li>
+<li>Objects with too many responsibilities.</li>
+</ul>
+<h3>Backwards incompatible Shell API changes</h3>
+<ul>
+<li>Shell no longer has an <code>AppModel</code> instance. This
+<code>AppModel</code> instance was not correctly built and was
+problematic</li>
+<li><code>Shell::_loadDbConfig()</code> has been removed. It was
+not generic enough to stay in Shell. You can use the
+<code>DbConfigTask</code> if you need to ask the user to create a
+db config.</li>
+<li>Shells no longer use <code>$this-&gt;Dispatcher</code> to
+access stdin, stdout, and stderr. They have
+<code>ConsoleOutput</code> and <code>ConsoleInput</code> objects to
+handle that now.</li>
+<li>Shells lazy load tasks, and use <code>TaskCollection</code> to
+provide an interface similar to that used for Helpers, Components,
+and Behaviors for on the fly loading of tasks.</li>
+<li><code>Shell::$shell</code>は削除されました。</li>
+<li><code>Shell::_checkArgs()</code> has been removed. Configure a
+<code>ConsoleOptionParser</code></li>
+<li>Shells no longer have direct access to
+<code>ShellDispatcher</code>. You should use the
+<code>ConsoleInput</code>, and <code>ConsoleOutput</code> objects
+instead. If you need to dispatch other shells, see the section on
+'Invoking other shells from your shell'.</li>
+</ul>
+<h3>Backwards incompatible ShellDispatcher API changes</h3>
+<ul>
+<li><code>ShellDispatcher</code> no longer has stdout, stdin,
+stderr file handles.</li>
+<li><code>ShellDispatcher::$shell</code>は削除されました。</li>
+<li><code>ShellDispatcher::$shellClass</code> has been
+removed.</li>
+<li><code>ShellDispatcher::$shellName</code>は削除されました。</li>
+<li><code>ShellDispatcher::$shellCommand</code> has been
+removed.</li>
+<li><code>ShellDispatcher::$shellPaths</code> has been removed, use
+<code>App::path('shells');</code> instead.</li>
+<li>ShellDispatcher no longer uses 'help' as a magic method that
+has special status. Instead use the <code>--help/-h</code> options,
+and an option parser.</li>
+</ul>
+<h3>Backwards incompatible Shell Changes</h3>
+<ul>
+<li>Bake's ControllerTask no longer takes <code>public</code> and
+<code>admin</code> as passed arguments. They are now options,
+indicated like <code>--admin</code> and <code>--public</code></li>
+</ul>
+<p>Its recommended that you use the help on shells you use to see
+what if any parameters have changed. Its also recommended that you
+<a href="20-console">read the console new
+features</a> for more information on new API's that are
+available.</p>
+<h2>Debugging</h2>
+<p>The debug() function now defaults to outputting html safe
+strings. This is disabled if being used in the console. The
+$showHtml option for debug() can be set to false to disable
+html-safe output from debug.</p>

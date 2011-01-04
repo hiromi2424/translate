@@ -1,0 +1,534 @@
+<p>This page summarises the changes from CakePHP 1.3 that will
+assist in a project migration to 2.0, as well as for a developer
+reference to get up to date with the changes made to the core since
+the CakePHP 1.3 branch. Be sure to read the other pages in this
+guide for all the new features and API changes.</p>
+<h2>PHP Version Support</h2>
+<p>CakePHP 2.x supports PHP Version 5.2.6 and above. PHP4 support
+has been dropped.<br>
+For developers that are still working with production PHP4
+environments, the CakePHP 1.x versions continue to support PHP4 for
+the lifetime of their development and support lifetime.</p>
+<p>The move to PHP 5 means all methods and properties have been
+updated with visibility keywords. If your code is attempting access
+to private or protected methods from a public scope, you will
+encounter errors.</p>
+<p>While this does not really constitute a large framework change,
+it means that access to tighter visibility methods and variables is
+now not possible.</p>
+<h2>Internationalization / Localization</h2>
+<p><code>__()</code> (Double underscore shortcut function) always
+returns the translation (not echo anymore).</p>
+<p>If you want to echo the result of the translation, use:</p>
+<pre>
+<code>echo __('My Message');</code>
+</pre>
+<p>This change includes all shortcut translation methods:</p>
+<pre>
+<code>__( )
+__n( )
+__d( )
+__dn( )
+__dc( )
+__dcn( )
+__c( )</code>
+</pre>
+<p>Alongside this, if you pass additional parameters, the
+translation will call <a href=
+"http://php.net/manual/en/function.sprintf.php">sprintf</a> with
+these parameters before returning. For example:</p>
+<pre>
+<code>// Will return something like "Called: MyClass:myMethod"
+echo __('Called: %s:%s', $className, $methodName);</code>
+</pre>
+<p>It is valid for all shortcut translation methods.</p>
+<p>More information about the specifiers, you can see in <a href=
+"http://php.net/manual/en/function.sprintf.php">sprintf
+function</a>.</p>
+<h2>Renamed files</h2>
+<ul>
+<li><code>cake/libs/error.php</code> -&gt;
+<code>cake/libs/error_handler.php</code></li>
+<li><code>cake/console/error.php</code> -&gt;
+<code>cake/console/console_error_handler.php</code></li>
+<li><code>cake/dispatcher.php</code> -&gt;
+<code>cake/libs/dispatcher.php</code></li>
+<li><code>cake/console/libs/*</code> -&gt;
+<code>cake/console/shells/*</code></li>
+</ul>
+<h2>Class location and constants changed</h2>
+<p>Bootstrapping CakePHP no longer uses PHP's
+<code>include_path</code> by default any more. Instead you should
+define <code>CAKE_CORE_INCLUDE_PATH</code> in
+<code>app/webroot/index.php</code>, and
+<code>app/webroot/test.php</code>, or use symlinks if you have
+CakePHP in a shared directory. You can also use bake to generate
+projects with all the paths setup. This change was done primarily
+to make the <code>APP_PATH</code> and <code>CORE_PATH</code>
+constants have consistent values between the web and console
+environments. You can still use PHP's <code>include_path</code> by
+setting <code>CAKE_CORE_INCLUDE_PATH</code> to an empty value.</p>
+<h2>Basics.php</h2>
+<ul>
+<li><code>getMicrotime()</code> has been removed. Use the native
+<code>microtime(true)</code> instead.</li>
+<li><code>e()</code> was removed. Use <code>echo</code>.</li>
+<li><code>r()</code> was removed. Use
+<code>str_replace</code>.</li>
+<li><code>a()</code> was removed. Use <code>array()</code></li>
+<li><code>aa()</code> was removed. Use <code>array()</code></li>
+<li><code>up()</code> was removed. Use
+<code>strtoupper()</code></li>
+<li><code>low()</code> was removed. Use
+<code>strtolower()</code></li>
+<li><code>params()</code> was removed. It was not used anywhere in
+CakePHP.</li>
+<li><code>ife()</code> was removed. Use a ternary operator.</li>
+<li><code>uses()</code> was removed. Use App::import()
+instead.</li>
+<li>Compatibility functions for PHP4 have been removed.</li>
+<li><code>PHP5</code> constant has been removed.</li>
+<li>Global var called $TIME_START was removed use
+$_SERVER['REQUEST_TIME'] instead.</li>
+</ul>
+<h3>CakeRequest</h3>
+<p>This new class encapsulates the parameters and functions related
+to an incoming request. It replaces many features inside
+<code>Dispatcher</code>, <code>RequestHandlerComponent</code> and
+<code>Controller</code>. It also replaces
+<code>$this-&gt;params</code> array in all places. CakeRequest
+implements <code>ArrayAccess</code> so many interactions with the
+old params array do not need to change. See the <a href=
+"20-cakerequest">CakeRequest new features</a> for
+more information.</p>
+<h2>Components</h2>
+<p><code>Component</code> is now the required base class for all
+components. See <a href=
+"20-helper-behavior-component-and-task-refactor">the
+component refactor</a> page for more information.</p>
+<h3>AclComponent</h3>
+<ul>
+<li>AclComponent implementations are now required to implement
+<code>AclInterface</code>.</li>
+<li>AclComponent::adapter() has been added to allow runtime
+modification of the ACL implementation the component uses.</li>
+<li>AclComponent::grant() has been deprecated, it will be removed
+in a future version. Use AclComponent::allow() instead.</li>
+<li>AclComponent::revoke() has been deprecated, it will be removed
+in a future version. Use AclComponent::deny() instead.</li>
+</ul>
+<h3>RequestHandlerComponent</h3>
+<ul>
+<li>
+<p>Many of RequestHandlerComponent's methods are just proxies for
+<code>CakeRequest</code> methods. The following methods have been
+deprecated and will be removed in future versions:</p>
+<ul>
+<li>isSsl()</li>
+<li>isAjax()</li>
+<li>isPost()</li>
+<li>isPut()</li>
+<li>isDelete()</li>
+<li>getReferer()</li>
+<li>getClientIp()</li>
+</ul>
+</li>
+<li>
+<p>accepts(), prefers(), requestedWith() All deal in mapped content
+types now. They no longer work with mime-types. You can use
+<code>RequestHandler::setContent()</code> to create new content
+types.</p>
+</li>
+<li><code>RequestHandler::setContent()</code> no longer accepts an
+array as a single argument, you must supply both arguments.</li>
+</ul>
+<h2>cakeError removed</h2>
+<p>The <code>cakeError()</code> method has been removed. Its
+recommended that you switch all uses of <code>cakeError</code> to
+<a href="20-exceptions-errors">use exceptions</a>.
+<code>cakeError</code> was removed because it was simulating
+exceptions. Instead of simulation, real exceptions are used in
+CakePHP 2.0</p>
+<h2>Error handling</h2>
+<p>The error handling implementation has dramatically changed in
+2.0. Exceptions have been introduced throughout the framework, and
+error handling has been updated to offer more control and
+flexibility. You can read more <a href=
+"20-exceptions-errors">in the exceptions and error
+handling section</a></p>
+<h2>Lib classes</h2>
+<h3>CakeLog</h3>
+<ul>
+<li>Log streams now need to implement
+<code>CakeLogInterface</code>. Exceptions will be raised if a
+configured logger does not.</li>
+</ul>
+<h3>Cache</h3>
+<ul>
+<li>Cache is now a static class, it no longer has a
+<code>getInstance()</code> method.</li>
+<li>CacheEngine is now an abstract class. You cannot directly
+create instances of it anymore.</li>
+<li>CacheEngine implementations must extend CacheEngine, exceptions
+will be raised if a configured class does not.</li>
+<li>FileCache now requires trailing slashes to be added to the path
+setting when you are modifying a cache configuration.</li>
+<li>Cache no longer retains the name of the last configured cache
+engine. This means that operations you want to occur on a specific
+engine need to have the $config parameter equal to the config name
+you want the operation to occur on.</li>
+</ul>
+<pre>
+    Cache::config('something');
+    Cache::write('key, $value);
+    
+    // would become
+    Cache::write('key', $value, 'something');
+</pre>
+<h3>Router</h3>
+<ul>
+<li>You can no longer modify named parameter settings with
+Router::setRequestInfo(). You should use Router::connectNamed() to
+configure how named parameters are handled.</li>
+<li>Router no longer has a getInstance() method. It is a static
+class, call its methods and properties statically.</li>
+<li><code>Router::getNamedExpressions()</code>is deprecated. Use
+the new router constants. <code>Router::ACTION</code>,
+<code>Router::YEAR</code>, <code>Router::MONTH</code>,
+<code>Router::DAY</code>, <code>Router::ID</code>, and
+<code>Router::UUID</code> instead.</li>
+</ul>
+<h3>Dispatcher</h3>
+<ul>
+<li>Dispatcher has been moved inside of cake/libs, you will have to
+update your <code>app/webroot/index.php</code> file.</li>
+<li><code>Dispatcher::dispatch()</code> now only accepts a
+<code>CakeRequest</code> object or a subclass thereof,</li>
+<li><code>Dispather::parseParams()</code> now only accepts a
+<code>CakeRequest</code> object.</li>
+<li><code>Dispatcher::baseUrl()</code> has been removed.</li>
+<li><code>Dispatcher::getUrl()</code> has been removed.</li>
+<li><code>Dispatcher::uri()</code> has been removed.</li>
+</ul>
+<h3>Configure</h3>
+<ul>
+<li><code>Configure::read()</code> with no parameter no longer
+returns the value of 'debug' instead it returns all values in
+Configure. Use <code>Configure::read('debug');</code> if you want
+the value of debug.</li>
+<li><code>Configure::load()</code> now requires a ConfigReader to
+be setup. Read <a href="20-configure">Configure
+updates</a> for more information.</li>
+<li><code>Configure::store()</code> now writes values to a given
+Cache configuration. Read <a href=
+"20-configure">Configure updates</a> for more
+information.</li>
+</ul>
+<h3>Scaffold</h3>
+<ul>
+<li>Scaffold 'edit' views should be renamed to 'form'. This was
+done to make scaffold and bake templates consistent.
+<ul>
+<li><code>views/scaffolds/edit.ctp</code> -&gt;
+<code>views/scaffolds/form.ctp</code></li>
+<li><code>views/posts/scaffold.edit.ctp</code> -&gt;
+<code>views/posts/scaffold.form.ctp</code></li>
+</ul>
+</li>
+</ul>
+<h3>File</h3>
+<ul>
+<li>This class has been deprecated, use SplFileObject instead.</li>
+</ul>
+<h3>Folder</h3>
+<ul>
+<li><code>Folder::pwd()</code> has been removed. Use
+$folder-&gt;path instead.</li>
+<li><code>Folder::read()</code> has been removed. Use
+DirectoryIterator instead.</li>
+<li><code>Folder::normalizePath()</code> has been removed.</li>
+<li><code>Folder::correctSlashFor()</code> has been removed.</li>
+<li><code>Folder::slashTerm()</code> has been removed.</li>
+<li><code>Folder::isSlashTerm()</code> has been removed.</li>
+<li><code>Folder::addPathElement()</code> has been removed.</li>
+<li><code>Folder::dirsize()</code> renamed to
+<code>Folder::dirSize()</code>.</li>
+</ul>
+<h3>Xml</h3>
+<ul>
+<li>The class Xml was completely re-factored. Now this class does
+not manipulate data anymore, and it is a wrapper to
+SimpleXMLElement. You can use the follow methods:</li>
+<li><code>Xml::build()</code>: static method that you can pass a
+xml string, array, path to file or url. The result will be a
+SimpleXMLElement instance or an exception will be thrown in case of
+error.</li>
+<li><code>Xml::fromArray()</code>: static method that returns a
+SimpleXMLElement from an array.</li>
+<li><code>Xml::toArray()</code>: static method that returns an
+array from SimpleXMLElement.</li>
+</ul>
+<p>You should see the <a href="20-xml">Xml features
+page</a> for more information on the changes made to the Xml
+class.</p>
+<h2>Helpers</h2>
+<p>The following properties on helpers are deprecated, you should
+use the request object properties or Helper methods instead of
+directly accessing these properties as they will be removed in a
+future release.</p>
+<ul>
+<li><code>Helper::$webroot</code> is deprecated, use the request
+object's webroot property.</li>
+<li><code>Helper::$base</code> is deprecated, use the request
+object's base property.</li>
+<li><code>Helper::$here</code> is deprecated, use the request
+object's here property.</li>
+<li><code>Helper::$data</code> is deprecated, use the request
+object's data property.</li>
+<li><code>Helper::$params</code> is deprecated, use the
+<code>$this-&gt;request</code> instead.</li>
+</ul>
+<h3>AjaxHelper and JavascriptHelper removed</h3>
+<p>The AjaxHelper and JavascriptHelper have been removed as they
+were deprecated in version 1.3</p>
+<p>They are replaced with the JsHelper and HtmlHelper.</p>
+<p>Further documentation can be found in the <a href=
+"http://book.cakephp.org/view/1561/Migrating-from-CakePHP-1-2-to-1-3"
+title="Migrating from CakePHP 1.2 to CakePHP 1.3 Guide">Migrating
+from CakePHP 1.2 to CakePHP 1.3 Guide</a></p>
+<h3>JsHelper</h3>
+<ul>
+<li><code>JsBaseEngineHelper</code> is now abstract, you will need
+to implement all the methods that previously generated errors.</li>
+</ul>
+<h3>FormHelper</h3>
+<h4>$selected parameter removed</h4>
+<p>The $selected parameter was removed from several methods in
+FormHelper. All methods now support a
+<code>$attributes['value']</code> key now which should be used in
+place of <code>$selected</code>. This change simplifies the
+FormHelper methods, reducing the number of arguments, and reduces
+the duplication that <code>$selected</code> created. The affected
+methods are:</p>
+<ul>
+<li>FormHelper::select()</li>
+<li>FormHelper::dateTime()</li>
+<li>FormHelper::year()</li>
+<li>FormHelper::month()</li>
+<li>FormHelper::day()</li>
+<li>FormHelper::hour()</li>
+<li>FormHelper::minute()</li>
+<li>FormHelper::meridian()</li>
+</ul>
+<h3>CacheHelper</h3>
+<p>CacheHelper has been fully decoupled from View, and uses helper
+callbacks to generate caches. You should remember to place
+CacheHelper after other helpers that modify content in their
+<code>afterRender</code> and <code>afterLayout</code> callbacks. If
+you don't some changes will not be part of the cached content.</p>
+<p>CacheHelper also no longer uses
+<code>&lt;cake:nocache&gt;</code> to indicate un-cached regions.
+Instead it uses special HTML/XML comments.
+<code>&lt;!--nocache--&gt;</code> and
+<code>&lt;!--/nocache--&gt;</code>. This helps CacheHelper generate
+valid markup and still perform the same functions as before. You
+can read more <a href="20-view">CacheHelper and
+View changes</a></p>
+<h2>Controller</h2>
+<ul>
+<li>Controller's constructor now takes an optional CakeRequest
+object. This object will be used to populate several deprecated
+properties and will be set to $request inside the controller.</li>
+<li><code>Controller::$webroot</code> is deprecated, use the
+request object's webroot property.</li>
+<li><code>Controller::$base</code> is deprecated, use the request
+object's base property.</li>
+<li><code>Controller::$here</code> is deprecated, use the request
+object's here property.</li>
+<li><code>Controller::$data</code> is deprecated, use the request
+object's data property.</li>
+<li><code>Controller::$params</code> is deprecated, use the
+<code>$this-&gt;request</code> instead.</li>
+<li><code>Controller::$Component</code> has been moved to
+<code>Controller::$Components</code>.</li>
+</ul>
+<p>The deprecated properties on Controller will be accessible
+through a <code>__get()</code> method. This method will be removed
+in future versions, so its recommended that you update your
+application.</p>
+<p>Controller now defines a maxLimit for pagination. This maximum
+limit is set to 100, but can be overridden in the $paginate
+options.</p>
+<h2>View</h2>
+<ul>
+<li><code>View::$webroot</code> is deprecated, use the request
+object's webroot property.</li>
+<li><code>View::$base</code> is deprecated, use the request
+object's base property.</li>
+<li><code>View::$here</code> is deprecated, use the request
+object's here property.</li>
+<li><code>View::$data</code> is deprecated, use the request
+object's data property.</li>
+<li><code>View::$params</code> is deprecated, use the
+<code>$this-&gt;request</code> instead.</li>
+<li><code>View::$loaded</code> has been removed. Use the <a href=
+"20-helper-behavior-component-and-task-refactor">HelperCollection</a>
+to access loaded helpers.</li>
+<li><code>View::_loadHelpers()</code> has been removed, used
+<code>View::loadHelpers()</code> instead.</li>
+<li>How <code>View::element()</code> uses caching has changed, see
+below for more information.</li>
+<li>View callbacks have been shifted around, see below for more
+information.</li>
+</ul>
+<p>The deprecated properties on View will be accessible through a
+<code>__get()</code> method. This method will be removed in future
+versions, so its recommended that you update your application.</p>
+<p>Element caching, and view callbacks have been changed in 2.0 to
+help provide you with more flexibility and consistency. <a href=
+"20-view">Read more about those changes</a></p>
+<h2>PHPUnit instead of SimpleTest</h2>
+<p>All of the core test cases and supporting infrastructure have
+been ported to use PHPUnit 3.5. Of course you can continue to use
+SimpleTest in your application by replacing the related files. No
+further support will be given for SimpleTest and it is recommended
+that you migrate to PHPUnit as well. For some additional
+information on how to migrate your tests see <a href=
+"phpunit-migration-hints">PHPUnit migration
+hints</a></p>
+<h3>No more group tests</h3>
+<p>PHPUnit does not differentiate between group tests and single
+test cases in the runner. Because of this, the group test options,
+and support for old style group tests has been removed. It is
+recommended that GroupTests be ported to
+PHPUnit_Framework_Testsuite subclasses. You can find several
+examples of this in CakePHP's test suite. Group test related
+methods on <code>TestManager</code> have also been removed.</p>
+<h3>Testsuite shell</h3>
+<p>The testsuite shell has had its invocation simplified and
+expanded. You no longer need to differentiate between
+<code>case</code> and <code>group</code>. It is assumed that all
+tests are cases. In the past you would have done <code>cake
+testsuite app case models/post</code> you can now do <code>cake
+testsuite app models/post</code>.</p>
+<p>The testsuite shell have been refactored to use the PHPUnit cli
+tool, it now support all the command line options supported by
+PHPUnit. <code>cake testsuite help</code> will show you a list of
+all possible modifiers.</p>
+<h2>Models</h2>
+<p>As now models relationships are lazy loaded. You can run into
+situation when assigning a value to an inexistent model property
+will throw errors</p>
+<pre>
+<code>$Post-&gt;inexistentProperty[] = 'value';</code>
+</pre>
+<p>will throw the error "Notice: Indirect modification of
+overloaded property $inexistentProperty has no effect". Assigning
+an initial value to the property solves the issue:</p>
+<pre>
+<code>$Post-&gt;inexistentProperty = array();
+$Post-&gt;inexistentProperty[] = 'value';</code>
+</pre>
+<p>Or just declare the property in the model class:</p>
+<pre>
+<code>class Post {
+    var $inexistantPropert = array();
+}</code>
+</pre>
+<p>Either of these approaches will solve the notice errors.</p>
+<h3>Database objets</h3>
+<p>DBOs were refactored for this version, being the use of PDO the
+major change. Check the <a href=
+"http://cakephp.lighthouseapp.com/projects/42648/20-dbo-changes">DBO
+changes page</a> for more information</p>
+<h3>BehaviorCollection</h3>
+<ul>
+<li><code>BehaviorCollection</code> no longer
+<code>strtolower()</code>'s mappedMethods. Behavior mappedMethods
+are now case sensitive.</li>
+</ul>
+<h2>Plugins</h2>
+<p>Plugins no longer magically append their plugin prefix to
+components, helpers and models used within them. You must be
+explicit with the components, models, and helpers you wish to use.
+In the past</p>
+<pre>
+<code>var $components = array('Session', 'Comments');</code>
+</pre>
+<p>Would look in the controller's plugin before checking app/core
+components, it will now only look in the app/core components. If
+you wish to use objects from a plugin you must put the plugin
+name.</p>
+<pre>
+<code>var $components = array('Session', 'Comment.Comments');</code>
+</pre>
+<p>This was done to reduce hard to debug issues caused by magic
+misfiring. It also improves consistency in an application, as
+objects have one authoritative way to reference them.</p>
+<h2>Console</h2>
+<p>Much of the console framework was rebuilt for 2.0 to address
+many of the following issues:</p>
+<ul>
+<li>Tightly coupled.</li>
+<li>It was difficult to make help text for shells.</li>
+<li>Parameters for shells were tedious to validate.</li>
+<li>Plugin tasks were not reachable.</li>
+<li>Objects with too many responsibilities.</li>
+</ul>
+<h3>Backwards incompatible Shell API changes</h3>
+<ul>
+<li>Shell no longer has an <code>AppModel</code> instance. This
+<code>AppModel</code> instance was not correctly built and was
+problematic</li>
+<li><code>Shell::_loadDbConfig()</code> has been removed. It was
+not generic enough to stay in Shell. You can use the
+<code>DbConfigTask</code> if you need to ask the user to create a
+db config.</li>
+<li>Shells no longer use <code>$this-&gt;Dispatcher</code> to
+access stdin, stdout, and stderr. They have
+<code>ConsoleOutput</code> and <code>ConsoleInput</code> objects to
+handle that now.</li>
+<li>Shells lazy load tasks, and use <code>TaskCollection</code> to
+provide an interface similar to that used for Helpers, Components,
+and Behaviors for on the fly loading of tasks.</li>
+<li><code>Shell::$shell</code> has been removed.</li>
+<li><code>Shell::_checkArgs()</code> has been removed. Configure a
+<code>ConsoleOptionParser</code></li>
+<li>Shells no longer have direct access to
+<code>ShellDispatcher</code>. You should use the
+<code>ConsoleInput</code>, and <code>ConsoleOutput</code> objects
+instead. If you need to dispatch other shells, see the section on
+'Invoking other shells from your shell'.</li>
+</ul>
+<h3>Backwards incompatible ShellDispatcher API changes</h3>
+<ul>
+<li><code>ShellDispatcher</code> no longer has stdout, stdin,
+stderr file handles.</li>
+<li><code>ShellDispatcher::$shell</code> has been removed.</li>
+<li><code>ShellDispatcher::$shellClass</code> has been
+removed.</li>
+<li><code>ShellDispatcher::$shellName</code> has been removed.</li>
+<li><code>ShellDispatcher::$shellCommand</code> has been
+removed.</li>
+<li><code>ShellDispatcher::$shellPaths</code> has been removed, use
+<code>App::path('shells');</code> instead.</li>
+<li>ShellDispatcher no longer uses 'help' as a magic method that
+has special status. Instead use the <code>--help/-h</code> options,
+and an option parser.</li>
+</ul>
+<h3>Backwards incompatible Shell Changes</h3>
+<ul>
+<li>Bake's ControllerTask no longer takes <code>public</code> and
+<code>admin</code> as passed arguments. They are now options,
+indicated like <code>--admin</code> and <code>--public</code></li>
+</ul>
+<p>Its recommended that you use the help on shells you use to see
+what if any parameters have changed. Its also recommended that you
+<a href="20-console">read the console new
+features</a> for more information on new API's that are
+available.</p>
+<h2>Debugging</h2>
+<p>The debug() function now defaults to outputting html safe
+strings. This is disabled if being used in the console. The
+$showHtml option for debug() can be set to false to disable
+html-safe output from debug.</p>
