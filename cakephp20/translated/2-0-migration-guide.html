@@ -114,42 +114,24 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 </pre>
 <h3>Router</h3>
 <ul>
-<li>You can no longer modify named parameter settings with
-Router::setRequestInfo(). You should use Router::connectNamed() to
-configure how named parameters are handled.</li>
-<li>Router no longer has a getInstance() method. It is a static
-class, call its methods and properties statically.</li>
-<li><code>Router::getNamedExpressions()</code>is deprecated. Use
-the new router constants. <code>Router::ACTION</code>,
-<code>Router::YEAR</code>, <code>Router::MONTH</code>,
-<code>Router::DAY</code>, <code>Router::ID</code>, and
-<code>Router::UUID</code> instead.</li>
+<li>Router::setRequestInfo()を用いて<em>named</em>パラメータの設定を更新することができなくなりました。Router::connectNamed()を使って<em>named</em>パラメータの扱いを設定するべきです。</li>
+<li>RouterはgetInstance()メソッドをもたないようになりました。これは静的なクラスなので、メソッドやプロパティは静的に呼ぶようにしてください。</li>
+<li><code>Router::getNamedExpressions()</code>は非推奨になりました。代わりに新しいルーターの定数である、<code>Router::ACTION</code>、<code>Router::YEAR</code>、<code>Router::MONTH</code>、<code>Router::DAY</code>、<code>Router::ID</code>、<code>Router::UUID</code>を使用してください。</li>
 </ul>
 <h3>Dispatcher</h3>
 <ul>
-<li>Dispatcher has been moved inside of cake/libs, you will have to
-update your <code>app/webroot/index.php</code> file.</li>
-<li><code>Dispatcher::dispatch()</code> now only accepts a
-<code>CakeRequest</code> object or a subclass thereof,</li>
-<li><code>Dispather::parseParams()</code> now only accepts a
-<code>CakeRequest</code> object.</li>
+<li>Dispatcherはcake/libsの中に移動されました。<code>app/webroot/index.php</code>を更新することになるでしょう。</li>
+<li><code>Dispatcher::dispatch()</code>は<code>CakeRequest</code>オブジェクトかそのサブクラスのみ受け入れるようになりました。</li>
+<li><code>Dispather::parseParams()</code>は<code>CakeRequest</code>オブジェクトのみ（訳注：おそらくサブクラスも）受け入れるようになりました。</li>
 <li><code>Dispatcher::baseUrl()</code>は削除されました。</li>
 <li><code>Dispatcher::getUrl()</code>は削除されました。</li>
 <li><code>Dispatcher::uri()</code>は削除されました。</li>
 </ul>
 <h3>Configure</h3>
 <ul>
-<li><code>Configure::read()</code> with no parameter no longer
-returns the value of 'debug' instead it returns all values in
-Configure. Use <code>Configure::read('debug');</code> if you want
-the value of debug.</li>
-<li><code>Configure::load()</code> now requires a ConfigReader to
-be setup. Read <a href="20-configure">Configure
-updates</a> for more information.</li>
-<li><code>Configure::store()</code> now writes values to a given
-Cache configuration. Read <a href=
-"20-configure">Configure updates</a> for more
-information.</li>
+<li><code>Configure::read()</code>は「debug」値でなく、代わりにConfigureの全ての値を返すようになりました。もしデバッグ値を得たいのなら、<code>Configure::read('debug');</code>を使用してください。</li>
+<li><code>Configure::load()</code>はConfigureリーダーを用いてセットアップしなければならなくなりました。詳しい情報は、<a href="20-configure">Configureの刷新</a>を見てください。</li>
+<li><code>Configure::store()</code>は、与えられたCacheの設定に対して値を書き込むようになりました。詳しい情報は、<a href="20-configure">Configureの刷新</a>を見てください。</li>
 </ul>
 <h3>Scaffold</h3>
 <ul>
@@ -198,20 +180,13 @@ information.</li>
 <p>AjaxHelperとJavascriptHelperは1.3バージョンから非推奨となったため削除されました。</p>
 <p>これらはJsHelperとHtmlHelperに置き換えられました。</p>
 <p>より良いドキュメントは<a href="http://book.cakephp.org/ja/view/1561/Migrating-from-CakePHP-1-2-to-1-3" title="CakePHP 1.2からCakePHP 1.3への移行ガイド">CakePHP1.2から1.3への移行ガイド</a>で見つけることができます。</p>
-<h3>JsHelper</h3>
+<h3>Jsヘルパー</h3>
 <ul>
-<li><code>JsBaseEngineHelper</code> is now abstract, you will need
-to implement all the methods that previously generated errors.</li>
+<li><code>JsBaseEngineHelper</code>は抽象クラスとなりました。以前はエラーを吐いていたメソッド全てを実装する必要があるでしょう。</li>
 </ul>
-<h3>FormHelper</h3>
-<h4>$selected parameter removed</h4>
-<p>The $selected parameter was removed from several methods in
-FormHelper. All methods now support a
-<code>$attributes['value']</code> key now which should be used in
-place of <code>$selected</code>. This change simplifies the
-FormHelper methods, reducing the number of arguments, and reduces
-the duplication that <code>$selected</code> created. The affected
-methods are:</p>
+<h3>Formヘルパー</h3>
+<h4>$selectedパラメータの削除</h4>
+<p>$selectedパラメータはFormヘルパーのいくつかのメソッドから削除されました。全てのメソッドは<code>$attributes['value']</code>キーをサポートするようになり、<code>$selected</code>の代わりに使われるでしょう。この変更はFormヘルパーのメソッドを簡略化し、数多くの引数を減らし、<code>$selected</code>が作り出す重複を無くすものです。影響のあるメソッドは以下のとおりです。</p>
 <ul>
 <li>FormHelper::select()</li>
 <li>FormHelper::dateTime()</li>
@@ -222,40 +197,21 @@ methods are:</p>
 <li>FormHelper::minute()</li>
 <li>FormHelper::meridian()</li>
 </ul>
-<h3>CacheHelper</h3>
-<p>CacheHelper has been fully decoupled from View, and uses helper
-callbacks to generate caches. You should remember to place
-CacheHelper after other helpers that modify content in their
-<code>afterRender</code> and <code>afterLayout</code> callbacks. If
-you don't some changes will not be part of the cached content.</p>
-<p>CacheHelper also no longer uses
-<code>&lt;cake:nocache&gt;</code> to indicate un-cached regions.
-Instead it uses special HTML/XML comments.
-<code>&lt;!--nocache--&gt;</code> and
-<code>&lt;!--/nocache--&gt;</code>. This helps CacheHelper generate
-valid markup and still perform the same functions as before. You
-can read more <a href="20-view">CacheHelper and
-View changes</a></p>
-<h2>Controller</h2>
+<h3>Cacheヘルパー</h3>
+<p>CacheヘルパーはViewから完全に分離され、ヘルパーのコールバックを用いてキャッシュを生成するようになりました。<code>afterRender</code>と<code>afterLayout</code>コールバックでコンテンツを更新する他のヘルパーの後にCacheヘルパーを配置しなければならないことを覚えておいてください。これを忘れると、いくつかの変更がキャッシュされたコンテンツに含まれないことになるでしょう。</p>
+<p>また、Cacheヘルパーはキャッシュしない範囲を指定するために<code>&lt;cake:nocache&gt;</code>を使わなくなりました。代わりに特別なHTML・XMLコメントである、<code>&lt;!--nocache--&gt;</code>と<code>&lt;!--/nocache--&gt;</code>を使ってください。これでCacheヘルパーが正しいマークアップの生成と、以前と同じ機能を発揮できます。詳しくは、<a href="20-view">CacheヘルパーとViewの変更</a>を見てください。</p>
+<h2>コントローラ</h2>
 <ul>
-<li>Controller's constructor now takes an optional CakeRequest
-object. This object will be used to populate several deprecated
-properties and will be set to $request inside the controller.</li>
+<li>コントローラのコンストラクタはCakeRequestオブジェクトをオプションとして取ることができるようになりました。このオブジェクトは非推奨となったいくつかのプロパティを配置するために使われ、コントローラ内部に$requestとして設置されるでしょう。</li>
 <li><code>Controller::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
 <li><code>Controller::$base</code>は削除されました。代わりにRequestオブジェクトのbaseプロパティを使用してください。</li>
 <li><code>Controller::$here</code>は削除されました。代わりにRequestオブジェクトのhereプロパティを使用してください。</li>
 <li><code>Controller::$data</code>は削除されました。代わりにRequestオブジェクトのdataプロパティを使用してください。</li>
 <li><code>Controller::$params</code>は削除されました。代わりに<code>$this-&gt;request</code>を使用してください。</li>
-<li><code>Controller::$Component</code> has been moved to
-<code>Controller::$Components</code>.</li>
+<li><code>Controller::$Component</code>は<code>Controller::$Components</code>に移動されました。</li>
 </ul>
-<p>The deprecated properties on Controller will be accessible
-through a <code>__get()</code> method. This method will be removed
-in future versions, so its recommended that you update your
-application.</p>
-<p>Controller now defines a maxLimit for pagination. This maximum
-limit is set to 100, but can be overridden in the $paginate
-options.</p>
+<p>コントローラの非推奨となったプロパティは<code>__get()</code>メソッドを通してアクセス可能となります。このメソッドは将来のバージョンで削除されますので、アプリケーションを改訂することをお勧めします。</p>
+<p>コントローラはページ付けに対してmaxLimitを定義します。この最大値は100にセットされますが、$paginateオプションで上書き可能です。</p>
 <h2>View</h2>
 <ul>
 <li><code>View::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
@@ -263,15 +219,10 @@ options.</p>
 <li><code>View::$here</code>は削除されました。代わりにRequestオブジェクトのhereプロパティを使用してください。</li>
 <li><code>View::$data</code>は削除されました。代わりにRequestオブジェクトのdataプロパティを使用してください。</li>
 <li><code>View::$params</code>は削除されました。代わりに<code>$this-&gt;request</code>を使用してください。</li>
-<li><code>View::$loaded</code> has been removed. Use the <a href=
-"20-helper-behavior-component-and-task-refactor">HelperCollection</a>
-to access loaded helpers.</li>
-<li><code>View::_loadHelpers()</code> has been removed, used
-<code>View::loadHelpers()</code> instead.</li>
-<li>How <code>View::element()</code> uses caching has changed, see
-below for more information.</li>
-<li>View callbacks have been shifted around, see below for more
-information.</li>
+<li><code>View::$loaded</code>は削除されました。<a href="20-helper-behavior-component-and-task-refactor">HelperCollection</a>を使って読み込み済みのヘルパーにアクセスしてください。</li>
+<li><code>View::_loadHelpers()</code>は削除され、代わりに<code>View::loadHelpers()</code>が使われるようになりました。</li>
+<li><code>View::element()</code>のキャッシュ方法は変更されました。下方に詳しい情報がありますので参照してください。</li>
+<li>Viewのコールバックは方々に移されました。。下方に詳しい情報がありますので参照してください。</li>
 </ul>
 <p>The deprecated properties on View will be accessible through a
 <code>__get()</code> method. This method will be removed in future
@@ -339,88 +290,51 @@ changes page</a> for more information</p>
 <code>strtolower()</code>'s mappedMethods. Behavior mappedMethods
 are now case sensitive.</li>
 </ul>
-<h2>Plugins</h2>
-<p>Plugins no longer magically append their plugin prefix to
-components, helpers and models used within them. You must be
-explicit with the components, models, and helpers you wish to use.
-In the past</p>
+<h2>プラグイン</h2>
+<p>プラグインはコンポーネント、ヘルパー、モデルに、マジックとして自身のプラグイン接頭辞を付け加えなくなりました。明示的に使いたいものを指定しなければなりません。以前は、</p>
 <pre>
 <code>var $components = array('Session', 'Comments');</code>
 </pre>
-<p>Would look in the controller's plugin before checking app/core
-components, it will now only look in the app/core components. If
-you wish to use objects from a plugin you must put the plugin
-name.</p>
+<p>とすると、アプリケーション・コアのコンポーネントをチェックする前にコントローラのプラグインを調べていたでしょう。これはアプリケーション・コアのコンポーネントのみを見るようになりました。プラグインからオブジェクトを使いたい場合は、プラグインの名前を指定しなければなりません。</p>
 <pre>
 <code>var $components = array('Session', 'Comment.Comments');</code>
 </pre>
-<p>This was done to reduce hard to debug issues caused by magic
-misfiring. It also improves consistency in an application, as
-objects have one authoritative way to reference them.</p>
-<h2>Console</h2>
-<p>Much of the console framework was rebuilt for 2.0 to address
-many of the following issues:</p>
+<p>これは、マジックの失敗によって起こされていた問題をデバッグすることの煩雑さを減らすために為されました。また、オブジェクトの参照が単一の信頼できる方法になったことで、アプリケーションでの矛盾をなくします。</p>
+<h2>コンソール</h2>
+<p>コンソールのフレームワークの大部分は以下の問題の多くを処理するために、2.0で再建されました。</p>
 <ul>
-<li>Tightly coupled.</li>
-<li>It was difficult to make help text for shells.</li>
-<li>Parameters for shells were tedious to validate.</li>
-<li>Plugin tasks were not reachable.</li>
-<li>Objects with too many responsibilities.</li>
+<li>強固な密結合</li>
+<li>シェルでヘルプ文字列を作るのが難しかった</li>
+<li>シェルのパラメータを検証するのは面倒だった</li>
+<li>プラグインのタスクは到達不可能だった（訳注：プラグインから別のプラグインのタスクは呼び出せなかった）</li>
+<li>オブジェクトの責任が大きすぎた</li>
 </ul>
-<h3>Backwards incompatible Shell API changes</h3>
+<h3>後方非互換なShellのAPIの変更</h3>
 <ul>
-<li>Shell no longer has an <code>AppModel</code> instance. This
-<code>AppModel</code> instance was not correctly built and was
-problematic</li>
-<li><code>Shell::_loadDbConfig()</code> has been removed. It was
-not generic enough to stay in Shell. You can use the
-<code>DbConfigTask</code> if you need to ask the user to create a
-db config.</li>
-<li>Shells no longer use <code>$this-&gt;Dispatcher</code> to
-access stdin, stdout, and stderr. They have
-<code>ConsoleOutput</code> and <code>ConsoleInput</code> objects to
-handle that now.</li>
-<li>Shells lazy load tasks, and use <code>TaskCollection</code> to
-provide an interface similar to that used for Helpers, Components,
-and Behaviors for on the fly loading of tasks.</li>
+<li>Shellは<code>AppModel</code>のインスタンスを保持しないようになりました。この<code>AppModel</code>のインスタンスは正しく組み立てられておらず、問題に満ちていました。</li>
+<li><code>Shell::_loadDbConfig()</code>は削除されました。これは一般的にShellに置くのにふさわしいものではありませんでした。もしユーザにDB設定を作成するかどうかをユーザに問う必要があるなら、<code>DbConfigTask</code>を使うことが出来ます。</li>
+<li>Shellは標準入力、標準出力、標準エラー出力にアクセスするために<code>$this-&gt;Dispatcher</code>を使わないようになりました。今はそれらを扱うために<code>ConsoleOutput</code>と<code>ConsoleInput</code>をもつようになりました。</li>
+<li>シェルはタスクを遅延読み込みし、タスクを実行時読み込みする時にヘルパー、コンポーネント、ビヘイビアで使われるものと似たインターフェイスを、<code>TaskCollection</code>を使って提供します。</li>
 <li><code>Shell::$shell</code>は削除されました。</li>
-<li><code>Shell::_checkArgs()</code> has been removed. Configure a
-<code>ConsoleOptionParser</code></li>
-<li>Shells no longer have direct access to
-<code>ShellDispatcher</code>. You should use the
-<code>ConsoleInput</code>, and <code>ConsoleOutput</code> objects
-instead. If you need to dispatch other shells, see the section on
-'Invoking other shells from your shell'.</li>
+<li><code>Shell::_checkArgs()</code>は削除されました。<code>ConsoleOptionParser</code>に設定をしてください。</li>
+<li>シェルは<code>ShellDispatcher</code>に直接アクセスしないようになりました。代わりに<code>ConsoleInput</code>と<code>ConsoleOutput</code>オブジェクトを使用しなくてはなりません。他のシェルを立ち上げる必要があるなら、「Invoking other shells from your shell<!>」セクションを見てください。</li>
 </ul>
-<h3>Backwards incompatible ShellDispatcher API changes</h3>
+<h3>後方非互換なShellDispathserのAPIの変更</h3>
 <ul>
-<li><code>ShellDispatcher</code> no longer has stdout, stdin,
-stderr file handles.</li>
+<li><code>ShellDispatcher</code>は標準出力、標準入力、標準エラー出力のファイルハンドルを持たないようになりました。</li>
 <li><code>ShellDispatcher::$shell</code>は削除されました。</li>
 <li><code>ShellDispatcher::$shellClass</code> has been
 removed.</li>
 <li><code>ShellDispatcher::$shellName</code>は削除されました。</li>
 <li><code>ShellDispatcher::$shellCommand</code> has been
 removed.</li>
-<li><code>ShellDispatcher::$shellPaths</code> has been removed, use
-<code>App::path('shells');</code> instead.</li>
-<li>ShellDispatcher no longer uses 'help' as a magic method that
-has special status. Instead use the <code>--help/-h</code> options,
-and an option parser.</li>
+<li><code>ShellDispatcher::$shellPaths</code>は削除されました。代わりに<code>App::path('shells');</code>を使ってください。</li>
+<li>ShellDispatcherは「help」を特殊な状態をもつマジックメソッドとして使わないようになりました。代わりに<code>--help/-h</code>、またオプションパーサーを使ってください。</li>
 </ul>
-<h3>Backwards incompatible Shell Changes</h3>
+<h3>後方非互換なShellの変更</h3>
 <ul>
-<li>Bake's ControllerTask no longer takes <code>public</code> and
-<code>admin</code> as passed arguments. They are now options,
-indicated like <code>--admin</code> and <code>--public</code></li>
+<li>BakeのControllerTaskは<code>public</code>と<code>admin</code>を引数として取らなくなりました。これらはオプションになり、<code>--admin</code>や<code>--public</code>のように指定されます。</li>
 </ul>
-<p>Its recommended that you use the help on shells you use to see
-what if any parameters have changed. Its also recommended that you
-<a href="20-console">read the console new
-features</a> for more information on new API's that are
-available.</p>
-<h2>Debugging</h2>
-<p>The debug() function now defaults to outputting html safe
-strings. This is disabled if being used in the console. The
-$showHtml option for debug() can be set to false to disable
-html-safe output from debug.</p>
+<p>あなたが使うシェルが何らかのパラメータが変更されたならば、そのシェルのヘルプを使用することをお勧めします。また、利用可能となった新しいAPIの詳しい機能を<a href="20-console">コンソールの新機能を見る</a>こともお勧めします。</p>
+<h2>デバッグ</h2>
+<p>debug()関数はデフォルトでHTMLセーフな文字列で出力をするようになりました。コンソールで使用される場合はこれは無効になります。デバッグのために、debug()の$showHtmlオプションにfalseを指定して、HTMLセーフな出力を無効にすることができます。</p>
