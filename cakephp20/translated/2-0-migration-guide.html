@@ -212,7 +212,7 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 </ul>
 <p>コントローラの非推奨となったプロパティは<code>__get()</code>メソッドを通してアクセス可能となります。このメソッドは将来のバージョンで削除されますので、アプリケーションを改訂することをお勧めします。</p>
 <p>コントローラはページ付けに対してmaxLimitを定義します。この最大値は100にセットされますが、$paginateオプションで上書き可能です。</p>
-<h2>View</h2>
+<h2>ビュー</h2>
 <ul>
 <li><code>View::$webroot</code>は削除されました。代わりにRequestオブジェクトのwebrootプロパティを使用してください。</li>
 <li><code>View::$base</code>は削除されました。代わりにRequestオブジェクトのbaseプロパティを使用してください。</li>
@@ -222,73 +222,39 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 <li><code>View::$loaded</code>は削除されました。<a href="20-helper-behavior-component-and-task-refactor">HelperCollection</a>を使って読み込み済みのヘルパーにアクセスしてください。</li>
 <li><code>View::_loadHelpers()</code>は削除され、代わりに<code>View::loadHelpers()</code>が使われるようになりました。</li>
 <li><code>View::element()</code>のキャッシュ方法は変更されました。下方に詳しい情報がありますので参照してください。</li>
-<li>Viewのコールバックは方々に移されました。。下方に詳しい情報がありますので参照してください。</li>
+<li>ビューのコールバックは方々に移されました。下方に詳しい情報がありますので参照してください。</li>
 </ul>
-<p>The deprecated properties on View will be accessible through a
-<code>__get()</code> method. This method will be removed in future
-versions, so its recommended that you update your application.</p>
-<p>Element caching, and view callbacks have been changed in 2.0 to
-help provide you with more flexibility and consistency. <a href=
-"20-view">Read more about those changes</a></p>
-<h2>PHPUnit instead of SimpleTest</h2>
-<p>All of the core test cases and supporting infrastructure have
-been ported to use PHPUnit 3.5. Of course you can continue to use
-SimpleTest in your application by replacing the related files. No
-further support will be given for SimpleTest and it is recommended
-that you migrate to PHPUnit as well. For some additional
-information on how to migrate your tests see <a href=
-"phpunit-migration-hints">PHPUnit migration
-hints</a></p>
-<h3>No more group tests</h3>
-<p>PHPUnit does not differentiate between group tests and single
-test cases in the runner. Because of this, the group test options,
-and support for old style group tests has been removed. It is
-recommended that GroupTests be ported to
-PHPUnit_Framework_Testsuite subclasses. You can find several
-examples of this in CakePHP's test suite. Group test related
-methods on <code>TestManager</code> have also been removed.</p>
-<h3>Testsuite shell</h3>
-<p>The testsuite shell has had its invocation simplified and
-expanded. You no longer need to differentiate between
-<code>case</code> and <code>group</code>. It is assumed that all
-tests are cases. In the past you would have done <code>cake
-testsuite app case models/post</code> you can now do <code>cake
-testsuite app models/post</code>.</p>
-<p>The testsuite shell have been refactored to use the PHPUnit cli
-tool, it now support all the command line options supported by
-PHPUnit. <code>cake testsuite help</code> will show you a list of
-all possible modifiers.</p>
-<h2>Models</h2>
-<p>As now models relationships are lazy loaded. You can run into
-situation when assigning a value to an inexistent model property
-will throw errors</p>
+<p>ビューの非推奨となったプロパティは<code>__get()</code>メソッドを通してアクセス可能となります。このメソッドは将来のバージョンで削除されますので、アプリケーションを改訂することをお勧めします。</p>
+<p>エレメントのキャッシュと、ビューのコールバックはより強い柔軟性と整合性を提供するために2.0で変更されました。<a href="20-view">これらの変更について詳しく見る</a></p>
+<h2>SimpleTestの替わりにPHPUnit</h2>
+<p>全てのコアのテストケースとテストの基盤はPHPUnit 3.5を使うように方向性を変えました。もちろん関連するファイル郡を置き換えることによってアプリケーションでSimpleTestを使い続けることもできます。SimpleTestをずっとサポートすることはもうないでしょう。そして、PHPUnitに移行することもまた推奨されます。テストを移行する方法についての更なる情報は、 <a href="phpunit-migration-hints">PHPUnitへ移行するヒント</a>を見てください。</p>
+<h3>グループテストの廃止</h3>
+<p>PHPUnitはグループテストと単一のテストケースを、テスト実行の中で区別しません。このため、グループテストのオプションと、古い形式のグループテストは削除されました。GroupTestをPHPUnit_Framework_Testsuiteのサブクラスに移行することをお勧めします。CakePHPのテストスイートの中にこのサンプルとなるものがいくつか見つけられるでしょう。また、<code>TestManager</code>のメソッドに依存していたグループテストも削除されました。</p>
+<h3>テストスイートのシェル</h3>
+<p>テストスイートのシェルはその呼び出しがシンプルに、また拡張がされました。今や、<code>case</code>と<code>group</code>を識別する必要はなくなりました。全てのテストはテストケースであると家庭されます。以前は、<code>cake testsuite app case models/post</code>としていたでしょうが、<code>cake testsuite app models/post</code>とすることができるようになりました。</p>
+<p>テストスイートのシェルはPHPUnitのコマンドラインツールを使うように書き直されました。PHPUnitによって全てのコマンドラインオプションがサポートされています。全ての可能な修飾子のリストが<code>cake testsuite help</code>で参照できます。</p>
+<h2>モデル</h2>
+<p>関連モデルは遅延読み込みが為されるようになりました。存在しないモデルのプロパティに値を割り当てようとすると、エラーを投げるような事態を垣間見ることが出来るでしょう。</p>
 <pre>
 <code>$Post-&gt;inexistentProperty[] = 'value';</code>
 </pre>
-<p>will throw the error "Notice: Indirect modification of
-overloaded property $inexistentProperty has no effect". Assigning
-an initial value to the property solves the issue:</p>
+<p>上記は"Notice: Indirect modification of overloaded property $inexistentProperty has no effect"（訳：「注意：オーバーロードされた（訳注：<a href="http://php.net/manual/ja/language.oop5.overloading.php" title="PHP: オーバーロード - Manual">PHPのオーバーロード</a>のこと）プロパティの$inexistentPropertyへの間接的な変更は効果がありません。」）というエラーを投げることでしょう。以下のように、プロパティに初期値を与えることによってこの問題を解決できます。</p>
 <pre>
 <code>$Post-&gt;inexistentProperty = array();
 $Post-&gt;inexistentProperty[] = 'value';</code>
 </pre>
-<p>Or just declare the property in the model class:</p>
+<p>また、以下のようにモデルのクラスにプロパティを定義するだけでも解決できます。</p>
 <pre>
 <code>class Post {
     var $inexistantPropert = array();
 }</code>
 </pre>
-<p>Either of these approaches will solve the notice errors.</p>
-<h3>Database objets</h3>
-<p>DBOs were refactored for this version, being the use of PDO the
-major change. Check the <a href=
-"http://cakephp.lighthouseapp.com/projects/42648/20-dbo-changes">DBO
-changes page</a> for more information</p>
+<p>これらのどちらかのアプローチで<em>notice</em>エラーを回避できることでしょう。</p>
+<h3>データベースオブジェクト</h3>
+<p>DBOはこのバージョンで書き直され、PDOを使うようになったのが主要な変更点です。 更に詳しい情報は、<a href="20-dbo-changes">DBOの変更のページ</a>を見てください。</p>
 <h3>BehaviorCollection</h3>
 <ul>
-<li><code>BehaviorCollection</code> no longer
-<code>strtolower()</code>'s mappedMethods. Behavior mappedMethods
-are now case sensitive.</li>
+<li><code>BehaviorCollection</code>はmappedMethodsを<code>strtolower()</code>しないようになりました。ビヘイビアのmappedMethodsは大文字小文字を区別するようになりました。</li>
 </ul>
 <h2>プラグイン</h2>
 <p>プラグインはコンポーネント、ヘルパー、モデルに、マジックとして自身のプラグイン接頭辞を付け加えなくなりました。明示的に使いたいものを指定しなければなりません。以前は、</p>
