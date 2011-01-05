@@ -103,20 +103,10 @@ true;</code>を設定することによってそれを有効とすることが�
 }</code>
 </pre>
 <p>この<code>csrfExpires</code>プロパティは<code>strtotime()</code>と互換などのような値にもなり得ます。デフォルトでは、コンポーネントが有効な時<code>FormHelper</code>はCSRFトークンを含む<code>data[_Token][key]</code>を全てのフォームに追加します。</p>
-<h4>Handling missing or expired tokens</h4>
-<p>Missing or expired tokens are handled similar to in previous
-versions. The SecurityComponent's <code>blackHoleCallback</code>
-will be called, but with a 'csrf' parameter instead of 'auth' as in
-previous versions. This helps you better filter out CSRF token
-failures.</p>
-<h4>Using per-session tokens instead of one-time use tokens</h4>
-<p>By default a new CSRF token is generated for each request, and
-each token can only be used one. If a token is used twice, it will
-be blackholed. Sometimes, this behaviour is not desirable, as it
-can create issues with single page applications. You can toggle on
-longer, multi-use tokens by setting <code>csrfUseOnce</code> to
-false. This can be done in the components array, or in the
-<code>beforeFilter</code> of your controller.</p>
+<h4>不正、または期限切れのトークンの扱い</h4>
+<p>不正、または期限切れのトークンは以前のバージョンと同じように扱われます。Securityコンポーネントの<code>blackHoleCallback</code>が呼び出されますが、「auth」の代わりに「csrf」パラメータが付帯することでしょう。これはCSRFトークンの失敗を判別することのより良い助けになります。</p>
+<h4>ワンタイムトークンの代わりにセッション毎トークンを使う</h4>
+<p>デフォルトでは、新しいCSRFトークンが毎リクエストごとに生成され、それぞれのトークンは一回だけ使うことができます。トークンが二回使われると、ブラックホールに吸い込まれるでしょう。しばしば、この挙動は単一ページのアプリケーションで問題を生み出し、望まれないものとなります。<code>csrfUseOnce</code>をfalseに設定することによって、しばらくは有効なようにトークンを複数回使うように切り替えることができます。これはcomponents配列か、コントローラの<code>beforeFilter</code>ですることができます。</p>
 <pre>
 <code>var $components = array(
     'Security' =&gt; array(
@@ -124,33 +114,17 @@ false. This can be done in the components array, or in the
     )
 );</code>
 </pre>
-<p>This will tell the component that you want to re-use a CSRF
-token until it expires. If you are having issues with expired
-tokens, this is a good balance between security and ease of
-use.</p>
-<h4>Disabling the CSRF protection</h4>
-<p>There may be cases where you want to disable CSRF protection on
-your forms for some reason. If you do want to disable this feature,
-you can set <code>$this-&gt;Security-&gt;csrfCheck = false;</code>
-in your beforeFilter or use the components array. By default CSRF
-protection is enabled, and configured to use one-use tokens.</p>
-<h2>Controller</h2>
-<p>Controllers now have access to request and response objects. You
-can read more about these objects on their specific pages.</p>
-<h2>Console</h2>
-<p>The console for CakePHP 2.0 was almost entirely rebuilt. Several
-new features as well as some backwards incompatible changes were
-made. <a href="20-console">Read more about console
-changes</a></p>
-<h2>Pagination</h2>
-<p>Pagination now provides a default maxLimit for pagination at
-100.</p>
-<p>This limit can be overridden with the paginate variable on
-Controller.</p>
+<p>これはCSRFを存在期間のうちに再利用したいかどうかをコンポーネントに教えることになります。もし存在期間付きトークンで問題が発生しているとしたら、これはセキュリティと使いやすさの間で良いバランスを取ることでしょう。</p>
+<h4>CSRF対策の無効化</h4>
+<p>何らかの理由でCSRF対策を無効にしたい場合があると思います。もしどうしてもこの機能を無効にしたいなら、beforeFilterで<code>$this-&gt;Security-&gt;csrfCheck = false;</code>とするか、components配列でこれを使うことができます。デフォルトでは、CSRF対策は有効で、ワンタイムトークンを使うように設定されます。</p>
+<h2>コントローラー</h2>
+<p>コントローラはリクエストとレスポンスのオブジェクトを利用できるようになりました。これらのオブジェクトについては、専用ページで詳しく見ることが出来ます。</p>
+<h2>コンソール</h2>
+<p>CakePHP2.0のコンソールはほとんど完全に書き直されました。いくつかの新機能、また後方非互換な変更が加えられました。<a href="20-console">コンソールの変更について詳しく見る</a></p>
+<h2>ページネーション</h2>
+<p>ページネーションはページ付けに対して最大制限件数(<em>maxLimit</em>)を規定し、デフォルトは100です。</p>
+<p>この制限はコントローラーでpaginate変数を用いて上書き可能です。</p>
 <pre>
 <code>$this-&gt;paginate = array('maxLimit' =&gt; 1000);</code>
 </pre>
-<p>This default is provided to prevent user URL manipulation
-causing excessive strain on the database for subsequent requests,
-where a user would edit the 'limit' parameter to a very large
-number.</p>
+<p>このデフォルト値は、ユーザのURL操作で「limit」パラメータをとても大きな数値にしたリクエストのために、過大なデータベースの情報の引き出しを防ぐために提供されます。</p>
