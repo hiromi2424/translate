@@ -1,5 +1,4 @@
-<p>Brand new in 2.0 is the ability to passed arrays in named
-parameters. For example,</p>
+<p>2.0で真新しい機能として、名前付きパラメータの中に配列を渡せるということがあります。例えば、</p>
 <pre>
 <code>$url = Router::url(array(
   'controller' =&gt; 'posts',
@@ -10,19 +9,14 @@ parameters. For example,</p>
   )
 ));</code>
 </pre>
-<p>would generate the url
-<code>/posts/index/filter[published]:1/filter[frontpage]:1</code>.
-The parameters are then parsed and stored in your controller's
-passedArgs variable as an array, just as you sent them to
-<code>Router::url</code></p>
+<p>上記は<code>/posts/index/filter[published]:1/filter[frontpage]:1</code>というURLを生成することでしょう。そしてパラメータは解析されコントローラーのpassedArgsに<code>Router::url</code>に渡したものと正に同じものが格納されます。</p>
 <pre>
 <code>$this-&gt;passedArgs['filter'] = array(
   'published' =&gt; 1
   'frontpage' =&gt; 1
 );</code>
 </pre>
-<p>Arrays can be deeply nested as well, allowing you even more
-flexibility in passing arguments.</p>
+<p>また、配列は深くネストすることもできますので、引数を渡すことがより柔軟にできるようにもなります。</p>
 <pre>
 <code>$url = Router::url(array(
   'controller' =&gt; 'posts',
@@ -44,16 +38,14 @@ flexibility in passing arguments.</p>
   'users' =&gt; array(1, 2, 3)
 ));</code>
 </pre>
-<p>You would end up with a pretty long url like this (wrapped for
-easy of reading):</p>
+<p>最終的に次のようなとても長いURL（読みやすいように改行しています）になることでしょう。</p>
 <pre>
 <code>posts/search
   /models[post][order]:asc/models[post][filter][published]:1
   /models[comment][order]:desc/models[comment][filter][spam]:0
   /users[]:1/users[]:2/users[]:3</code>
 </pre>
-<p>And the resulting array that would be passed to the controller
-would match that which you passed to the router:</p>
+<p>そしてコントローラに渡されるであろう配列の結果としては、ルーターに渡したものと合致することでしょう。</p>
 <pre>
 <code>$this-&gt;passedArgs['models'] = array(
     'post' =&gt; array(
