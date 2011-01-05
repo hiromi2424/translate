@@ -1,0 +1,105 @@
+<p>In 2.0 Configure is able to load configuration files from a
+number of different sources. No longer are you forced to use PHP
+files, in the exact format the Configure used in the past. You can
+use either of the built-in config readers or create your own.</p>
+<h3>Built-in config file readers</h3>
+<p>CakePHP comes with two built-in configuration file readers.
+<code>PhpReader</code> is able to read PHP config files, in the
+same format that Configure has historically read.
+<code>IniReader</code> is able to read ini config files. See the
+<a href="http://php.net/parse_ini_file">PHP documentation</a> for
+more information on the specifics of ini files. To use a core
+config reader, you'll need to attach it to Configure:</p>
+<pre>
+<code>App::import('Core', 'config/PhpReader');
+// Read config files from app/config
+Configure::config('default', new PhpReader());
+
+// Read config files from another path.
+Configure::config('default', new PhpReader('/path/to/your/config/files/'));</code>
+</pre>
+<p>You can have multiple readers attached to Configure, each
+reading different kinds of configuration files, or reading from
+different types of sources. You can interact with attached readers
+using a few other methods on Configure. To see check which reader
+aliases are attached you can use
+<code>Configure::configured()</code></p>
+<pre>
+<code>// Get the array of aliases for attached readers.
+Configure::configured()
+
+// Check if a specific reader is attached
+Configure::configured('default');</code>
+</pre>
+<p>You can also remove attached readers.
+<code>Configure::drop('default')</code> would remove the default
+reader alias, and any future attempts to load configuration files
+with that reader would fail.</p>
+<h3>Loading configuration</h3>
+<p>Once you've attached a config reader to Configure you can load
+configuration files:</p>
+<pre>
+<code>// Load my_file.php using the 'default' reader object.
+Configure::load('my_file', 'default');</code>
+</pre>
+<p>Loaded configuration files merge their data with the existing
+runtime configuration in Configure. This allows you to overwrite
+and add new values into the existing runtime configuration.</p>
+<h3>Storing runtime configuration</h3>
+<p>You can also store runtime configuration values for use in a
+future request. Since configure only remembers values for the
+current request, you will need to store any modified configuration
+information if you want to use it in subsequent requests.</p>
+<pre>
+<code>// Store the current configuration in the 'user_1234' key in the 'default' cache.
+Configure::store('user_1234', 'default');</code>
+</pre>
+<p>Stored configuration data is persisted in the Cache class. This
+allows you to store Configuration information in any storage engine
+that Cache can talk to.</p>
+<h3>Restoring runtime configuration</h3>
+<p>Once you've stored runtime configuration, you'll probably need
+to restore it so you can access it again.
+<code>Configure::restore()</code> does exactly that.</p>
+<pre>
+<code>// restore runtime configuration from the cache.
+Configure::restore('user_1234', 'default');</code>
+</pre>
+<p>When restoring configuration information its important to
+restore it with the same key, and cache configuration as was used
+to store it. Restored information is merged on top of the existing
+runtime configuration.</p>
+<h3>Creating your own Configuration readers</h3>
+<p>Since configuration readers are an extensible part of CakePHP,
+you can create configuration readers in your application and
+plugins. Configuration readers need to implement the
+<code>ConfigReaderInterface</code>. This interface defines a read
+method, as the only required method. If you really like XML files,
+you could create a simple Xml config reader for you
+application.</p>
+<pre>
+<code>// in app/libs/config/xml_reader.php
+App::import('Core', 'Xml');
+class XmlReader implements ConfigReaderInterface {
+    function __construct($path = CONFIGS) {
+        $this-&gt;_path = $path;
+    }
+
+    function read($key) {
+        $xml = Xml::build($this-&gt;_path . $key . '.xml');
+        return Xml::toArray($xml);
+    }
+}</code>
+</pre>
+<p>In your <code>app/config/bootstrap.php</code> you could attach
+this reader and use it.</p>
+<pre>
+<code>App::import('Libs', 'config/XmlReader');
+Configure::config('xml', new XmlReader());
+...
+
+Configure::load('my_xml');</code>
+</pre>
+<p>The <code>read()</code> method of a config reader, must return
+an array of the configuration information that the resource named
+<code>$key</code> contains.</p>

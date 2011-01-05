@@ -1,0 +1,128 @@
+<p>In the past, testing controllers in CakePHP always had its
+hiccups. In 2.0, <code>testAction</code> was written from the
+ground up to allow for mocking and an all-inclusive set of
+results.</p>
+<p>To gain this new functionality, you'll need to do is extend your
+test case by <code>ControllerTestCase</code> instead of the typical
+<code>CakeTestCase</code>. <code>ControllerTestCase</code> gives
+you access to two new methods, <code>testAction</code> and
+<code>generate</code> and several convenient variables:</p>
+<p><strong>ControllerTestCase</strong></p>
+<ul>
+<li><code>generate()</code> - Generates a mock controller, along
+with model and component classes</li>
+<li><code>testAction()</code> - Called the same way as the old
+testAction, but with 20% more awesomeness</li>
+<li><code>controller</code> - The generated controller. You can
+overwrite this with you own fancy mocked controller if you have
+one</li>
+<li><code>autoMock</code> - Automatically mock controllers. Set to
+<code>true</code> and skip <code>generate()</code> (default:
+false)</li>
+<li><code>loadRoutes</code> - Load your custom routes to use in
+parsing the urls (default: true)</li>
+<li><code>vars</code> - The view vars set by your action</li>
+<li><code>view</code> - The rendered view</li>
+<li><code>contents</code> - The entire rendered contents (including
+the layout)</li>
+<li><code>return</code> - The returned value, if any. This is
+useful for <code>requestAction</code> tests</li>
+</ul>
+<p><strong>Backwards Compatibility</strong></p>
+<p>The only backwards compatibility lost is the use of the
+'fixturize' option. Everything else should work as normal as long
+as you extend any test cases using <code>testAction()</code> by
+<code>ControllerTestCase</code> instead of
+<code>CakeTestCase</code>.</p>
+<p><strong>Generating Mocked Controllers</strong></p>
+<p><code>generate()</code> takes the hard work out of generating
+mocks on your controller. If you decide to generate a controller to
+be used in testing, you can generate mocked versions of its models
+and components along with it.</p>
+<pre>
+<code class="php">$Posts = $this-&gt;generate('Posts', array(
+  'methods' =&gt; array(
+    'isAuthorized'
+  ),
+  'models' =&gt; array(
+    'Post' =&gt; array('save')
+  ),
+  'components' =&gt; array(
+    'RequestHandler' =&gt; array('isPut'),
+    'Email' =&gt; array('send'),
+    'Session'
+)
+));</code>
+</pre>
+<p>The above would create a mocked <code>PostsController</code>,
+stubbing out the <code>isAuthorized</code> method. The attached
+<code>Post</code> model will have <code>save()</code> stubbed, and
+the attached components would have their respective methods
+stubbed. You can choose to stub an entire class by not passing
+methods to it, like <code>Session</code> in the example. Generated
+controllers are automatically used as the testing controller to
+test. To enable automatic generation, set the <code>autoMock</code>
+variable on the test case to <code>true</code>. If
+<code>autoMock</code> is false, your original controller will be
+used in the test. Sending headers is stubbed so the test still
+runs. You can access the controller in the <code>controller</code>
+variable on the test case.</p>
+<p><strong>Testing Controller Actions</strong></p>
+<p>The <code>testAction</code> has been reworked to give you all of
+the information you want in one run. The arguments are the same as
+before, so you can pass data, choose the method and select your
+return results. Due to its inconsistent nature,
+<code>fixturize</code> was removed. You can still easily use
+fixtures in the test case as before.</p>
+<pre>
+<code class="php">$this-&gt;testAction('/posts/index');
+$this-&gt;assertIsA($this-&gt;vars['posts'], 'array');</code>
+</pre>
+<p>In its simplest form, <code>testAction</code> will run
+<code>PostsController::index()</code> on your testing controller
+(or an automatically generated one), including all of the mocked
+models and components. The results of the test are stored in the
+<code>vars</code>, <code>contents</code>, <code>view</code>, and
+<code>return</code> variables. Also available is a
+<code>headers</code> variable which gives you access to the headers
+that would have been sent, allowing you to check for redirects.</p>
+<pre>
+<code class="php">function testAdd() {
+  $Posts = $this-&gt;generate('Posts', array(
+    'components' =&gt; array(
+      'Session',
+      'Email' =&gt; array('send')
+    )
+  ));
+  $Posts-&gt;Session-&gt;expects($this-&gt;once())-&gt;method('setFlash');
+  $Posts-&gt;Email-&gt;expects($this-&gt;once())-&gt;method('send')
+    -&gt;will($this-&gt;returnValue(true));
+  $this-&gt;testAction('/posts/add', array(
+    'data' =&gt; array(
+      'Post' =&gt; array('name' =&gt; 'New Post')
+    )
+  ));
+  $this-&gt;assertEquals($this-&gt;headers['Location'], '/posts/index');
+  $this-&gt;assertEquals($this-&gt;vars['post']['Post']['name'], 'New Post');
+  $this-&gt;assertPattern('/&lt;html/', $this-&gt;contents);
+  $this-&gt;assertPattern('/&lt;form/', $this-&gt;view);
+}</code>
+</pre>
+<p>This example shows a simple use of the new
+<code>testAction</code> and <code>generate()</code> methods. First,
+we generate a testing controller and mock the
+<code>SessionComponent</code>. Now that the
+<code>SessionComponent</code> is mocked, we have the ability to run
+testing methods on it. Assuming <code>PostsController::add()</code>
+redirects us to index, sends an email and sets a flash message, the
+test will pass. For the sake of example, we also check to see if
+the layout was loaded by checking the entire rendered contents, and
+checks the view for a form tag. As you can see, your freedom to
+test controllers and easily mock its classes is greatly expanded
+with these changes.</p>
+<p><strong>Custom Routes</strong></p>
+<p>The last feature of <code>ControllerTestCase</code> is the
+option to load your routes or not. By default, custom routes are
+loaded and used when parsing the url. If you wish to disable this,
+simply set <code>loadRoutes</code> to false on the case. This
+allows you to do things such as test for extension parsing.</p>

@@ -1,0 +1,209 @@
+<p>Migrating your test cases to PHPUnit 3.5 will hopefully be a
+fairly pain free transition. However, there are a few known
+differences between test cases under PHPUnit and SimpleTest.</p>
+<h1>Installing PHPUnit</h1>
+<h2>Installing from PEAR (Recommended)</h2>
+<p>PHPUnit recommends it be installed via the pear installer, to do
+so run the following commands:</p>
+<pre>
+<code>pear channel-discover pear.phpunit.de
+pear channel-discover components.ez.no
+pear channel-discover pear.symfony-project.com</code>
+</pre>
+<p>This has to be done only once. Now the PEAR Installer can be
+used to install packages from the PHPUnit channel:</p>
+<pre>
+<code>pear install phpunit/PHPUnit</code>
+</pre>
+<h2>Installing manually</h2>
+<p>In addition to pear, CakePHP also supports placing the PHPUnit
+directory inside one of your vendors directories along with all its
+dependencies.</p>
+<p>To do so, you need downlad a couple of projects and put in your
+vendors. Instruction below</p>
+<p>Go to <a href=
+"http://github.com/sebastianbergmann/phpunit">http://github.com/sebastianbergmann/phpunit</a>
+and download the version 3.5.5.<br>
+Extract the zip/tgz in a temporary directory and move
+sebastianbergmann*/PHPUnit to YOUR_PROJECT/app/vendors/PHPUnit</p>
+<p>Go to <a href=
+"http://github.com/sebastianbergmann/phpunit-mock-objects">http://github.com/sebastianbergmann/phpunit-mock-objects</a>
+and download the version 1.0.3.<br>
+Extract the zip/tgz in a temporary directory and move
+sebastianbergmann*/PHPUnit to YOUR_PROJECT/app/vendors/PHPUnit</p>
+<p>Go to <a href=
+"http://github.com/sebastianbergmann/php-code-coverage">http://github.com/sebastianbergmann/php-code-coverage</a>
+and download the version 1.0.2.<br>
+Extract the zip/tgz in a temporary directory and move
+sebastianbergmann*/PHP to YOUR_PROJECT/app/vendors/PHP</p>
+<p>Go to <a href=
+"http://github.com/sebastianbergmann/php-token-stream">http://github.com/sebastianbergmann/php-token-stream</a>
+and download the version 1.0.1.<br>
+Extract the zip/tgz in a temporary directory and move
+sebastianbergmann*/PHP to YOUR_PROJECT/app/vendors/PHP</p>
+<p>Go to <a href=
+"http://github.com/sebastianbergmann/php-timer">http://github.com/sebastianbergmann/php-timer</a>
+and download the version 1.0.0.<br>
+Extract the zip/tgz in a temporary directory and move
+sebastianbergmann*/PHP to YOUR_PROJECT/app/vendors/PHP</p>
+<p>Go to <a href=
+"http://github.com/sebastianbergmann/php-file-iterator">http://github.com/sebastianbergmann/php-file-iterator</a>
+and download the version 1.2.3.<br>
+Extract the zip/tgz in a temporary directory and move
+sebastianbergmann*/File to YOUR_PROJECT/app/vendors/File</p>
+<p>Go to <a href=
+"http://github.com/sebastianbergmann/php-text-template">http://github.com/sebastianbergmann/php-text-template</a>
+and download the version 1.0.0.<br>
+Extract the zip/tgz in a temporary directory and move
+sebastianbergmann*/Text to YOUR_PROJECT/app/vendors/Text</p>
+<p>To automate this task, you can execute the below commands in
+*UNIX/cygwin/mingw.</p>
+<pre>
+<code>cd /YOUR_APPLICATION/vendors
+mkdir -p /tmp/cake_phpunit
+wget --no-check-certificate https://github.com/sebastianbergmann/phpunit/tarball/3.5.5 -O /tmp/cake_phpunit/phpunit.tgz
+wget --no-check-certificate https://github.com/sebastianbergmann/phpunit-mock-objects/tarball/1.0.3 -O /tmp/cake_phpunit/mock_objects.tgz
+wget --no-check-certificate https://github.com/sebastianbergmann/php-code-coverage/tarball/1.0.2 -O /tmp/cake_phpunit/code_coverage.tgz
+wget --no-check-certificate https://github.com/sebastianbergmann/php-token-stream/tarball/1.0.1 -O /tmp/cake_phpunit/token_stream.tgz
+wget --no-check-certificate https://github.com/sebastianbergmann/php-timer/tarball/1.0.0 -O /tmp/cake_phpunit/timer.tgz
+wget --no-check-certificate https://github.com/sebastianbergmann/php-file-iterator/tarball/1.2.3 -O /tmp/cake_phpunit/file_iterator.tgz
+wget --no-check-certificate https://github.com/sebastianbergmann/php-text-template/tarball/1.0.0 -O /tmp/cake_phpunit/text_template.tgz
+tar zxvf /tmp/cake_phpunit/phpunit.tgz -C /tmp/cake_phpunit/
+tar zxvf /tmp/cake_phpunit/mock_objects.tgz -C /tmp/cake_phpunit/
+tar zxvf /tmp/cake_phpunit/code_coverage.tgz -C /tmp/cake_phpunit/
+tar zxvf /tmp/cake_phpunit/token_stream.tgz -C /tmp/cake_phpunit/
+tar zxvf /tmp/cake_phpunit/timer.tgz -C /tmp/cake_phpunit/
+tar zxvf /tmp/cake_phpunit/file_iterator.tgz -C /tmp/cake_phpunit/
+tar zxvf /tmp/cake_phpunit/text_template.tgz -C /tmp/cake_phpunit/
+mv /tmp/cake_phpunit/sebastianbergmann-phpunit-9243529/PHPUnit ./
+mv /tmp/cake_phpunit/sebastianbergmann-phpunit-mock-objects-3f46dd2/PHPUnit/* ./PHPUnit/
+mv /tmp/cake_phpunit/sebastianbergmann-php-code-coverage-c45df64/PHP ./
+mv /tmp/cake_phpunit/sebastianbergmann-php-token-stream-9d3c637/PHP/* ./PHP/
+mv /tmp/cake_phpunit/sebastianbergmann-php-timer-683d142/PHP/* ./PHP/
+mv /tmp/cake_phpunit/sebastianbergmann-php-file-iterator-67c4399/File ./
+mv /tmp/cake_phpunit/sebastianbergmann-php-text-template-c6d79d7/Text ./
+rm -rf /tmp/cake_phpunit</code>
+</pre>
+<h1>Differences between SimpleTest</h1>
+<p>There are a number of differences between SimpleTest and
+PHPUnit. The following is an attempt to list the most frequently
+encountered differences.</p>
+<h2>startCase() and endCase()</h2>
+<p>These methods are no longer supported. Use the static methods
+PHPUnit provides. <code>setupBeforeClass</code> and
+<code>tearDownAfterClass</code>.</p>
+<h2>start(), end(), before() and after()</h2>
+<p>These methods were part of SimpleTest's test case
+initialization. <code>start()</code> and <code>end()</code> have no
+replacements. You can use <code>setUp()</code> and
+<code>tearDown()</code> to replace <code>before()</code> and
+<code>after()</code>.</p>
+<h2>setUp() and tearDown()</h2>
+<p>In the past the methods setUp, tearDown, startTest and endTest
+where supported, and caused confusion as they looked almost as the
+same thing but in some cases you should use one or the other.</p>
+<p>In the new CakePHP test suite, it is recommended to use only
+setUp and tearDown. The methods startTest and endTest are still
+supported but are deprecated.</p>
+<h2>getTests</h2>
+<p>The method getTests is no longer supported. You can use filters
+instead. The web test runner now takes an additional query string
+parameter that allows you to specify a basic regular expression.
+This regular expression is used to restrict the methods that are
+run.</p>
+<p>e.g. <code>filter=myMethod</code></p>
+<p>Only tests containing the string <code>myMethod</code> will be
+run on the next refresh. The <code>cake testsuite</code> shell also
+supports a <code>-filter</code> option to filter methods.</p>
+<h2>Assertion methods</h2>
+<p>Many of the assertion methods have slightly different names
+between PHPUnit and SimpleTest. Where possible
+<code>CakeTestCase</code> provides a wrapper for the SimpleTest
+method names. These compatibility wrappers will be removed in
+2.1.0. The following methods will be affected.</p>
+<ul>
+<li>assertEqual -&gt; assertEquals</li>
+<li>assertNotEqual -&gt; assertNotEquals</li>
+<li>assertPattern -&gt; assertRegExp</li>
+<li>assertIdentical -&gt; assertSame</li>
+<li>assertNotIdentical -&gt; assertNotSame</li>
+<li>assertNoPattern -&gt; assertNotRegExp</li>
+<li>assertNoErrors -&gt; no replacement</li>
+<li>expectError -&gt; setExpectedException</li>
+<li>expectException -&gt; setExpectedException</li>
+<li>assertReference -&gt; assertSame</li>
+<li>assertIsA -&gt; assertType</li>
+</ul>
+<p>Some methods take their arguments in different orders, be sure
+to check the methods you are using when updating them.</p>
+<h2>Mock expectations</h2>
+<p>Mock objects are dramatically different between PHPUnit and
+SimpleTest. There is no compatibility wrapper between them.
+Updating mock object usage can be a painful process but we hope the
+following tips help you in your migration. Its highly recommended
+you familiarize yourself with the <a href=
+"http://www.phpunit.de/manual/3.0/en/mock-objects.html">PHPUnit
+Mock object documentation</a></p>
+<h3>Replacing method calls</h3>
+<p>The following regular expressions should help update some of
+your more straightforward mock object expectations.</p>
+<p><strong>Replace expectOnce() no params</strong></p>
+<pre>
+<code>expectOnce\(([^\)]+)\);
+expects(\$this-&gt;once())-&gt;method($1);</code>
+</pre>
+<p><strong>Replace expectOnce() with params</strong></p>
+<pre>
+<code>expectOnce\(([^,]+), array\((.+)\)\);
+expects(\$this-&gt;once())-&gt;method($1)-&gt;with($2);</code>
+</pre>
+<p><strong>Replace expectAt()</strong></p>
+<pre>
+<code>expectAt\((\d+), (.+), array\((.+)\)\);
+expects(\$this-&gt;at($1))-&gt;method($2)-&gt;with($3);</code>
+</pre>
+<p><strong>Replace expectNever</strong></p>
+<pre>
+<code>expectNever\(([^\)]+)\);
+expects(\$this-&gt;never())-&gt;method($1);</code>
+</pre>
+<p><strong>Replace setReturnValue</strong></p>
+<pre>
+<code>setReturnValue\(([^,]+), (.+)\);
+expects(\$this-&gt;once())-&gt;method($1)-&gt;will($this-&gt;returnValue($2));</code>
+</pre>
+<p><strong>Replace setReturnValueAt</strong></p>
+<pre>
+<code>setReturnValueAt((\d+), ([^,]+), (.+));
+expects(\$this-&gt;at($1))-&gt;method($2)-&gt;will($this-&gt;returnValue($3));</code>
+</pre>
+<h2>Group tests</h2>
+<p>Group tests have been removed as PHPUnit treats individual test
+cases and test suites as composable entities in the runner. You can
+place group tests inside the cases directory and use
+<code>PHPUnit_Framework_TestSuite</code> as a base class. An
+example Testsuite would look like:</p>
+<pre>
+<code>&lt;?php
+class AllJavascriptHelpersTest extends PHPUnit_Framework_TestSuite {
+
+/**
+ * Suite define the tests for this suite
+ *
+ * @return void
+ */
+    public static function suite() {
+        $suite = new PHPUnit_Framework_TestSuite('Js Helper and all Engine Helpers');
+
+        $helperTestPath = CORE_TEST_CASES . DS . 'libs' . DS . 'view' . DS . 'helpers' . DS;
+        $suite-&gt;addTestFile($helperTestPath . 'js.test.php');
+        $suite-&gt;addTestFile($helperTestPath . 'jquery_engine.test.php');
+        $suite-&gt;addTestFile($helperTestPath . 'mootools_engine.test.php');
+        $suite-&gt;addTestFile($helperTestPath . 'prototype_engine.test.php');
+        return $suite;
+    }
+}</code>
+</pre>
+<p>TestManger no longer has methods to add tests to group tests
+either. It is recommended that you use the methods PHPUnit
+offers.</p>

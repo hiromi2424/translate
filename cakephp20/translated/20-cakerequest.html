@@ -1,0 +1,166 @@
+<p>In previous versions request parameters were just a bunch of
+arrays that were copied to the various places they were needed in
+the framework. Methods related to request features were spread
+across <code>RequestHandler</code>, <code>Router</code>,
+<code>Dispatcher</code> and <code>Controller</code>. There was no
+authoritative object on what information the request contained. In
+many other frameworks the request is represented by a single
+object. This seemed like and excellent solution for CakePHP that
+would allow us to both consolidate the existing code, and provide
+some useful new features.</p>
+<h2>CakeRequest</h2>
+<p><code>CakeRequest</code> is the default request object used in
+CakePHP 2.0. It centralizes the many features available in the
+classes previously mentioned into a single object. This object is
+then passed by reference to the various objects that use request
+data. This makes changes to that object reflect uniformly across
+all references. Some of the duties <code>CakeRequest</code>
+performs include:</p>
+<ul>
+<li>Process the GET, POST, and FILES arrays into the data
+structures you are familiar with.</li>
+<li>Provide environment introspection pertaining to the request.
+Things like the headers sent, the client's IP address, and the
+subdomain/domain information about the application the server is
+running on.</li>
+<li>Provide access to request parameters both as array indices and
+object properties.</li>
+</ul>
+<p>The request object is available in all the objects that used to
+have a <code>params</code> property. The params property still
+exists and contains the request object, but its been deprecated in
+favour of <code>$this-&gt;request</code>. I think this gives easier
+to read code than <code>params</code> does, and more accurately
+reflects what it does.</p>
+<h2>Getting at params with CakeRequest</h2>
+<p>As previously mentioned <code>CakeRequest</code> can be accessed
+in an array fashion, like the old <code>params</code> property was
+or, you can use object property access. Since both these interfaces
+existed on controllers in previous versions, both interfaces were
+moved to the request object.</p>
+<pre>
+<code>$this-&gt;request['controller'];
+$this-&gt;request-&gt;controller;</code>
+</pre>
+<p>Will both access the same values. The two ways of accessing
+values was done to ease the transition to using CakeRequest. In
+addition to the normal route parameters, properties like
+<code>base</code>, <code>webroot</code>, and <code>here</code> were
+also moved off the controller and into the request object. These
+properties were again things that had been spread about the
+framework, but belonged with the request object.</p>
+<h2>Checking the request</h2>
+<p>Detecting various request conditions used to require using
+<code>RequestHandlerComponent</code>. These methods have been moved
+to <code>CakeRequest</code>, and offer a new interface alongside a
+more backwards compatible usage:</p>
+<pre>
+<code>$this-&gt;request-&gt;is('post');
+$this-&gt;request-&gt;isPost();</code>
+</pre>
+<p>Both method calls will return the same value. For the time being
+the methods are still available on RequestHandler, but are
+deprecated and still might be removed before the final release. You
+can also easily extend the request detectors that are available, by
+using <code>CakeRequest::addDetector()</code> to create new kinds
+of detectors. There are four different types of detectors that you
+can create:</p>
+<ul>
+<li>Environment value comparison - An environment value comparison,
+compares a value fetched from <code>env()</code> to a known value
+the environment value is equality checked against the provided
+value.</li>
+<li>Pattern value comparison - Pattern value comparison allows you
+to compare a value fetched from <code>env()</code> to a regular
+expression.</li>
+<li>Option based comparison - Option based comparisons use a list
+of options to create a regular expression. Subsequent calls to add
+an already defined options detector will merge the options.</li>
+<li>Callback detectors - Callback detectors allow you to provide a
+'callback' type to handle the check. The callback will receive the
+request object as its only parameter.</li>
+</ul>
+<p>Some examples would be:</p>
+<pre>
+<code>// Add a environment detector.
+$this-&gt;request-&gt;addDetector('post', array('env' =&gt; 'REQUEST_METHOD', 'value' =&gt; 'POST'));
+
+// Add a pattern value detector.
+$this-&gt;request-&gt;addDetector('iphone', array('env' =&gt; 'HTTP_USER_AGENT', 'pattern' =&gt; '/iPhone/i'));
+
+// Add an option detector
+$this-&gt;request-&gt;addDetector('internalIp', array(
+    'env' =&gt; 'CLIENT_IP', 
+    'options' =&gt; array('192.168.0.101, '192.168.0.100')
+));
+
+// Add a callback detector. Can either be an anonymous function or a regular callable.
+$this-&gt;request-&gt;addDetector('awesome', function ($request) {
+    return isset($request-&gt;awesome);
+});</code>
+</pre>
+<p><code>CakeRequest</code> also includes methods like
+<code>domain()</code>, <code>subdomains()</code> and
+<code>host()</code> to help applications with subdomains, have a
+slightly easier life.</p>
+<h2>CakeRequest and RequestHandlerComponent</h2>
+<p>Since many of the features <code>CakeRequest</code> offers used
+to be the realm of <code>RequestHandlerComponent</code> some
+rethinking was required to figure out how it still fits into the
+picture. I was never really happy with having to use a component
+that did many things on top of request introspection just to get
+the request introspection. For 2.0,
+<code>RequestHandlerComponent</code> acts as a sugar daddy.
+Providing a layer of sugar on top of the utility
+<code>CakeRequest</code> affords. Sugar like switching layout and
+views based on content types or ajax is the domain of
+<code>RequestHandlerComponent</code>. This separation of utility
+and sugar between the two classes lets you more easily pick and
+choose what you want and what you need.</p>
+<h2>Interacting with other aspects of the request</h2>
+<p>You can use <code>CakeRequest</code> to introspect a variety of
+things about the request. Beyond the detectors, you can also find
+out other information from various properties and methods.</p>
+<ul>
+<li><code>$this-&gt;request-&gt;webroot</code> contains the webroot
+directory.</li>
+<li><code>$this-&gt;request-&gt;base</code> contains the base
+path.</li>
+<li><code>$this-&gt;request-&gt;here</code> contains the request
+uri for the current request.</li>
+<li><code>$this-&gt;request-&gt;query</code> contains the query
+string parameters.</li>
+</ul>
+<h3>CakeRequest methods</h3>
+<p><strong>domain()</strong></p>
+<p>Returns the domain name your application is running on.</p>
+<p><strong>subdomains()</strong></p>
+<p>Returns the subdomains your application is running on as an
+array.</p>
+<p><strong>host()</strong></p>
+<p>Returns the host your application is on.</p>
+<p><strong>method()</strong></p>
+<p>Returns the HTTP method the request was made with.</p>
+<p><strong>referer()</strong></p>
+<p>Returns the referring address for the request.</p>
+<p><strong>clientIp()</strong></p>
+<p>Returns the current visitors IP address.</p>
+<p><strong>header()</strong></p>
+<p>Allows you to access any of the <code>HTTP_*</code> headers that
+were used for the request.</p>
+<pre>
+<code>$this-&gt;request-&gt;header('User-Agent');</code>
+</pre>
+<p>Would return the user agent used for the request.</p>
+<p><strong>data()</strong></p>
+<p>Provides dot notation access to request data. Allows for reading
+and modification of request data, calls can be chained together as
+well.</p>
+<pre>
+<code>// Modify some request data, so you can prepopulate some form fields.
+$this-&gt;request-&gt;data('Post.title', 'New post')
+    -&gt;data('Comment.1.author', 'Mark');
+
+// You can also read out data.
+$value = $this-&gt;request-&gt;data('Post.title');</code>
+</pre>

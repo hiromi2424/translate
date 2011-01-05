@@ -1,0 +1,73 @@
+<p>Brand new in 2.0 is the ability to passed arrays in named
+parameters. For example,</p>
+<pre>
+<code>$url = Router::url(array(
+  'controller' =&gt; 'posts',
+  'action' =&gt; 'index',
+  'filter' =&gt; array(
+    'published' =&gt; 1
+    'frontpage' =&gt; 1
+  )
+));</code>
+</pre>
+<p>would generate the url
+<code>/posts/index/filter[published]:1/filter[frontpage]:1</code>.
+The parameters are then parsed and stored in your controller's
+passedArgs variable as an array, just as you sent them to
+<code>Router::url</code></p>
+<pre>
+<code>$this-&gt;passedArgs['filter'] = array(
+  'published' =&gt; 1
+  'frontpage' =&gt; 1
+);</code>
+</pre>
+<p>Arrays can be deeply nested as well, allowing you even more
+flexibility in passing arguments.</p>
+<pre>
+<code>$url = Router::url(array(
+  'controller' =&gt; 'posts',
+  'action' =&gt; 'search',
+  'models' =&gt; array(
+    'post' =&gt; array(
+      'order' =&gt; 'asc',
+      'filter' =&gt; array(
+        'published' =&gt; 1
+      )
+    ),
+    'comment' =&gt; array(
+      'order' =&gt; 'desc',
+      'filter' =&gt; array(
+        'spam' =&gt; 0
+      )
+    ),
+  ),
+  'users' =&gt; array(1, 2, 3)
+));</code>
+</pre>
+<p>You would end up with a pretty long url like this (wrapped for
+easy of reading):</p>
+<pre>
+<code>posts/search
+  /models[post][order]:asc/models[post][filter][published]:1
+  /models[comment][order]:desc/models[comment][filter][spam]:0
+  /users[]:1/users[]:2/users[]:3</code>
+</pre>
+<p>And the resulting array that would be passed to the controller
+would match that which you passed to the router:</p>
+<pre>
+<code>$this-&gt;passedArgs['models'] = array(
+    'post' =&gt; array(
+      'order' =&gt; 'asc',
+      'filter' =&gt; array(
+        'published' =&gt; 1
+      )
+    ),
+    'comment' =&gt; array(
+      'order' =&gt; 'desc',
+      'filter' =&gt; array(
+        'spam' =&gt; 0
+      )
+    ),
+  ),
+);</code>
+</pre>
