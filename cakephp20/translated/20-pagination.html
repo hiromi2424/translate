@@ -1,75 +1,31 @@
-<p>Pagination has traditionally been a single method in Controller,
-this created a number of problems though. Pagination was hard to
-extend replace or modify. For 2.0 pagination has been extracted
-into a component. Controller::paginate() still exists, and serves
-as a convenience method for loading and using the
-<code>PaginatorComponent</code>.</p>
-<h3>More control over limits and ordering</h3>
-<p>You now have better control over the maximum value
-<code>limit</code> can be set to. In the past you had to manually
-ensure that limit was not increased to an arbitrarily high value.
-Now you can set the <code>maxLimit</code> option in your pagination
-settings. If the request's limit param is greater than this value,
-it will be capped. By default <code>maxLimit</code> is 100.</p>
-<p>Columns that are usable for ordering has been improved as well.
-In the past <code>Controller::paginate()</code>'s
-<code>$whitelist</code> parameter was used to whitelist values that
-you passed in. This was not overly productive, so the parameter was
-re-purposed to allow developers to define which columns ordering
-could be performed on.<br></p>
+<p>ページネーションは古くからControllerの一つのメソッドでありました。しかし、これは多くの問題を生み出していました。ページネーションを継承して書き換えたり、修正したりすることは難しいことでした。2.0ではページネーションはコンポーネントに展開されました。Controller::paginate()はまだ存在しており、<code>PaginatorComponent</code>を読み込んで使う便利なメソッドとして提供されます。</p>
+<h3>件数制限(<em>limits</em>)と順序付け(<em>ordering</em>)のより良い制御</h3>
+<p><code>limit</code>が設定できる最大値をより良く制御できるようになりました。以前は、手動で勝手に件数を高い値に上げられないように保証する必要がありました。現在は、ページネーションの設定で<code>maxLimit</code>オプションを設定できるようになりました。もしリクエストの件数がこの値より高い場合、規制が為されることでしょう。デフォルトでは、<code>maxLimit</code>は100です。</p>
+<p>順序付けで使えるカラムもまた改善されました。以前は<code>Controller::paginate()</code>の<code>$whitelist</code>引数が、渡したパラメータの値のホワイトリストとして使われてました。これはあまり生産的とは言えませんでしたので、この引数は開発者がどのカラムの順序付けが実行できるかを定義することに目的が変わりました。<br></p>
 <pre>
 <code> $this-&gt;paginate('Post', array(), array('title', 'slug'));</code>
 </pre>
-<p>This would allow sorting on the title and slug columns only. A
-user that sets <code>sort</code> to any other value will be
-ignored. By default sorting is enabled for all columns.</p>
-<h3>paginate() and paginateCount() on behaviors</h3>
-<p>You can now create <code>paginate()</code> and
-<code>paginateCount()</code> on behaviors. This was a commonly
-requested feature, and it made sense to implement. Adding this
-capability exposed new functionality in <code>Model</code>. You can
-now easily check whether or not a model and its behaviors can
-handle a method call.</p>
+<p>上記はtitleとslugカラムだけでソートできるようにします。ユーザーが<code>sort</code>をどんな他の値にしても無視されるでしょう。デフォルトでは、全てのカラムでソートは有効です。</p>
+<h3>ビヘイビアでのpaginate()とpaginateCount()</h3>
+<p>ビヘイビアで<code>paginate()</code>と<code>paginateCount()</code>を作ることができるようになりました。これはよく要請されていた機能で、実装することは有意義でした。この特性を採用することは新しい機能性を<code>Model</code>に見出しました。モデルかそのビヘイビアがメソッドの呼び出しを扱えるかどうかを簡単に確かめることができるようになりました。</p>
 <pre>
 <code>if ($this-&gt;Post-&gt;hasMethod('justDoIt')) {
-    // do it!
+    // なにかする
 }</code>
 </pre>
-<p><code>Model::hasMethod()</code> will return true if a model or
-its behaviors implements a method. In addition to checking normal
-behavior methods, it will also check mappedMethods. Behaviors
-implementing <code>paginate()</code> and
-<code>paginateCount()</code> should expect the same method
-signature as the model counter part, but with an additional
-<code>$model</code> param shifted on to the front of the parameter
-list.</p>
-<h3>Pagination with GET parameters</h3>
-<p>In previous versions of CakePHP you could only generate
-pagination links using named parameters. But if pages were
-requested with GET parameters they would still work. For 2.0, we
-decided to make how you generate pagination parameters more
-controlled and consistent. You can choose to use either querystring
-or named parameters in the component. Incoming requests will accept
-only the chosen type, and the <code>PaginatorHelper</code> will
-generate links with the chosen type of parameter.</p>
+<p><code>Model::hasMethod()</code>はモデルかビヘイビアメソッドを定義していればtrueを返すでしょう。これはビヘイビアの普通のメソッドに加えて、mappedMethodsもチェックします。ビヘイビアの<code>paginate()</code>と<code>paginateCount()</code>は、モデルと対象のものと同じメソッド特性の引数リストの先頭に<code>$model</code>引数を挿入したものを実装すべきです。</p>
+<h3>GETパラメータを用いたページネーション</h3>
+<p>CakePHPの以前のバージョンでは、ページネーションのリンクは名前付きパラメータを使ってのみ生成が可能でした。それでも、もしGETパラメーターでページがリクエストされたらページネーションは動作していました。2.0では、ページネーションのパラメーターを生成する方法を、操作性を上げ、矛盾のないようにすることを決意しました。クエリ文字列を使うか、名前付パラメーターを使うかをコンポーネントで選ぶことができます。やってくるリクエストは選らんだ種類だけが受け入れられます。また、<code>PaginatorHelper</code>は選んだ種類のパラメーターを用いてリンクを生成するでしょう。</p>
 <pre>
 <code>var $paginate = array(
     'paramType' =&gt; 'querystring'
 );</code>
 </pre>
-<p>The above would enable querystring parameter parsing and
-generation. You can also modify the $settings property on the
-PaginatorComponent.</p>
+<p>上記はクエリ文字列パラメーターを解析し生成することを有効にします。また、PaginatorComponentの$settingsプロパティを修正することもできます。</p>
 <pre>
 <code>$this-&gt;Paginator-&gt;settings['paramType'] = 'querystring';</code>
 </pre>
-<p>By default all the typical paging parameters will be converted
-into querystring arguments, when querystring arguments are used. If
-you want to force other routing parameters to be treated as
-querystring parameters you can use
-<code>$this-&gt;Paginator-&gt;options(array('convertKeys' =&gt;
-array('your', 'keys', 'here)));</code>.</p>
-<h3>Additional rel attributes on generated links</h3>
-<p>The links generated by <code>first()</code>,
-<code>last()</code>, <code>next()</code> and <code>prev()</code>
-all include rel attributes with the appropriate values.</p>
+<p>デフォルトでは、クエリ文字列が使われているときは全ての種類のページングパラメーターはクエリ文字列に変換されます。もし他のルーティングパラメーターを強制的にクエリ文字列として扱いたいなら、<code>$this-&gt;Paginator-&gt;options(array('convertKeys' =&gt;
+array('your', 'keys', 'here)));</code>とできます。</p>
+<h3>生成されたリンクへのrel属性の追加</h3>
+<p><code>first()</code>、<code>last()</code>、<code>next()</code>、<code>prev()</code>で生成されたリンクは全て適切な値のrel属性を含みます。</p>

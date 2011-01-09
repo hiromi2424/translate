@@ -1,26 +1,9 @@
-<h2>View Changes in 2.0</h2>
-<p>For 2.0 the View layer had a few changes done to help decrease
-coupling, and provide greater power and flexibility to
-developers.</p>
-<h3>Callback positioning changes</h3>
-<p>beforeLayout used to fire after <code>scripts_for_layout</code>
-and <code>content_for_layout</code> were prepared. In 2.0,
-<code>beforeLayout</code> is fired before any of the special
-variables are prepared, allowing you to manipulate them before they
-are passed to the layout, the same was done for
-<code>beforeRender</code>. It is now fired well before any view
-variables are manipulated. In addition to these changes, helper
-callbacks always receive the name of the file about to be rendered.
-This combined with helpers being able to access the view through
-<code>$this-&gt;_View</code> and the current view content through
-<code>$this-&gt;_View-&gt;content</code> gives you more power than
-ever before.</p>
-<h3>Helper callback signature changes</h3>
-<p>Helper callbacks now always get one argument passed in. For
-<code>beforeRender</code> and <code>afterRender</code> it is the
-view file being rendered. For <code>beforeLayout</code> and
-<code>afterLayout</code> it is the layout file being rendered. Your
-helpers function signatures should look like.</p>
+<h2>2.0でのビューの変更</h2>
+<p>2.0では、密結合を減らし、開発者により強い力と柔軟性を提供するために、ビューの階層構造が少し変更されました。</p>
+<h3>コールバックの位置の変更</h3>
+<p>以前はbeforeLayoutは<code>scripts_for_layout</code>と<code>content_for_layout</code>が準備された後に起動されていました。2.0では、全ての特殊な変数が準備される前に<code>beforeLayout</code>が起動するようになり、レイアウトにそれらの変数が渡される前に操作することが可能になります。<code>beforeRender</code>もまた同様で、ビューでの変数全てが操作される前に起動するようになりました。これらの変更に加え、ヘルパーのコールバックはレンダリングするファイル名を常に受け取るようになりました。これはヘルパーが<code>$this-&gt;_View</code>を通してビューに、<code>$this-&gt;_View-&gt;content</code>を通してその時点でのビューのコンテンツにアクセスできることと併せて、以前より強い制御ができるようになります。</p>
+<h3>ヘルパーのコールバックの特性の変更</h3>
+<p>ヘルパーのコールバックは常に一つの引数、<code>beforeRender</code>と<code>afterRender</code>にはレンダリングされるビューファイルが、<code>beforeLayout</code>と<code>afterLayout</code>にはレンダリングされるレイアウトファイルが与えられるようになりました。ヘルパーの関数特性は以下のようにする必要があります。</p>
 <pre>
 <code>function beforeRender($viewFile) {
 
@@ -39,37 +22,19 @@ function afterLayout($layoutFile) {
 }</code>
 </pre>
 <h3>View::$output</h3>
-<p>View will now always have the last rendered content (view or
-layout) accessible through <code>$this-&gt;output</code>. In
-helpers you can use <code>$this-&gt;_View-&gt;output</code>.
-Modifying this property will change the content that comes out of
-the view rendering.</p>
-<h3>Element caching with Cache class</h3>
-<p>Element caching in 2.0 is done with the <code>Cache</code>
-class. This allows you to use faster caching storage like APC or
-Memcache for frequently used elements. By default View will store
-element caches in the <code>default</code> configuration. You can
-change the default cache configuration View uses, by setting
-<code>$this-&gt;elementCache</code> in your view files. You can
-also set caching information per element similar to before.</p>
+<p>Viewは常に最後にレンダリングしたコンテンツ（ビューまたはレイアウト）を保持するようになりました。<code>$this-&gt;output</code>でアクセスできます。ヘルパーでは<code>$this-&gt;_View-&gt;output</code>とできます。このプロパティを更新すると、ビューのレンダリングの結果となるコンテンツを変更することになるでしょう。</p>
+<h3>Cacheクラスを用いたエレメントのキャッシュ</h3>
+<p>2.0でのエレメントのキャッシュは<code>Cache</code>クラスを用いて行われます。これは頻繁に使われるエレメントにAPCやMemcacheなどの速いキャッシュ機構を使うことを可能にします。デフォルトでは、Viewはエレメントのキャッシュを<code>default</code>設定に格納するでしょう。ビューファイルで<code>$this-&gt;elementCache</code>を設定することによってViewが使うデフォルトのキャッシュ設定を変えることができます。また、以前と同じようにエレメント毎のキャッシュ情報をセットすることができます。</p>
 <pre>
 <code>echo $this-&gt;element('side_menu', array('cache' =&gt; true));</code>
 </pre>
-<p>Would enable caching for an element, and store it in the view
-<code>elementCache</code> configuration.</p>
-<h4>Changing the cache configuration used for elements</h4>
-<p>You can store the cached version of the element into a specific
-cache configuration by setting the config value on the cache
-parameter.</p>
+<p>上記はエレメントのキャッシュを有効にし、ビューの<code>elementCache</code>設定に書き出すでしょう。</p>
+<h4>エレメントに使われるキャッシュ設定を変更する</h4>
+<p>cacheパラメーターのconfigという値を設定することによって、特定のキャッシュ設定にエレメントのキャッシュを書き出すことができます。</p>
 <pre>
 <code>echo $this-&gt;element('side_menu', array('cache' =&gt; array('config' =&gt; 'long_term')));</code>
 </pre>
-<p>This would store and read the cached version of the element in
-the <code>long_term</code> cache. Unlike previous versions, you
-cannot directly control the duration of the element cache from the
-<code>element()</code> call. Instead you should create the
-appropriate cache configurations in your application's
-bootstrap.php.</p>
+<p>上記は<code>long_term</code>キャッシュにおいて、キャッシュの書き出しとキャッシュされたエレメントの読み込みを行うことでしょう。以前のバージョンと違い、<code>element()</code>の呼び出しから直接エレメントのキャッシュの継続時間を操作することはできません。代わりにアプリケーションのbootstrap.phpに適切なキャッシュ設定を作成する必要があります。</p>
 <h4>Creating custom storage keys</h4>
 <p>As before you can use custom storage keys for element caching,
 if the default ones don't work. By default, View uses the element
