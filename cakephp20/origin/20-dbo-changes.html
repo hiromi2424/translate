@@ -36,6 +36,10 @@ array of query values as second parameter:</p>
 currently it only understands the "log" option</p>
 <ul>
 <li>
+<p>DboSource::value() looses it's third parameter, it was not used
+anyways</p>
+</li>
+<li>
 <p>DboSource::fetchAll() now accepts an array as second parameter,
 to pass values to be bound to the query, third parameter was
 dropped. Example:</p>
@@ -72,4 +76,10 @@ method is called the same amount of times</li>
 cake 1.3 is that in will only support Sqlite 3.x . It is a great
 alternative for development apps, and quick running test
 cases.</li>
+<li>Boolean column values will be casted to php native boolean type
+automatically, so make sure you update you test cases and code if
+you were expecting the returned value to be a string or an integer:
+I you had a "published" column in the past using mysql all values
+returned from a find would be numeric on the past, now they are
+strict boolean values.</li>
 </ul>

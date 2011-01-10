@@ -184,6 +184,13 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 <ul>
 <li><code>JsBaseEngineHelper</code>は抽象クラスとなりました。以前はエラーを吐いていたメソッド全てを実装する必要があるでしょう。</li>
 </ul>
+<h3>Paginatorヘルパー</h3>
+<ul>
+<li><code>PaginatorHelper::sort()</code>は<code>title</code>と<code>key</code>引数の順序を逆に取るようになりました。<code>$key</code>は常に最初の引数になります。これは2番目のものを追加するときに引数を交換(<em>swap</em>)する必要を無くすためです。</li>
+<li>Paginatorヘルパーは内部で使われるページングのパラメーターに数多くの変更があります。<code>defaults</code>キーは削除されました。</li>
+<li>Paginatorヘルパーはクエリ文字列のページングパラメーターを用いてのリンクの生成をサポートするようになりました。</li>
+</ul>
+<p>一般的なページネーションに対していくつかの改善があります。その詳しい情報については、<a href="20-pagination">新しいページネーションの機能のページ</a>を見てください。</p>
 <h3>Formヘルパー</h3>
 <h4>$selectedパラメータの削除</h4>
 <p>$selectedパラメータはFormヘルパーのいくつかのメソッドから削除されました。全てのメソッドは<code>$attributes['value']</code>キーをサポートするようになり、<code>$selected</code>の代わりに使われるでしょう。この変更はFormヘルパーのメソッドを簡略化し、数多くの引数を減らし、<code>$selected</code>が作り出す重複を無くすものです。影響のあるメソッドは以下のとおりです。</p>

@@ -301,6 +301,22 @@ from CakePHP 1.2 to CakePHP 1.3 Guide</a></p>
 <li><code>JsBaseEngineHelper</code> is now abstract, you will need
 to implement all the methods that previously generated errors.</li>
 </ul>
+<h3>PaginatorHelper</h3>
+<ul>
+<li><code>PaginatorHelper::sort()</code> now takes the
+<code>title</code> and <code>key</code> arguments in the reverse
+order. <code>$key</code> will always be first now. This was done to
+prevent needing to swap arguments when adding a second one.</li>
+<li>PaginatorHelper had a number of changes to the paging params
+used internally. The <code>defaults</code> key has been
+removed.</li>
+<li>PaginatorHelper now supports generating links with paging
+parameters in the querystring.</li>
+</ul>
+<p>There have been a few improvements to pagination in general. For
+more information on that you should read the <a href=
+"20-pagination">new pagination features
+page</a></p>
 <h3>FormHelper</h3>
 <h4>$selected parameter removed</h4>
 <p>The $selected parameter was removed from several methods in
