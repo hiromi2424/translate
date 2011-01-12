@@ -5,7 +5,7 @@
 <p>PHP5に移行するということは、全てのメソッドとプロパティはアクセス修飾子を伴うように書き直されるということです。コード内でprivateもしくはprotectedメソッドをpublicスコープから参照しようと試みると、エラーに遭遇することになります。</p>
 <p>これは実際にはフレームワークに多大な変更を与えるわけではありませんが、現在、より厳しくなった可視性を持つメソッドと変数へのアクセスが不可能となったことを意味します。</p>
 <h2>多言語化・地域化（訳注：I18n, L10n）</h2>
-<p><code>__()</code><code>__()</code> (二つのアンダースコアでのショートカット関数)は常に翻訳を返り値として返すようになりました。（もはや出力はされません）</p>
+<p><code>__()</code> (二つのアンダースコアでのショートカット関数)は常に翻訳を返り値として返すようになりました。（もはや出力はされません）</p>
 <p>翻訳の結果を表示させたい場合は、</p>
 <pre>
 <code>echo __('My Message');</code>
@@ -88,10 +88,9 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 <li><code>RequestHandler::setContent()</code>は配列を一つの引数として指定することができないようになりました。両方の引数を与える必要があります。</li>
 </ul>
 <h2>cakeErrorの削除</h2>
-<p><code>cakeError()</code>メソッドは削除されました。<code>cakeError</code>の使用から<a href="20-exceptions-errors">例外を使う</a>ように切り替えることが推奨されています。</a>.
-<code>cakeError</code>が削除されたのは、それが例外のシミュレーションであった為です。CakePHP2.0では実際の例外が使われます。</p>
+<p><code>cakeError()</code>メソッドは削除されました。<code>cakeError</code>の使用から<a href="20-exceptions-errors">例外を使う</a>ように切り替えることが推奨されています。</a><code>cakeError</code>が削除されたのは、それがただの例外のシミュレーションであった為です。CakePHP2.0では実際の例外が使われます。</p>
 <h2>エラーハンドリング</h2>
-<p>エラーハンドリングの実装は2.0で劇的に変わりました。フレームワークの至るところに例外が導入され、エラーハンドリングはよりコントロールできるように、柔軟に書き直されました。更なることは、<a href="20-exceptions-errors">例外とエラーハンドリングのセクション</a>を読むことができます。</p>
+<p>エラーハンドリングの実装は2.0で劇的に変わりました。フレームワークの至るところに例外が導入され、エラーハンドリングはよりコントロールできるように、柔軟に書き直されました。詳しくは、<a href="20-exceptions-errors">例外とエラーハンドリングのセクション</a>を読むことができます。</p>
 <h2>ライブラリクラス</h2>
 <h3>CakeLog</h3>
 <ul>
@@ -296,11 +295,9 @@ $Post-&gt;inexistentProperty[] = 'value';</code>
 <ul>
 <li><code>ShellDispatcher</code>は標準出力、標準入力、標準エラー出力のファイルハンドルを持たないようになりました。</li>
 <li><code>ShellDispatcher::$shell</code>は削除されました。</li>
-<li><code>ShellDispatcher::$shellClass</code> has been
-removed.</li>
+<li><code>ShellDispatcher::$shellClass</code>は削除されました。</li>
 <li><code>ShellDispatcher::$shellName</code>は削除されました。</li>
-<li><code>ShellDispatcher::$shellCommand</code> has been
-removed.</li>
+<li><code>ShellDispatcher::$shellCommand</code>は削除されました。</li>
 <li><code>ShellDispatcher::$shellPaths</code>は削除されました。代わりに<code>App::path('shells');</code>を使ってください。</li>
 <li>ShellDispatcherは「help」を特殊な状態をもつマジックメソッドとして使わないようになりました。代わりに<code>--help/-h</code>、またオプションパーサーを使ってください。</li>
 </ul>
