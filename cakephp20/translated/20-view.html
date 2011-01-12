@@ -35,35 +35,20 @@ function afterLayout($layoutFile) {
 <code>echo $this-&gt;element('side_menu', array('cache' =&gt; array('config' =&gt; 'long_term')));</code>
 </pre>
 <p>上記は<code>long_term</code>キャッシュにおいて、キャッシュの書き出しとキャッシュされたエレメントの読み込みを行うことでしょう。以前のバージョンと違い、<code>element()</code>の呼び出しから直接エレメントのキャッシュの継続時間を操作することはできません。代わりにアプリケーションのbootstrap.phpに適切なキャッシュ設定を作成する必要があります。</p>
-<h4>Creating custom storage keys</h4>
-<p>As before you can use custom storage keys for element caching,
-if the default ones don't work. By default, View uses the element
-name, plugin, and passed param keys as the element cache key. If
-this key doesn't give you the uniqueness you need, you can define a
-custom key.</p>
+<h4>独自のストレージキーを作成する</h4>
+<p>もしデフォルトのものがうまく動かないなら、前に示したように、エレメントのキャッシュに独自のストレージキーを使えます。デフォルトでは、エレメントのキャッシュのキーとして、Viewはエレメントの名前、プラグイン、名前付き引数のキーを使います。もしこのキーが必要とするユニーク性をもたないなら、独自のキーを定義できます。</p>
 <pre>
 <code>echo $this-&gt;element('side_menu', array('cache' =&gt; array('key' =&gt; 'my_custom_key_value')));</code>
 </pre>
-<p>Custom key values are prefixed with <code>element_</code> before
-being stored in <code>Cache</code>. This helps namespace them from
-other content stored in the cache.</p>
-<h3>CacheHelper decoupled</h3>
-<p>In previous versions there was a tight coupling between
-<code>CacheHelper</code> and <code>View</code>. For 2.0 this
-coupling has been removed and <code>CacheHelper</code> just uses
-callbacks like other helpers to generate full page caches.</p>
-<h4>CacheHelper &lt;cake:nocache&gt; tags changed</h4>
-<p>In previous versions, <code>CacheHelper</code> used a special
-<code>&lt;cake:noncache&gt;</code> tag as markers for output that
-should not be part of the full page cache. These tags were not part
-of any XML schema, and were not possible to validate in HTML or XML
-documents. For 2.0, these tags have been replaced with HTML/XML
-comments.</p>
+<p>独自のキーの値は<code>Cache</code>に保存される前に<code>element_</code>を接頭辞とします。これは名前空間をキャッシュに保存される他のコンテンツから守ります。</p>
+<h3>Cacheヘルパーの分離</h3>
+<p>前バージョンでは<code>CacheHelper</code>と<code>View</code>の間に強固な密結合がありました。2.0ではこの密結合は取り除かれ、code>CacheHelper</code>はフルページキャッシュを生成するために他のヘルパーと同じくコールバックだけを使うようになりました。</p>
+<h4>Cacheヘルパーの &lt;cake:nocache&gt; タグの変更</h4>
+<p>前バージョンでは、<code>CacheHelper</code>は特別な<code>&lt;cake:noncache&gt;</code>タグをフルページキャッシュの一部とすべできはない出力の目印として使っていました。このタグはXMLスキーマの要素ではなく、HTMLまたはXMLドキュメントで有効となり得ませんでした。2.0では、このタグはHTML・XMLのコメントに置き換えられました。</p>
 <ul>
 <li><code>&lt;cake:noncache&gt;</code> becomes
 <code>&lt;!--nocache--&gt;</code></li>
 <li><code>&lt;/cake:nocache&gt;</code> becomes
 <code>&lt;!--/nocache--&gt;</code></li>
 </ul>
-<p>The internal code for full page view caches has also changed, so
-be sure to clear out view cache files when updating.</p>
+<p>また、更新時に必ずビューキャッシュのファイルを削除するように、フルページビューキャッシュのための内部コード変更されました。</p>
