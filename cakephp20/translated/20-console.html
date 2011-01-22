@@ -1,113 +1,67 @@
 <h2>app/console</h2>
-<p>app/console is a new directory in 2.0. It contains a cake
-executable for windows and *nix system. This removes the need to
-add cake to your PATH in order to easily access the cake console.
-From inside an app dir.</p>
+<p>app/consoleは2.0での新しいディレクトリです。これはWindowsと*nixシステムの実行形式であるcakeを含みます。これは簡易にcakeのコンソールにアクセスするためにPATHにcakeを追加する必要性を除去します。appディレクトリの中から、</p>
 <pre>
 <code>console/cake bake</code>
 </pre>
-<p>Would start up the bake shell.</p>
+<p>とすると、bakeのシェルが立ち上がることでしょう。</p>
 <h3>app/console/shells</h3>
-<p>Application shells no longer live in
-<code>app/vendors/shells</code>. They should be moved to
-<code>app/console/shells</code>. CakePHP will still look for shells
-in <code>app/vendors/shells</code>, but support for is deprecated
-and will be dropped next version. Additionally you can put tasks
-and templates in app/console.</p>
+<p>アプリケーションのシェルは<code>app/vendors/shells</code>に置かないようになりました。<code>app/console/shells</code>に移動するべきです。CakePHPはしばらくは<code>app/vendors/shells</code>を見ますが、これは非推奨となり次のバージョンでサポートしなくなるでしょう。加えて、タスクとテンプレートをapp/consoleの中に入れることもできます。</p>
 <ul>
-<li>app/console/shells/tasks - Where shells live</li>
-<li>app/console/shells/templates/ - Application specific code
-generation templates.</li>
+<li>app/console/shells/tasks - シェルの置き場所</li>
+<li>app/console/shells/templates/ - アプリケーション固有のテンプレート生成のコード</li>
 </ul>
-<h3>Plugin shells</h3>
-<p>Plugin shells should also be moved to
-<code>$plugin_name/console/shells/</code> instead of
-<code>$plugin_name/vendors/shells</code>. This was done to make the
-directories more consistent with app, and cake internals.</p>
-<h2>New Console/Shell Features</h2>
-<p>CakePHP has had a console framework since 1.2. For 2.0 that
-framework was heavily re-factored and de-coupled. Several features
-have been introduced as separate classes.</p>
+<h3>プラグインのシェル</h3>
+<p>プラグインのシェルもまた、<code>$plugin_name/vendors/shells</code>の代わりに<code>$plugin_name/console/shells/</code>に移動するべきです。これはディレクトリが更にアプリケーションとcakeの内部に対して矛盾が無いようにするためのものです。</p>
+<h2>新しいコンソール・シェルの機能</h2>
+<p>CakePHPは1.2からコンソールのフレームワークを所有するようになりました。2.0ではそのフレームワークは大量に書き直され、また疎結合化されました。いくつかの機能は分離されたクラスに導入されました。</p>
 <ul>
-<li>ConsoleOutput - For outputting console content.</li>
-<li>ConsoleInput - For getting user input in the console.</li>
-<li>ConsoleOptionParser - For defining command line API's to your
-shells, and providing help and parameter validation.</li>
-<li>TaskCollection - A loader for loading tasks.</li>
+<li>ConsoleOutput - コンソールのコンテンツを出力するためのもの。</li>
+<li>ConsoleInput - コンソールでユーザーの入力を受け取るためのもの。</li>
+<li>ConsoleOptionParser - シェルにコマンドラインのAPIを定義、ヘルプとパラメーターの検証を提供するもの。</li>
+<li>TaskCollection - タスクを読み込むローダー。</li>
 </ul>
-<p>Additional new features have been introduced on
-<code>Shell</code>. Support for output levels, and output
-suppression have been added. When calling
-<code>$this-&gt;out()</code> you can define the lowest output level
-the messages should appear. By default there are 3 built-in levels,
-Quiet, Normal and Verbose. Each level has a matching constant on
-<code>Shell</code>. These levels represent the lowest level that
-the output will print out.<br></p>
+<p>シェルに新しい機能が導入されました。出力レベルのサポートと、出力の抑制が追加されました。<code>$this-&gt;out()</code>を呼び出すとき、メッセージが出現する最低出力レベルを指定できます。デフォルトでは、静寂（<em>Quiet</em>）、普通（<em>Normal</em>）、冗長（<em>Verbose</em>）の３つの組み込み済みのレベルがあります。各レベルはシェルの定数に一致します。これらのレベルは出力が表示する最低のレベルを意味します。<br></p>
 <pre>
-<code>// would appear at all levels.
+<code>// 全てのレベルで表示されるでしょう。
 $this-&gt;out('Quiet message', 1, Shell::QUIET);
 
-// would not appear when quiet output is toggled
+// 静寂出力が選択された時ひょうじされないでしょう。
 $this-&gt;out('normal message', 1, Shell::NORMAL);
 $this-&gt;out('loud message', 1, Shell::VERBOSE);
 
-// would only appear when verbose output is enabled.
+// 冗長出力が有効な時のみ表示されるでしょう。
 $this-&gt;out('extra message', 1, Shell::VERBOSE);</code>
 </pre>
-<p>You can control the output level of shells, by using the
-<code>--quiet</code> and <code>--verbose</code> options. These
-options are added by default, and allow you to consistently control
-output levels inside your CakePHP shells.</p>
+<p><code>--quiet</code>と<code>--verbose</code>オプションを使ってシェルの出力レベルを制御できます。これらのオプションはデフォルトで追加され、あなたのCakePHPのシェルの中で共通に出力を制御することを可能にします。</p>
 <h3>AppShell</h3>
-<p>New for 2.0 is <code>AppShell</code>, and if you are familiar
-with <code>AppController</code> or <code>AppModel</code> then you
-should know what AppShell could be used for. You can extend
-<code>AppShell</code> in your shells to allow inheritance or define
-common tasks/models for your shells to use.</p>
+<p>2.0で目新しいのは<code>AppShell</code>で、<code>AppController</code>や<code>AppModel</code>を良く知っているのなら、AppShellが何のために使えるのか知っているはずです。独自のシェルで使う共通のタスク・モデルを継承・定義することを可能にするために、独自のシェルで<code>AppShell</code>を継承することができます。</p>
 <pre>
 <code>class MyShell extends AppShell {
 
 }</code>
 </pre>
-<p>Shell's will merge their <code>$uses</code> and
-<code>$tasks</code> properties with their parent classes
-properties, just as models and controllers do. This allows you to
-keep your Shell code DRY, and only define common tasks once. To use
-<code>AppShell</code> create
-<code>app/console/shells/app_shell.php</code> and put the following
-in it.</p>
+<p>シェルはモデルやコントローラがするのとちょうど同じように、その親クラスのプロパティを用いて<code>$uses</code>と<code>$tasks</code>プロパティをマージします。これにより、シェルのコードをDRYに保ち、共通のタスクを一度定義すればいいようにできます。<code>AppShell</code>を使うには<code>app/console/shells/app_shell.php</code>を作成し、その中に以下のものを書いてください。</p>
 <pre>
 <code>class AppShell extends Shell {
-    // your code goes here.
+    // コードをここに書く
 }</code>
 </pre>
 <h3>Bake</h3>
-<p>Delete links in views now uses <code>Form::postLink()</code>
-method to create the links. It's, associated with check of HTTP
-method in controller, to avoid a delete a record accessing directly
-the delete link, without confirmation.</p>
-<h3>Plugin tasks</h3>
-<p>Tasks can now be loaded from plugins using the plugin dot
-syntax.</p>
+<p>ビューでの削除リンクは<code>Form::postLink()</code>メソッドを使ってリンクを生成するようになりました。これは、コントローラでのHTTPメソッドのチェックに関連しており、確認を挟まない、直接削除リンクにアクセスしてのレコードの削除を無効にします。</p>
+<h3>プラグインのタスク</h3>
+<p>タスクはプラグインのドット記法を用いてプラグインから読み込むことができるようになりました。</p>
 <pre>
 <code>public $tasks = array('ProgressBar.ProgressBar');</code>
 </pre>
-<p>Would allow your Shell/Task to access $this-&gt;ProgressBar
-which will load and construct the task from inside the ProgressBar
-Task.</p>
-<h3>Task chains can be infinite in depth</h3>
-<p>Previously getting Tasks of Tasks working required some
-workarounds. Tasks and Shells now use TaskCollection to lazily load
-tasks. This allows task chains to be traversed indefinitely.</p>
-<h3>Loading tasks on the fly with TaskCollection</h3>
-<p>You can load tasks on the fly using the Task collection object.
-You can load tasks that were not declared in <code>$tasks</code>
-this way.</p>
+<p>これによりアプリケーションのシェル・タスクが $this-&gt;ProgressBar にアクセス することができるようになります。また、 $this-&gt;ProgressBar はProgressBarタスクの内部からタスクを読み出し初期化することになるでしょう。</p>
+<h3>タスクの連結は無限の階層にできるようになった</h3>
+<p>以前は、タスクの中のタスクを動作させるためにはいくつかの回避策が必要でした。タスクとシェルはTaskCollectionを使ってタスクをLazyに読み込むようになりました。これにより無制限にタスクの連結が広げられるようになります。</p>
+<h3>TaskCollectionを用いた動的なタスクの読み込み</h3>
+<p>タスクコレクションオブジェクトを用いて動的にタスクを読み込むことができます。<code>$tasks</code>で定義されていないタスクをこの方法で読み込むことができます。</p>
 <pre>
 <code>$Project = $this-&gt;Tasks-&gt;load('Project');</code>
 </pre>
-<p>Would load and return a <code>ProjectTask</code> instance. You
-can load tasks from plugins using</p>
+<p>これは<code>ProjectTask</code>のインスタンスを読み込み、それを返すでしょう。以下のようにしてプラグインからタスクを読み込むことができます。</p>
 <pre>
 <code>$ProgressBar = $this-&gt;Tasks-&gt;load('ProgressBar.ProgressBar');</code>
 </pre>
