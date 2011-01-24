@@ -1,32 +1,16 @@
-<p>In the past, testing controllers in CakePHP always had its
-hiccups. In 2.0, <code>testAction</code> was written from the
-ground up to allow for mocking and an all-inclusive set of
-results.</p>
-<p>To gain this new functionality, you'll need to do is extend your
-test case by <code>ControllerTestCase</code> instead of the typical
-<code>CakeTestCase</code>. <code>ControllerTestCase</code> gives
-you access to two new methods, <code>testAction</code> and
-<code>generate</code> and several convenient variables:</p>
+<p>以前は、CakePHPでコントローラをテストすることは常に課題を抱えていました。2.0では、モックと全ての包括的な結果の集合のために<code>testAction</code>がゼロから書かれました。</p>
+<p>この新しい機能を手に入れるには、テストを典型的な<code>CakeTestCase</code>の代わりに<code>ControllerTestCase</code>で継承する必要があるでしょう。<code>ControllerTestCase</code>によって以下の二つの新しいメソッド、<code>testAction</code>と<code>generate</code>、またいくつかの便利な変数にアクセスできるようになります。</p>
 <p><strong>ControllerTestCase</strong></p>
 <ul>
-<li><code>generate()</code> - Generates a mock controller, along
-with model and component classes</li>
-<li><code>testAction()</code> - Called the same way as the old
-testAction, but with 20% more awesomeness</li>
-<li><code>controller</code> - The generated controller. You can
-overwrite this with you own fancy mocked controller if you have
-one</li>
-<li><code>autoMock</code> - Automatically mock controllers. Set to
-<code>true</code> and skip <code>generate()</code> (default:
-false)</li>
-<li><code>loadRoutes</code> - Load your custom routes to use in
-parsing the urls (default: true)</li>
-<li><code>vars</code> - The view vars set by your action</li>
-<li><code>view</code> - The rendered view</li>
-<li><code>contents</code> - The entire rendered contents (including
-the layout)</li>
-<li><code>return</code> - The returned value, if any. This is
-useful for <code>requestAction</code> tests</li>
+<li><code>generate()</code> - コントローラー（モデルとコンポーネントも）のモックを生成します。</li>
+<li><code>testAction()</code> - 古いtestActionと同じ方法で呼び出しますが、20%以上素晴らしくなっています。</li>
+<li><code>controller</code> - 生成されたコントローラー。改良を加えたモックコントローラーが他にあれば、これを上書きすることができます。</li>
+<li><code>autoMock</code> - 自動的にコントローラーのモックを作るか。<code>true</code>に設定することで<code>generate()</code>をスキップします（デフォルトはfalse）。</li>
+<li><code>loadRoutes</code> - URLを解析するとき、カスタムルートを読み込むかどうか（デフォルトはtrue）。</li>
+<li><code>vars</code> - アクションによってセットされたビュー変数</li>
+<li><code>view</code> - レンダリングされたビュー</li>
+<li><code>contents</code> - 全てのレンダリングされたコンテンツ（レイアウトを含む）</li>
+<li><code>return</code> - もしあったら返り値。これは<code>requestAction</code>のテストに便利です。</li>
 </ul>
 <p><strong>Backwards Compatibility</strong></p>
 <p>The only backwards compatibility lost is the use of the
