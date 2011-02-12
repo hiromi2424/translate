@@ -1,59 +1,35 @@
-<p>The HttpSocket class has undergone some changes.</p>
-<h2>Response are now an object</h2>
-<p>The <code>get()</code>, <code>post()</code>, <code>put()</code>,
-<code>delete()</code> and <code>request()</code> methods now
-returns the response as object. This object receive the raw content
-from remote and it is responsible to manipulate the data.<br>
-CakePHP comes with <code>HttpResponse</code> to manipulate the
-response as CakePHP 1.3. This class implements the <a href=
-"http://php.net/manual/en/class.arrayaccess.php">ArrayAccess</a>
-and <a href=
-"http://www.php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring">
-__toString()</a>, so you can continue using the
-<code>$http-&gt;response</code> as array and the return of request
-methods as string. But, will be more fast if you use it as
-object:</p>
+<p>HttpSocketクラスはいくつかの変化を遂げてきました。</p>
+<h2>レスポンスがオブジェクトになりました</h2>
+<p><code>get()</code>、<code>post()</code>、<code>put()</code>、<code>delete()</code>、<code>request()</code>の各メソッドは、オブジェクトとしてレスポンスを返すようになりました。このオブジェクトは生のコンテンンツをリモートから受け取り、データを操作する責任を負います。<br>
+CakePHPは1.3と同様なレスポンスを操作に<code>HttpResponse</code>を伴うようになりました。このクラスは<a href="http://php.net/manual/ja/class.arrayaccess.php">ArrayAccess</a>と<a href="http://www.php.net/manual/ja/language.oop5.magic.php#language.oop5.magic.tostring">__toString()</a>を実装するので、引き続き<code>$http-&gt;response</code>を配列として、またリクエストメソッドの返り値を文字列として使うことができます。しかし、以下のようにオブジェクトとして使ったほうがより速いでしょう。</p>
 <pre>
 <code>$response = $http-&gt;get('http://www.cakephp.org');
 
-// From:
+// これから
 $titlePos = strpos($response, '&lt;title&gt;');
 $code = $http-&gt;response['status-line]['code'];
 
-// To:
+// こうする
 $titlePos = strpos($response-&gt;body, '&lt;title&gt;');
 $code = $response-&gt;code;</code>
 </pre>
-<p>This new class have the below attributes:</p>
+<p>この新クラスは以下の属性をもっています。</p>
 <ul>
-<li><code>body</code>: body of HTTP (normally the HTML). Old
-response of method or <code>$http-&gt;request['body']</code>;</li>
-<li><code>headers</code>: array with headers. It replace
-<code>$http-&gt;request['header']</code>;</li>
-<li><code>cookies</code>: array with new cookies (cookies from
-others request are not stored here). It replace
-<code>$http-&gt;request['cookies']</code>;</li>
-<li><code>httpVersion</code>: string with HTTP version (from first
-line in response). It replace
-<code>$http-&gt;request['status']['http-version'];</code></li>
-<li><code>code</code>: integer with HTTP code. It replace
-<code>$http-&gt;request['status']['code']</code>;</li>
-<li><code>reasonPhrase</code>: string with HTTP code response. It
-replace
-<code>$http-&gt;request['status']['reason-phrase']</code>;</li>
-<li><code>raw</code>: unchanged response from server. It replace
-<code>$http-&gt;request['raw']['response']</code>.</li>
+<li><code>body</code>: HTTPの本文（普通はHTML）。昔のメソッドのレスポンスか<code>$http-&gt;request['body']</code></li>
+<li><code>headers</code>: ヘッダーの配列。<code>$http-&gt;request['header']</code>の後任。</li>
+<li><code>cookies</code>: 新しいクッキーの配列（他のリクエストからのクッキーはここに入らない）。<code>$http-&gt;request['cookies']</code>の後任。</li>
+<li><code>httpVersion</code>: （レスポンスの1行目から取得した）HTTPバージョンの文字列。<code>$http-&gt;request['status']['http-version'];</code>の後任。</li>
+<li><code>code</code>: HTTPコードの整数。<code>$http-&gt;request['status']['code']</code>の後任。</li>
+<li><code>reasonPhrase</code>: HTTPコードレスポンスの文字列。<code>$http-&gt;request['status']['reason-phrase']</code>の後任。</li>
+<li><code>raw</code>: 書き換えられていないサーバーからのレスポンス。<code>$http-&gt;request['raw']['response']</code>の後任。</li>
 </ul>
-<p>And the new methods:</p>
+<p>また、以下は新しいメソッドです。</p>
 <ul>
-<li><code>body()</code>: return the body;</li>
-<li><code>isOk()</code>: if code is 200;</li>
-<li><code>getHeader()</code>: will be explained in the next
-session.</li>
+<li><code>body()</code>: bodyを返す</li>
+<li><code>isOk()</code>: コードが200かどうか</li>
+<li><code>getHeader()</code>: 次のセッション（訳注：セクション？）で説明します。</li>
 </ul>
-<p>You can create your own response class to use with HttpSocket.
-You could create the file <code>app/libs/your_response.php' with
-the content:</code></p>
+<p>HttpSocketを用いて独自のレスポンスクラスを作って使うこともできます。以下のようなコンテンツを含む<code>app/libs/your_response.php</code>を作ってみましょう。</p>
 <pre>
 <code>&lt;?php
 
@@ -63,29 +39,20 @@ class YourResponse extends HttpResponse {
 
     public function parseResponse($message) {
         parent::parseResponse($message);
-        // Make what you want
+        // やりたいことをする
     }
 }</code>
 </pre>
-<p>Before your request you need change
-<code>$http-&gt;responseClass</code> to
-<code>YourResponse</code>.</p>
-<h2>HttpSocket doesn't change the header keys</h2>
-<p>Following others places in core, the HttpSocket do not change
-the headers. [[RFC 2616|<a href=
-"http://www.ietf.org/rfc/rfc2616.txt]">http://www.ietf.org/rfc/rfc2616.txt]</a>]
-says that headers are case insensitive, and HttpSocket preserves
-the values the remote host sends.</p>
-<p>So, if your server sends the headers like</p>
+<p>また、リクエストをする前に、<code>$http-&gt;responseClass</code>を<code>YourResponse</code>に変更する必要があります。</p>
+<h2>ヘッダーのキーを書き換えなくなったHttpSocket</h2>[[RFC 2616|<a href="http://www.ietf.org/rfc/rfc2616.txt]">http://www.ietf.org/rfc/rfc2616.txt]</a>]はヘッダーが大文字小文字を区別すると言っていますし、HttpSocketはリモートホストが送る値を保持します。</p>
+<p>つまり、サーバーが以下のようなヘッダーを送信するなら、</p>
 <pre>
 <code>HTTP/1.1 200 OK
 Date: Mon, 16 Apr 2007 04:14:16 GMT
 server: CakeHttp Server
 content-tyPe: text/html</code>
 </pre>
-<p>Your <code>$response-&gt;headers</code> (or
-<code>$response['header']</code>) will contain the exact keys
-sent.</p>
+<p><code>$response-&gt;headers</code>（または<code>$response['header']</code>）は正に送られてきたキーをもつことになります。</p>
 <pre>
 <code>array(
     'Date' =&gt; 'Mon, 16 Apr 2007 04:14:16 GMT',
@@ -93,17 +60,9 @@ sent.</p>
     'content-tyPe' =&gt; 'text/html'
 )</code>
 </pre>
-<p>To get a safe header, you can use the method
-<code>HttpResponse::getHeader($name)</code> that will get the
-header in insensitive case to you. For example,
-<code>$response-&gt;getHeader('dAtE')</code> will return <code>Mon,
-16 Apr 2007 04:14:16 GMT</code>.</p>
-<h2>Getting result using a stream (or simply download the
-result)</h2>
-<p>HttpSocket has a new method called
-<code>setContentResource()</code>. By setting a resource with this
-method, the content will be written to this resource, using
-<code>fwrite()</code>. To you download a file, you can do:</p>
+<p>安全なヘッダーを得るには、<code>HttpResponse::getHeader($name)</code>メソッドを使うことができます。これは大文字小文字を区別しないでヘッダーを取得します。例えば、<code>$response-&gt;getHeader('dAtE')</code>は<code>Mon, 16 Apr 2007 04:14:16 GMT</code>を返すでしょう。</p>
+<h2>ストリームを使って結果を取得する（もしくは単純にダウンロードする）</h2>
+<p>HttpSocketは<code>setContentResource()</code>で呼ばれる新しいメソッドをもつようになりました。コンテンツはこのリソースに、<code>fwrite()</code>を使って書き込まれます。ファイルをダウンロードするには、このようにできます：</p>
 <pre>
 <code>$http = new HttpSocket();
 $f = fopen('bakery.xml', 'w');
@@ -111,20 +70,11 @@ $http-&gt;setContentResource($f);
 $http-&gt;get('http://bakery.cakephp.org/comments.rss');
 fclose($f);</code>
 </pre>
-<p><strong>Attention</strong>: The header is not included in file,
-you will only get the body content written to your resource. To
-disable saving into the resource, use
-<code>$http-&gt;setContentResource(false)</code>.</p>
-<h2>Independent cookie by host</h2>
-<p>Cookies are stored internally by host, not per instance. This
-means that, if you make two requests to different servers, cookies
-from domain1 won't be sent to domain2. This was done to avoid
-possible security problems.</p>
-<h2>Extensible Authentication methods</h2>
-<p>You can now create your own authentication method to use with
-HttpSocket. You could create the file
-<code>app/libs/http/your_method_authentication.php' with the
-content:</code></p>
+<p><strong>注意：</strong>ファイルにヘッダーは含まれず、リソースには本文のみが書き込まれます。リソースへの保存を無効にしたい場合は、<code>$http-&gt;setContentResource(false)</code>を使用してください。
+<h2>ホストごとに独立したクッキー</h2>
+<p>クッキーは内部でインスタンス毎でなく、ホスト別に保持されます。これは、それぞれ違うサーバーに二つのリクエストを送る場合、ドメイン1からのクッキーはドメイン2に送信されないことを意味します。これは在り得るセキュリティ問題を回避するためのものです。</p>
+<h2>拡張性のある認証（<em>Authentication</em>）メソッド</h2>
+<p>HttpSocketで使う独自の認証メソッドを作成することができるようになりました。以下のコンテンツを含む<code>app/libs/http/your_method_authentication.php</code>というファイルを作成できます。</p>
 <pre>
 <code>&lt;?php
 
@@ -138,26 +88,19 @@ class YourMethodAuthentication {
  * @return void
  */
     public static function authentication(HttpSocket $http, &amp;$authInfo) {
-        // Do something, for example set $http-&gt;request['header']['Authentication'] value
+        // 何かする、例えば$http-&gt;request['header']['Authentication'] の値をセットする
     }
 
 }</code>
 </pre>
-<p>To set the auth config, you can use the new method
-<code>configAuth()</code>:</p>
+<p>認証設定をセットするには、新しいメソッド<code>configAuth()</code>が使えます：</p>
 <pre>
 <code>$http-&gt;configAuth('YourMethod', array('config1' =&gt; 'value1', 'config2' =&gt; 'value2'));
 $http-&gt;get('http://secure.your-site.com');</code>
 </pre>
-<p>The Basic authentication is still supported by CakePHP, support
-for Digest authentication has also been added. To use this feature
-you will need to set <code>$http-&gt;configAuth('Basic', 'user',
-'password');</code></p>
-<h2>Support to Proxy</h2>
-<p>As part of auth configuration, you can configure proxy
-authentication. You can create your customized method to proxy
-authentication in the same class of authentication. For
-example:</p>
+<p>ベーシック認証は今までどおりCakePHPでサポートされますが、ダイジェスト認証のサポートもまた追加されました。この機能を使うには、<code>$http-&gt;configAuth('Basic', 'user', 'password');</code>とセットする必要があります。</p>
+<h2>プロクシのサポート</h2>
+<p>認証設定の一部として、プロクシ認証を設定することができます。同じ認証のクラスにおいてプロクシ認証を行うための独自のメソッドを作ることができます。例えば以下のようになります。</p>
 <pre>
 <code>&lt;?php
 
@@ -171,7 +114,7 @@ class YourMethodAuthentication {
  * @return void
  */
     public static function authentication(HttpSocket $http, &amp;$authInfo) {
-        // Do something, for example set $http-&gt;request['header']['Authentication'] value
+        // 何かする、例えば$http-&gt;request['header']['Authentication'] の値をセットする
     }
 
 /**
@@ -182,10 +125,9 @@ class YourMethodAuthentication {
  * @return void
  */
     public static function proxyAuthentication(HttpSocket $http, &amp;$proxyInfo) {
-        // Do something, for example set $http-&gt;request['header']['Proxy-Authentication'] value
+        // 何かする、例えば$http-&gt;request['header']['Proxy-Authentication'] の値をセットする
     }
 
 }</code>
 </pre>
-<p>To use, you must call the <code>HttpSocket::configProxy()</code>
-as same the <code>HttpSocket::configAuth()</code>.</p>
+<p>これを使うには、<code>HttpSocket::configAuth()</code>と同様な<code>HttpSocket::configProxy()</code>を呼ばなければなりません。</p>

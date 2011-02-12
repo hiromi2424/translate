@@ -1,14 +1,6 @@
-<p>For 2.0 <code>Object::cakeError()</code> has been removed.
-Instead it has been replaced with a number of exceptions. All of
-the core classes that previously called cakeError are now throwing
-exceptions. This lets you either choose to handle the errors in
-your application code, or let the built in exception handling deal
-with them.</p>
-<p>There is more control than ever for error and exception handling
-in CakePHP 2.0. You can configure which methods you want to set as
-the default error handler, and exception handler using
-configure.<br></p>
-<h3>Error configuration</h3>
+<p>2.0では<code>Object::cakeError()</code>は削除されました。代わりに、これは数多くの例外に置き換えられました。以前はcakeErrorを呼んでいた全てのコアクラスは例外を投げるようになりました。これによりアプリケーションでエラーを処理するか組み込みの例外処理にそれを処理させるかを選ぶことができるようになります。</p>
+<p>CakePHP2.0では今までよりコントロール性の高いエラーと例外処理があります。どのメソッドをデフォルトのエラーハンドラー、例外ハンドラーとするかを設定することができます。<br></p>
+<h3>エラー設定</h3>
 <pre>
 <code>Configure::write('Error', array(
     'handler' =&gt; 'ErrorHandler::handleError',
@@ -16,51 +8,37 @@ configure.<br></p>
     'trace' =&gt; true
 ));</code>
 </pre>
-<p>You have 3 built-in options when configuring error handlers:</p>
+<p>エラーハンドラーを設定する際、以下の3つの組み込みのオプションがあります。</p>
 <ul>
-<li><code>handler</code> - callback - The callback to handle
-errors. You can set this to any callback type, including anonymous
-functions.</li>
-<li><code>level</code> - int - The level of errors you are
-interested in capturing. Use the built-in php error constants, and
-bitmasks to select the level of error you are interested in.</li>
-<li><code>trace</code> - boolean - Include stack traces for errors
-in log files. Stack traces will be included in the log after each
-error. This is helpful for finding where/when errors are being
-raised.</li>
+<li><code>handler</code> - callback - エラーを処理するためのコールバック。これに、匿名関数を含むどのような種類のコールバックも指定できます。</li>
+<li><code>level</code> - int - 捕捉するエラーのレベル。エラーのレベルを選択するには、組み込みのPHPエラー定数とビットマスクを使ってください。</li>
+<li><code>trace</code> - boolean - ログファイルにエラーのスタックトレースを含むか。エラー毎にスタックトレースがログに含まれることになります。これはいつ、どこでエラーが発生しているかを追跡するのに役に立ちます。</li>
 </ul>
-<p>ErrorHandler by default, displays errors when <code>debug</code>
-&gt; 0, and logs errors when debug = 0. The type of errors captured
-in both cases is controlled by Error.level.</p>
-<h4>Creating your own error handler</h4>
-<p>You can create an error handler out of any callback type. For
-example you could use a class called <code>AppError</code> to
-handle your errors. The following would need to be done:</p>
+<p>エラーハンドラーはデフォルトで、<code>debug</code>が0より大きいときにエラーを表示し、debugが0のときエラーをログに記録します。両方のケースにおいて捕捉されるエラーの種類は、Error.levelで制御されます。</p>
+<h4>独自のエラーハンドラーの作成</h4>
+<p>コールバックの種類の範囲で、エラーハンドラーを作成することができます。例えば、エラーを処理するために<code>AppError</code>という名前のクラスを使うことができます。必要なことは以下の通りです。</p>
 <pre>
-<code>//in app/config/core.php
+<code>// app/config/core.php で
 Configure::write('Error.handler', 'AppError::handleError');
 
-//in app/config/bootstrap.php
+// app/config/bootstrap.php で
 App::import('Lib', 'AppError');
 
-// in app/libs/app_error.php
+// app/libs/app_error.php で
 &lt;?php
 class AppError {
     public static function handleError($code, $description, $file = null, $line = null, $context = null) {
-        echo 'There has been an error!';
+        echo 'エラーがありました！';
     }
 }</code>
 </pre>
-<p>This class/method will print out 'There has been an error!' each
-time an error occurs. Since you can define an error handler as any
-callback type, you could use an anonymous function if you are using
-PHP5.3 or greater.</p>
+<p>このクラス・メソッドはエラーが発生した時全てで「エラーがありました！」を出力します。全てのコールバックの種類でエラーハンドラーを定義できるようになったことから、PHP5.3以上を使っていれば匿名関数を使うことができるようになります。</p>
 <pre>
 <code>Configure::write('Error.handler', function($code, $description, $file = null, $line = null, $context = null) {
-    echo 'Oh no something bad happened';
+    echo 'なんてこった、なんか良くないことが起きちゃったよ';
 });</code>
 </pre>
-<h3>Exception configuration</h3>
+<h3>例外（<em>Exception</em>）の設定</h3>
 <pre>
 <code>Configure::write('Exception', array(
     'handler' =&gt; 'ErrorHandler::handleException',
@@ -69,44 +47,20 @@ PHP5.3 or greater.</p>
 ));</code>
 </pre>
 <ul>
-<li><code>handler</code> - callback - The callback to handle
-exceptions. You can set this to any callback type, including
-anonymous functions.</li>
-<li><code>renderer</code> - string - The class responsible for
-rendering uncaught exceptions. If you choose a custom class you
-should place the file for that class in app/libs. This class needs
-to implement a render method.</li>
-<li><code>log</code> - boolean - When true, exceptions + their
-stack traces will be logged to CakeLog.</li>
+<li><code>handler</code> - callback - 例外を処理するためのコールバック。これを匿名関数を含む全てのコールバックの種類に設定できます。</li>
+<li><code>renderer</code> - string - 捕捉されなかった例外をレンダリングする責任をもつクラス。もし独自のクラスを選択するなら、app/libsにそのクラスのファイルを設置するべきです。このクラスはrenderメソッドを実装する必要があります。</li>
+<li><code>log</code> - boolean - trueの場合、例外とそのスタックフレームがCakeLogでログに記憶されます。</li>
 </ul>
-<p>Exception rendering by default displays an HTML page, you can
-customize either the handler or the renderer by changing the
-settings. Changing the handler, allows you to take full control
-over the exception handling process, while changing the renderer
-allows you to easily change the output type/contents, as well as
-add in application specific exception handling.</p>
-<h4>New exception classes</h4>
-<p>There are a number of new exception classes in CakePHP 2.0. Each
-exception replaces a <code>cakeError()</code> error messages from
-the past. Exceptions offer additional flexibility in that they can
-be extended and contain some logic. The built in exception handling
-will capture any uncaught exceptions and render a useful page. As
-before any uncaught exceptions in production settings will be
-treated as an Internal Server Error.</p>
-<h4>Creating your own application exceptions</h4>
-<p>You can create your own application exceptions using any of the
-built in <a href="http://php.net/manual/en/spl.exceptions.php">SPL
-exceptions</a>, <code>Exception</code> itself, or
-<code>CakeException</code>. <code>CakeException</code> is special
-in that all <code>CakeException</code> objects are coerced into
-into either 500 or 404 errors depending on the code they are used.
-When in development mode <code>CakeException</code> objects simply
-need a new template that matches the class name in order to provide
-useful information.</p>
+<p>デフォルトの例外レンダリングはHTMLページを表示します。設定を変更することにより、ハンドラー（<em>handler</em>）とレンダラー（<em>renderer</em>）のどちらかをカスタマイズすることができます。ハンドラーを変更することで、例外処理プロセス全般をコントロールすることができるようになり、一方レンダラーを変更することで、出力する種類・コンテンツ変更することと、またアプリケーション固有の例外処理を組み込むことが簡単にできるようになります。</p>
+<h4>新しい例外クラス</h4>
+<p>数多くの例外クラスがCakePHP2.0にはあります。それぞれの例外は以前の<code>cakeError()</code>のエラーメッセージの置き換えです。継承できることとロジックを含められることにより、例外は柔軟性を提供します。組み込みの例外処理は全ての捕捉されなかった例外を受け取り、役に立つページを書き出します。以前のとおり、プロダクション設定では捕捉されなかった例外は全て内部サーバーエラー（<em>Internal Server Error</em>）として扱われるでしょう。</p>
+<h4>独自のアプリケーション例外を作る</h4>
+<p>組み込みの<a href="http://php.net/manual/ja/spl.exceptions.php">SPL例外</a>、<code>Exception</code>そのもの、<code>CakeException</code>のどれかを使って独自のアプリケーション例外を作ることが出来ます。<code>CakeException</code>は、全ての<code>CakeException</code>オブジェクトが、自信の使うコードに拠って500または404エラーに強制されることにおいて特別です。開発モードでは<code>CakeException</code>オブジェクトは単純に、役に立つ情報を提供するためのクラス名にマッチする新しいテンプレートを必要とします。</p>
 <pre>
 class MissingWidgetException extends CakeException {};
 </pre>
-<p>The above class could provide nice development errors, by
+<p>上記のクラスは、<code>app/views/errors/missing_widget.ctp</code>を作ることによってナイスな開発用のエラーを提供することが出来ます。
+The above class could provide nice development errors, by
 creating <code>app/views/errors/missing_widget.ctp</code>. When in
 production mode, the above error would be treated as a 500 error.
 When subclassing <code>CakeException</code> the constructor has
