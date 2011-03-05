@@ -59,16 +59,7 @@ class AppError {
 <pre>
 class MissingWidgetException extends CakeException {};
 </pre>
-<p>上記のクラスは、<code>app/views/errors/missing_widget.ctp</code>を作ることによってナイスな開発用のエラーを提供することが出来ます。
-The above class could provide nice development errors, by
-creating <code>app/views/errors/missing_widget.ctp</code>. When in
-production mode, the above error would be treated as a 500 error.
-When subclassing <code>CakeException</code> the constructor has
-been extended, allowing you to pass in hashes of data. These hashes
-are passed into the template that is used to represent the error in
-development mode, allowing you to create data rich exceptions. You
-can also provide a message template which allows the native
-<code>__toString()</code> methods to work as normal.</p>
+<p>上記のクラスは、<code>app/views/errors/missing_widget.ctp</code>を作ることによって開発用の有用なエラーを提供することが出来ます。本番モードでは、上記のエラーは500エラーとして扱われることでしょう。<code>CakeException</code>のサブクラスを作成すると、コンストラクタは拡張され、データのハッシュを渡すことができるようになります。このハッシュは開発モードでエラーの表示に使われるテンプレートに渡され、豊富なデータを伴う例外を作成することができるようになります。また、ネイティブの<code>__toString()</code>メソッドを普通に使えるようにすることができる、メッセージテンプレートを与えることもできます。</p>
 <pre>
 class MissingWidgetException extends CakeException {
     protected $_messageTemplate = 'Seems that %s is missing.';
@@ -76,40 +67,22 @@ class MissingWidgetException extends CakeException {
 
 throw new MissingWidgetException(array('widget' =&gt; 'Pointy'));
 </pre>
-<p>When caught by the built in exception handler, you would get a
-<code>$widget</code> variable in your view template. In addition if
-you cast the exception as a string or use its
-<code>getMessage()</code> method you will get <code>Seems that
-Pointy is missing.</code>. This allows you easily and quickly
-create your own rich development errors, just like CakePHP uses
-internally.</p>
-<h4>Creating custom status codes</h4>
-<p>You can create custom HTTP status codes by changing the code
-used when creating an Exception.</p>
+<p>組み込みの例外ハンドラーがこれを補足するとき、ビューテンプレートで<code>$widget</code>変数が得られます。加えて、例外をキャストするか、<code>getMessage()</code>メソッドを使えば、<code>Seems that Pointy is missing.</code>が得られることでしょう。これにより、CakePHPが内部で使っているようなものと同じような、独自のリッチな開発用エラーを簡単に、素早く作成することが可能になります。</p>
+<h4>独自のステータスコードの生成</h4>
+<p>例外を作成するとき、使用するコードを変更することによって、独自のHTTPステータスコードを生成することができます。</p>
 <pre>
 throw new MissingWidgetHelperException('Its not here', 501);
 </pre>
-<p>Will create a 501 response code, you can use any HTTP status
-code you want. If you have a code equal to or greater than 500 you
-will see the error500 template. For any other error code you'll get
-the error400 template.</p>
-<h3>Extending and implementing your own Exception handlers</h3>
-<p>You can implement application specific exception handling in one
-of a few ways. Each approach gives you different amounts of control
-over the exception handling process.</p>
+<p>これは501レスポンスコードを生成するでしょう。あなたが欲しいどのHTTPステータスコードでも使うことができます。500以上のコードであれば、error500テンプレートが表示されます。他のエラーコードではerror400テンプレートが表示されます。</p>
+<h3>独自の例外ハンドラーを継承し実装する</h3>
+<p>アプリケーション固有の例外処理をいくつかの方法で実装できます。各々のアプローチは、例外処理のプロセスにおいて異なる制御範囲をもちます。</p>
 <ul>
-<li>Set Configure::write('Exception.handler',
-'YourClass::yourMethod');</li>
-<li>Create AppController::appError();</li>
-<li>Set Configure::write('Exception.renderer', 'YourClass');</li>
+<li>Configure::write('Exception.handler', 'YourClass::yourMethod'); を設定</li>
+<li>AppController::appError(); を作成</li>
+<li>Configure::write('Exception.renderer', 'YourClass'); を設定</li>
 </ul>
-<h4>Create your own Exception handler with
-<code>Exception.handler</code></h4>
-<p>This gives you full control over the exception handling process.
-The class you choose should be loaded in your
-app/config/bootstrap.php, so its available to handle any
-exceptions. You can define the handler as any callback type. You
-can't combine this with other Exception settings.</p>
+<h4><code>Exception.handler</code>を用いた独自の例外ハンドラーの作成</h4>
+<p>この方法は例外処理のプロセスにおいて完全なコントロールができます。全ての例外を処理するために、選択したクラスは app/config/bootstrap.php で読み込まれていなくてはなりません。ハンドラーを全てのコールバックの種類において定義することができます。他の例外の設定と組み合わせることはできません。</p>
 <pre>
 <code>// in app/config/core.php
 Configure::write('Exception.handler', 'AppException::handleException');
@@ -121,64 +94,36 @@ App::import('Lib', 'AppException');
 &lt;?php
 class AppException {
     public static function handleException($error) {
-        echo 'Oh noes! ' . $error-&gt;getMessage();
+        echo 'なんてこった！ ' . $error-&gt;getMessage();
     }
 }</code>
 </pre>
-<p>You can run any code you wish inside handleException. The code
-above would simple print 'Oh noes! ' plus the exception message.
-You can define exception handlers as any type of callback, even an
-anonymous function if you are using PHP 5.3.</p>
+<p>handleExceptionの内部でお望みのコードを実行することができます。上記のコードは単純に「なんてこった！」と共に例外メッセージを表示するでしょう。どんな種類のコールバックでも、PHP5.3を使っているなら無名関数でさえ、例外ハンドラーとして定義できます。</p>
 <pre>
 <code>Configure::write('Exception.handler', function ($error) {
-    echo 'Ruh roh ' . $error-&gt;getMessage();
+    echo 'おっと、こりゃいかん ' . $error-&gt;getMessage();
 });</code>
 </pre>
-<h4>Using <code>AppController::appError();</code></h4>
-<p>This controller method is called instead of the default
-exception rendering. It receives the thrown exception as its only
-argument. You should implement your error handling in that
-method.</p>
-<h4>Using a custom renderer with <code>Exception.renderer</code> to
-handle application exceptions</h4>
-<p>If you don't want to take control of the exception handling, but
-want to change how exceptions are rendered you can use
-<code>Configure::write('Exception.renderer',
-'AppExceptionRenderer');</code> to choose a class to render
-exception pages. By default <code>ExceptionRenderer</code> is used.
-Your custom exception renderer class should be placed in app/libs.
-In a custom exception rendering class you can provide specialized
-handling for application specific errors.</p>
+<h4><code>AppController::appError();</code>の使用</h4>
+<p>このコントローラのメソッドはデフォルトの例外レンダリングの代わりに呼び出されます。これは唯一の引数として、投げられた例外を受け取ります。このメソッドでエラー処理を実装する必要があります。</p>
+<h4>アプリケーションの例外処理における<code>Exception.renderer</code>を用いた独自のレンダラーの使用</h4>
+<p>例外処理の操作を受け継ぐのではなく、どのように例外が描画されるかを変えたいのなら、<code>Configure::write('Exception.renderer', 'AppExceptionRenderer');</code>を使用して例外ページを描画するクラスを選択することができます。デフォルトでは<code>ExceptionRenderer</code>が使われます。独自の例外レンダラーのクラスは app/libs に設置する必要があります。独自の例外描画クラスでは、アプリケーション固有のエラーに特別な処理を与えることができます。</p>
 <pre>
-<code>// in app/libs/app_exception_renderer.php
+<code>// app/libs/app_exception_renderer.php で
 &lt;?php
 App::import('Core', 'ExceptionRenderer');
 
 class AppExceptionRenderer extends ExceptionRenderer {
     public function missingWidget($error) {
-        echo 'Oops that widget is missing!';
+        echo 'おっと、そのwidgetが見つからないよ！';
     }
 }
 ?&gt;</code>
 </pre>
-<p>The above would handle any exceptions of the type
-<code>MissingWidgetException</code>, and allow you to provide
-custom display/handling logic for those application exceptions.
-Exception handling methods get the exception being handled as their
-argument.</p>
-<p>Your custom renderer should expect an exception in its
-constructor, and implement a render method. Failing to do so will
-cause additional errors.</p>
-<h4>Creating a custom controller to handle exceptions</h4>
-<p>In your ExceptionRenderer sub-class, you can use the
-<code>_getController</code> method to allow you to return a custom
-controller to handle your errors. By default CakePHP uses
-<code>CakeErrorController</code> which omits a few of the normal
-callbacks to help ensure errors always display. However, you may
-need a more custom error handling controller in your application.
-By implementing <code>_getController</code> in your
-<code>AppError</code> class, you can use any controller you
-want.</p>
+<p>上記は全ての<code>MissingWidgetException</code>例外を処理し、それらのアプリケーション例外のための独自の表示・処理ロジックを与えることができるようになります。例外処理のメソッドには処理される例外が引数として与えられます。</p>
+<p>独自のレンダラーはそのコンストラクタで例外を受け取り、renderメソッドを実装する必要があります。そうしなければ、更なるエラーが引き起こされるでしょう。</p>
+<h4>例外を処理する独自のコントローラの作成</h4>
+<p>ExceptionRendererのサブクラスでは、<code>_getController</code>メソッドを使うことによってエラーを処理する独自のコントローラを返すことができます。デフォルトではCakePHPは、エラーが常に表示されることを保証するためにいくつかの標準のコールバックを省略した<code>CakeErrorController</code>を使用します。しかしながら、アプリケーションではよりカスタマイズしたエラー処理用コントローラを必要とするかもしれません。<code>_getController</code>を<code>AppError</code>クラスで実装することによって、希望のコントローラを使うことができます。</p>
 <pre>
 <code>class AppExceptionRenderer extends ExceptionRenderer {
     protected function _getController($exception) {
@@ -187,40 +132,20 @@ want.</p>
     }
 }</code>
 </pre>
-<p>Alternatively, you could just override the core
-CakeErrorController, by including one in
-<code>app/controllers</code>. If you are using a custom controller
-for error handling, make sure you do all the setup you need in your
-constructor, or the render method. As those are the only methods
-that the built-in <code>ErrorHandler</code> class directly
-call.</p>
-<h4>Logging exceptions</h4>
-<p>Using the built-in exception handling, you can log all the
-exceptions that are dealt with by ErrorHandler by setting
-<code>Exception.log</code> to true in your core.php. Enabling this
-will log every exception to CakeLog and the configured loggers.</p>
-<h3>Built in Exceptions for CakePHP</h3>
-<p>There are several built-in exceptions inside CakePHP, outside of
-the internal framework exceptions, there are several exceptions for
-HTTP methods</p>
+<p>あるいは、CakeErrorControllerを<code>app/controllers</code>に配置して、コアのCakeErrorControllerをオーバーライドすることも可能です。独自のエラー処理用のコントローラを使用しているなら、必ず全てのコンストラクタかrenderメソッドで必要なセットアップをするようにしてください。これらは組み込みの<code>ErrorHandler</code>が直接呼び出す唯一のメソッドです。</p>
+<h4>例外のログを取る</h4>
+<p>組み込みの例外処理を使って、core.phpで<code>Exception.log</code>をtrueに設定することでErrorHandlerで処理される例外のログを取ることが出来ます。これを有効にすることで全ての例外をCakeLogと設定されたロガー(<em>loggers</em>)にログを取らせることができます。</p>
+<h3>CakePHPの組み込みの例外</h3>
+<p>CakePHP内部での組み込みの例外がいくつかあり、フレームワーク内部の例外の他に、HTTPメソッド用の例外がいくつかあります。</p>
 <ul>
-<li><code>BadRequestException</code> - Used for doing 400 Bad
-Request error.</li>
-<li><code>UnauthorizedException</code> - Used for doing a 401 Not
-found error.</li>
-<li><code>ForbiddenException</code> - Used for doing a 403
-Forbidden error.</li>
-<li><code>NotFoundException</code> - Used for doing a 404 Not found
-error.</li>
-<li><code>MethodNotAllowedException</code> - Used for doing a 405
-Method Not Allowed error.</li>
-<li><code>InternalErrorException</code> - Used for doing a 500
-Internal Server Error.</li>
+<li><code>BadRequestException</code> - 400 Bad Request エラーの為に使われます。</li>
+<li><code>UnauthorizedException</code> - 401 Not found エラーの為に使われます。</li>
+<li><code>ForbiddenException</code> - 403 Forbidden エラーの為に使われます。</li>
+<li><code>NotFoundException</code> - 404 Not found エラーの為に使われます。</li>
+<li><code>MethodNotAllowedException</code> - 405 Method Not Allowed エラーの為に使われます。</li>
+<li><code>InternalErrorException</code> - 500 Internal Server Error の為に使われます。</li>
 </ul>
-<p>You can throw these exceptions from you controllers to indicate
-failure states. In addition, the following framework layer
-exceptions are available, and will be thrown from a number of
-CakePHP core components:</p>
+<p>これらの例外を、失敗の状態を指し示す為にコントローラから投げることができます。加えて、以下のフレームワーク層の例外が使用可能で、数多くのCakePHPのコアライブラリから投げられることになります。</p>
 <ul>
 <li><code>MissingViewException</code></li>
 <li><code>MissingLayoutException</code></li>
@@ -242,13 +167,9 @@ CakePHP core components:</p>
 <li><code>MissingControllerException</code></li>
 <li><code>PrivateActionException</code></li>
 </ul>
-<p>These exception classes all extend <code>CakeException</code>.
-By extending CakeException, you can create your own 'framework'
-errors. All of the standard Exceptions that CakePHP will throw also
-extend CakeException.</p>
-<h3>Using HTTP exceptions in your controllers</h3>
-<p>You can throw any of the HTTP related exceptions from your
-controller actions to indicate failure states. For example:</p>
+<p>これらの例外クラスは全て<code>CakeException</code>を継承しています。CakeExceptionを継承することによって、独自の「フレームワーク」のエラーを作成することができます。全てのCakePHPが投げる標準的な例外も、CakeExceptionを継承しています。</p>
+<h3>コントローラでのHTTP例外の使用</h3>
+<p>コントローラのアクションで、失敗の状態を指し示すためにどのようなHTTPに関する例外でも投げることが出来ます。例：</p>
 <pre>
 <code>function view($id) {
     $post = $this-&gt;Post-&gt;read(null, $id);
@@ -258,7 +179,4 @@ controller actions to indicate failure states. For example:</p>
     $this-&gt;set(compact('post'));
 }</code>
 </pre>
-<p>The above would cause the configured
-<code>Exception.handler</code> to catch and process the
-NotFoundException. By default this will create an error page, and
-log the exception.</p>
+<p>上記は設定された<code>Exception.handler</code>にNotFoundExceptionを補足させ処理させることでしょう。デフォルトでは、これはエラーページを生成し、その例外のログを取ります。</p>
