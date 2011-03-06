@@ -59,6 +59,8 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 <h3>CakeRequest</h3>
 <p>この新しいクラスはやってくるリクエストに紐付けられたパラメータと作用をカプセル化します。これは<code>Dispatcher</code>、<code>RequestHandlerComponent</code>、<code>Controller</code>の中にある多くの機能を置き換えます。また、全ての場所での<code>$this-&gt;params</code>配列を置き換えます。CakeRequestは<code>ArrayAccess</code>を実装するので、古いパラメータ配列を用いる多くの相互作用は変更する必要がありません。更なる情報は<a href=
 "20-cakerequest">新機能CakeRequest</a>を見てください。</p>
+<h3>リクエスト処理、$_GET['url'] と.htaccessファイル</h3>
+<p>CakePHPは<code>$_GET['url']</code>をアプリケーションのリクエストパスの処理に使わなくなりました。代わりに<code>$_SERVER['PATH_INFO']</code>を使います。これはURL書き換えを伴ったサーバーと伴わないものとでより一貫性をもつURLリクエスト処理の方法となります。これらの変更により、<code>.htaccess</code>ファイルと<code>app/webroot/index.php</code>を、この変更を適用するために変更されたファイルに書き換える必要があります。また、<code>$this-&gt;params['url']['url']</code>はもう存在しません。同等の値を得るには、代わりに<code>$this-&gt;request-&gt;url</code>を使用する必要があります。</p>
 <h2>コンポーネント</h2>
 <p><code>Component</code>は、全てのコンポーネントが必須とする基底クラスになりました。更なる情報は、<a href="20-helper-behavior-component-and-task-refactor">コンポーネントのリファクタリング</a>ページを見てください。</p>
 <h3>Aclコンポーネント</h3>
@@ -87,6 +89,23 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 </li>
 <li><code>RequestHandler::setContent()</code>は配列を一つの引数として指定することができないようになりました。両方の引数を与える必要があります。</li>
 </ul>
+<h3>SecurityComponent</h3>
+<p>SecurityComponentは基本認証とダイジェスト認証を処理しないようになりました。これら二つは、新しいAuthComponentによって処理されます。以下のメソッドはSecurityComponentから削除されました。</p>
+<ul>
+<li>requireLogin()</li>
+<li>generateDigestResponseHash()</li>
+<li>loginCredentials()</li>
+<li>loginRequest()</li>
+<li>parseDigestAuthData()</li>
+</ul>
+<p>加えて、以下のプロパティが削除れました</p>
+<ul>
+<li>$loginUsers</li>
+<li>$requireLogin</li>
+</ul>
+<p>全ての種類の認証を単一の場所に提供し、それぞれのコンポーネントの役割を能率化するために、これらの機能はAuthComponentに移動しました。</p>
+<h3>AuthComponent</h3>
+<p>AuthComponentは2.0のために完全に書き直れました。これは開発者の混乱と頓挫（<em>frustration</em>）を減らすようになされました。加えて、AuthComponentはより柔軟で拡張性が高くなりました。<a href="20-auth-guide">AuthComponentガイドでより詳しくみる</a>ことができます。</p>
 <h2>cakeErrorの削除</h2>
 <p><code>cakeError()</code>メソッドは削除されました。<code>cakeError</code>の使用から<a href="20-exceptions-errors">例外を使う</a>ように切り替えることが推奨されています。</a><code>cakeError</code>が削除されたのは、それがただの例外のシミュレーションであった為です。CakePHP2.0では実際の例外が使われます。</p>
 <h2>エラーハンドリング</h2>
@@ -125,6 +144,7 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 <li><code>Dispatcher::baseUrl()</code>は削除されました。</li>
 <li><code>Dispatcher::getUrl()</code>は削除されました。</li>
 <li><code>Dispatcher::uri()</code>は削除されました。</li>
+<li><code>Dispatcher::$here</code>は削除されました。</li>
 </ul>
 <h3>Configure</h3>
 <ul>
@@ -203,6 +223,8 @@ echo __('Called: %s:%s', $className, $methodName);</code>
 <li>FormHelper::minute()</li>
 <li>FormHelper::meridian()</li>
 </ul>
+<h4>フォームのデフォルトURLが現在のアクションに</h4>
+<p>全てのフォームのデフォルトのURLは、passed、named、そしてクエリ文字列パラメータを含む現在のURLになりました。<code>$this-&gt;Form-&gt;create()</code>の第二引数に<code>$options['url']</code>を与えることによって、このデフォルトを上書きすることができます。</p>
 <h3>Cacheヘルパー</h3>
 <p>CacheヘルパーはViewから完全に分離され、ヘルパーのコールバックを用いてキャッシュを生成するようになりました。<code>afterRender</code>と<code>afterLayout</code>コールバックでコンテンツを更新する他のヘルパーの後にCacheヘルパーを配置しなければならないことを覚えておいてください。これを忘れると、いくつかの変更がキャッシュされたコンテンツに含まれないことになるでしょう。</p>
 <p>また、Cacheヘルパーはキャッシュしない範囲を指定するために<code>&lt;cake:nocache&gt;</code>を使わなくなりました。代わりに特別なHTML・XMLコメントである、<code>&lt;!--nocache--&gt;</code>と<code>&lt;!--/nocache--&gt;</code>を使ってください。これでCacheヘルパーが正しいマークアップの生成と、以前と同じ機能を発揮できます。詳しくは、<a href="20-view">CacheヘルパーとViewの変更</a>を見てください。</p>
@@ -256,6 +278,7 @@ $Post-&gt;inexistentProperty[] = 'value';</code>
 }</code>
 </pre>
 <p>これらのどちらかのアプローチで<em>notice</em>エラーを回避できることでしょう。</p>
+<p>Cake 1.2でのfind()の文法はサポートされなくなりました。findはCake 1.3の<code>$model-&gt;find('type', array(PARAMS))</code>のような文法を使うべできす。</p>
 <h3>データベースオブジェクト</h3>
 <p>DBOはこのバージョンで書き直され、PDOを使うようになったのが主要な変更点です。 更に詳しい情報は、<a href="20-dbo-changes">DBOの変更のページ</a>を見てください。</p>
 <h3>BehaviorCollection</h3>

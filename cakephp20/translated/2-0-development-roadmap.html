@@ -20,10 +20,10 @@
 <li><del>Securityコンポーネントのフォームへの干渉とCSRFの分離</del></li>
 <li><del>セッションの設定動作のクリーンナップ、設定をより強力・柔軟に</del></li>
 <li>
-<p>多態性を使うためのAuthコンポーネント内でのcase - switchの展開。これはAuthコンポーネントをより柔軟にすることでしょう。</p>
+<p><del>多態性を使うためのAuthコンポーネント内でのcase - switchの展開。これはAuthコンポーネントをより柔軟にすることでしょう。</del></p>
 <ul>
-<li>アクセスチェック方法を分離する（訳注：クラスなどに分離することを示していると思われる）</li>
-<li>認証証明を検証する機構を分離し、basic認証、postからの認証、また、openid認証を可能な限り許容する。</li>
+<li><del>アクセスチェック方法を分離する（訳注：クラスなどに分離することを示していると思われる）</del></li>
+<li><del>認証証明を検証する機構を分離し、basic認証、postからの認証、また、openid認証を可能な限り許容する。</del></li>
 </ul>
 </li>
 <li>
@@ -31,8 +31,8 @@
 </li>
 <li>使えるべきだが今は使えない、IniAclをAuthコンポーネントでも使えるようにする</li>
 <li><del>ページ付け（<em>pagination</em>）をコンポーネントに展開する。paginate()を小さなメソッドに分割することによって、拡張性を高める</del></li>
-<li>Paginatorコンポーネントはビヘイビアに<code>paginate()</code>と<code>paginateCount()</code>を定義できるようにすべき(markstory)</li>
-<li>Paginatorコンポーネントはquery文字列をパラメータとしてページングできるようにすべき(markstory)</li>
+<li><del>Paginatorコンポーネントはビヘイビアに<code>paginate()</code>と<code>paginateCount()</code>を定義できるようにすべき</del></li>
+<li><del>Paginatorコンポーネントはquery文字列をパラメータとしてページングできるようにすべき</del></li>
 </ul>
 <h3>コントローラ</h3>
 <ul>
@@ -49,7 +49,7 @@
 <li><del>FormヘルパーへのHTML5サポートの追加</del></li>
 <li><del>削除がGETリクエストになってしまう問題の修正</del></li>
 <li><del>CacheヘルパーのViewからの分離</del></li>
-<li>Paginatorヘルパーはquery文字列をパラメータとしてページングできるようにすべき(markstory)</li>
+<li><del>Paginatorヘルパーはquery文字列をパラメータとしてページングできるようにすべき</del></li>
 </ul>
 <h3>コンソール</h3>
 <ul>
@@ -77,8 +77,8 @@
 <ul>
 <li>フレームワークのより良い分離</li>
 <li>
-<p>ヘルパー、ビヘイビア、コンポーネントのエイリアス。エイリアスは「enabled」のように「設定」します。例：<code>$helpers
-= array('MyHtml' =&gt; array('alias' =&gt; 'Html'));</code>(jeremyharris)</p>
+<p><del>ヘルパー、ビヘイビア、コンポーネントのエイリアス。エイリアスは「enabled」のように「設定」します。例：<code>$helpers
+= array('MyHtml' =&gt; array('alias' =&gt; 'Html'));</code>(jeremyharris)</del></p>
 </li>
 <li>
 <p>ビヘイビア</p>

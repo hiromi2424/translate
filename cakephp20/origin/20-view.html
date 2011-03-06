@@ -102,3 +102,9 @@ comments.</p>
 </ul>
 <p>The internal code for full page view caches has also changed, so
 be sure to clear out view cache files when updating.</p>
+<h3>MediaView changes</h3>
+<p>MediaView::render() now forces download of unknown file types
+instead of just returning false. If you want you provide an
+alternate download filename you now specify the full name including
+extension using key 'name' in the array parameter passed to the
+function.</p>

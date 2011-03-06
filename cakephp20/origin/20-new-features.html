@@ -15,7 +15,32 @@ columns is required.</p>
 <li><code>getCrumbsList()</code> Creates breadcrumb links wrapped
 in <code>&lt;li&gt;</code> elements. See <a href=
 "tickets/856" title="Ticket #856">#856</a></li>
+<li><code>loadConfig()</code> has moved from Helper to HtmlHelper
+class. This method now uses the new reader classes (see <a href=
+"20-configure">2.0 Configure</a> ) to load your
+config file. As optional you can pass the path as second parameter
+(app/config is default). To simply, you can set the configuration
+file (and the reader) in Controller::$helpers (example below) to
+load on helper constructor. In configuration file you can set the
+below keys:
+<ul>
+<li><code>tags</code> Should be an array with key value;</li>
+<li><code>minimizedAttributes</code> Should be a list;</li>
+<li>'docTypes' Should be an array with key value;</li>
+<li><code>attributeFormat</code> Should be a string;</li>
+<li><code>minimizedAttributeFormat</code> Should be a string.</li>
 </ul>
+</li>
+</ul>
+<p>Example how to set configuration file on controller:<br></p>
+<pre>
+public $helpers = array(
+    'Html' =&gt; array(
+        'configFile' =&gt; array('config_file', 'php') // Option one: an array with filename and reader name
+        'configFile' =&gt; 'config_file' // Option two: a string with filename. The PhpReader will be used
+    )
+);
+</pre>
 <h3>FormHelper</h3>
 <ul>
 <li>FormHelper now supports all HTML5 input types and custom input
@@ -228,3 +253,44 @@ Controller.</p>
 causing excessive strain on the database for subsequent requests,
 where a user would edit the 'limit' parameter to a very large
 number.</p>
+<h2>Aliasing</h2>
+<p>You can now alias helpers, components and behaviors to use your
+class instead of a different one. This means that you can very
+easily make a <code>MyHtml</code> helper and not need to replace
+every instance of <code>$this-&gt;Html</code> in your views. To do
+this, pass the 'className' key along with your class, like you
+would with models.</p>
+<pre>
+<code>public $helpers = array( 
+    'Html' =&gt; array( 
+        'className' =&gt; 'MyHtml' 
+    ) 
+);</code>
+</pre>
+<p>Similarly, you can alias components for use in your
+controllers.</p>
+<pre>
+<code>public $components = array( 
+    'Email' =&gt; array( 
+        'className' =&gt; 'QueueEmailer' 
+    ) 
+);</code>
+</pre>
+<p>Calls to the <code>Email</code> component would call the
+<code>QueueEmailer</code> component instead. Finally, you can alias
+behaviors as well.</p>
+<pre>
+<code>public $actsAs = array( 
+    'Containable' =&gt; array( 
+        'className' =&gt; 'SuperContainable' 
+    ) 
+);</code>
+</pre>
+<p>Because of the way 2.0 utilizes collections and shares them
+across the application, any classes you alias will be used
+throughout your application. Whenever your application tries to
+access the alias, it will access your class. For instance, when we
+aliased the <code>Html</code> helper in the example above, any
+helpers that use the <code>Html</code> helper or elements that load
+the <code>Html</code> helper, will use <code>MyHtml</code>
+instead.</p>

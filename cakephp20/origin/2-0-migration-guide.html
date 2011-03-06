@@ -101,6 +101,18 @@ implements <code>ArrayAccess</code> so many interactions with the
 old params array do not need to change. See the <a href=
 "20-cakerequest">CakeRequest new features</a> for
 more information.</p>
+<h3>Request handling, $_GET['url'] and .htaccess files</h3>
+<p>CakePHP no longer uses <code>$_GET['url']</code> for handling
+application request paths. Instead it uses
+<code>$_SERVER['PATH_INFO']</code>. This provides a more uniform
+way of handling requests between servers with URL rewriting and
+those without. Because of these changes, you'll need to update your
+<code>.htaccess</code> files and
+<code>app/webroot/index.php</code>, as these files were changed to
+accommodate the changes. Additionally
+<code>$this-&gt;params['url']['url']</code> no longer exists.
+Instead you should be using <code>$this-&gt;request-&gt;url</code>
+to access the same value.</p>
 <h2>Components</h2>
 <p><code>Component</code> is now the required base class for all
 components. See <a href=
@@ -142,6 +154,31 @@ types.</p>
 <li><code>RequestHandler::setContent()</code> no longer accepts an
 array as a single argument, you must supply both arguments.</li>
 </ul>
+<h3>SecurityComponent</h3>
+<p>SecurityComponent no longer handles Basic and Digest
+Authentication. These are both handled by the new AuthComponent.
+The following methods have been removed from SecurityComponent:</p>
+<ul>
+<li>requireLogin()</li>
+<li>generateDigestResponseHash()</li>
+<li>loginCredentials()</li>
+<li>loginRequest()</li>
+<li>parseDigestAuthData()</li>
+</ul>
+<p>In addition the following properties were removed</p>
+<ul>
+<li>$loginUsers</li>
+<li>$requireLogin</li>
+</ul>
+<p>Moving these features to AuthComponent was done to provide a
+single place for all types of authentication and to streamline the
+roles of each component.</p>
+<h3>AuthComponent</h3>
+<p>The AuthComponent was entirely re-factored for 2.0, this was
+done to help reduce developer confusion and frustration. In
+addition, AuthComponent was made more flexible and extensible. You
+can <a href="20-auth-guide">find out more in the
+AuthComponent guide</a></p>
 <h2>cakeError removed</h2>
 <p>The <code>cakeError()</code> method has been removed. Its
 recommended that you switch all uses of <code>cakeError</code> to
@@ -209,6 +246,7 @@ update your <code>app/webroot/index.php</code> file.</li>
 <li><code>Dispatcher::baseUrl()</code> has been removed.</li>
 <li><code>Dispatcher::getUrl()</code> has been removed.</li>
 <li><code>Dispatcher::uri()</code> has been removed.</li>
+<li><code>Dispatcher::$here</code> has been removed.</li>
 </ul>
 <h3>Configure</h3>
 <ul>
@@ -336,6 +374,11 @@ methods are:</p>
 <li>FormHelper::minute()</li>
 <li>FormHelper::meridian()</li>
 </ul>
+<h4>Default urls on forms is the current action</h4>
+<p>The default url for all forms, is now the current url including
+passed, named, and querystring parameters. You can override this
+default by supplying <code>$options['url']</code> in the second
+parameter of <code>$this-&gt;Form-&gt;create()</code></p>
 <h3>CacheHelper</h3>
 <p>CacheHelper has been fully decoupled from View, and uses helper
 callbacks to generate caches. You should remember to place
@@ -452,6 +495,9 @@ $Post-&gt;inexistentProperty[] = 'value';</code>
 }</code>
 </pre>
 <p>Either of these approaches will solve the notice errors.</p>
+<p>The notation of find() in Cake 1.2 is no longer supported. Finds
+should use notation <code>$model-&gt;find('type',
+array(PARAMS))</code> as Cake 1.3.</p>
 <h3>Database objets</h3>
 <p>DBOs were refactored for this version, being the use of PDO the
 major change. Check the <a href=

@@ -30,12 +30,12 @@ SecurityComponent</del></li>
 <li><del>Clean up how session configuration works, and make session
 configuration more powerful/flexible</del></li>
 <li>
-<p>Extract the case switches inside AuthComponent, to use
-polymorphism. This will make the component more flexible.</p>
+<p><del>Extract the case switches inside AuthComponent, to use
+polymorphism. This will make the component more flexible.</del></p>
 <ul>
-<li>Extract out how access checks are done</li>
-<li>Extract out how identity is verified, allowing things like
-basic auth, form post, and openid possible.</li>
+<li><del>Extract out how access checks are done</del></li>
+<li><del>Extract out how identity is verified, allowing things like
+basic auth, form post, and openid possible.</del></li>
 </ul>
 </li>
 <li>
@@ -46,11 +46,11 @@ application, like a shell.</p>
 non-functional. It should work.</li>
 <li><del>Extract pagination into a component. Split paginate() into
 smaller methods that will allow more extensibility.</del></li>
-<li>PaginatorComponent should allow behaviors to define
-<code>paginate()</code> and <code>paginateCount()</code>.
-(markstory)</li>
-<li>PaginatorComponent should be able to use querystring parameters
-for paging. (markstory)</li>
+<li><del>PaginatorComponent should allow behaviors to define
+<code>paginate()</code> and
+<code>paginateCount()</code>.</del></li>
+<li><del>PaginatorComponent should be able to use querystring
+parameters for paging.</del></li>
 </ul>
 <h3>Controller</h3>
 <ul>
@@ -69,8 +69,8 @@ view flow.</del></li>
 <li><del>Create a way to fix the delete as a GET request
 issue.</del></li>
 <li><del>Decouple CacheHelper from View.</del></li>
-<li>PaginatorHelper should be able to use querystring parameters
-for paging. (markstory)</li>
+<li><del>PaginatorHelper should be able to use querystring
+parameters for paging.</del></li>
 </ul>
 <h3>Console</h3>
 <ul>
@@ -104,10 +104,10 @@ makes sense.</del></li>
 <ul>
 <li>Further decouple the framework</li>
 <li>
-<p>Aliases for Helpers. Behaviors, and Components. Aliases would be
-provided as a 'setting' much like 'enabled' is. e.g <code>$helpers
-= array('MyHtml' =&gt; array('alias' =&gt; 'Html'));</code>
-(jeremyharris)</p>
+<p><del>Aliases for Helpers. Behaviors, and Components. Aliases
+would be provided as a 'setting' much like 'enabled' is. e.g
+<code>$helpers = array('MyHtml' =&gt; array('alias' =&gt;
+'Html'));</code> (jeremyharris)</del></p>
 </li>
 <li>
 <p>Behaviors</p>

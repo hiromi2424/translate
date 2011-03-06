@@ -7,7 +7,25 @@
 <h3>Htmlヘルパー</h3>
 <ul>
 <li><code>getCrumbsList()</code>は<code>&lt;li&gt;</code>エレメントでラップされたぱんくずリストのリンクを生成します。<a href="http://cakephp.lighthouseapp.com/projects/42648/tickets/856" title="Ticket #856">#856</a>を見てください。</li>
+<li><code>loadConfig()</code>はHelperからHtmlHelperに移動しました。このメソッドは設定ファイルを読み込むのに新しいリーダークラス（<a href="20-configure">2.0 Configure</a>をみてください）を使うようになりました。省略可能ですが、二番目の引数としてパス（デフォルトはapp/config）を渡すことができます。単純に、設定ファイル（とリーダー）をController::$helpersで設定することで、ヘルパーにコンストラクタで読み込むことができます（以下に例があります）。設定ファイルでは、以下のキーを指定できます。
+<ul>
+<li><code>tags</code> キーと値を用いた配列</li>
+<li><code>minimizedAttributes</code> リスト</li>
+<li>'docTypes' キーと値を用いた配列</li>
+<li><code>attributeFormat</code> 文字列</li>
+<li><code>minimizedAttributeFormat</code> 文字列</li>
 </ul>
+</li>
+</ul>
+<p>コントローラで設定ファイルを指定する方法の例：<br></p>
+<pre>
+public $helpers = array(
+    'Html' =&gt; array(
+        'configFile' =&gt; array('config_file', 'php') // 一つ目の方法： ファイル名とリーダー名の配列
+        'configFile' =&gt; 'config_file' // 二つ目の方法： ファイル名の文字列。	PhpReaderが用いられます。
+    )
+);
+</pre>
 <h3>Formヘルパー</h3>
 <ul>
 <li>Formヘルパーは全てのHTML5インプット(<em>input</em>)の種類と、カスタムインプットをサポートします。使用したいインプットをこのヘルパーのメソッドとして呼び出してください。一例として、<code>$this-&gt;Form-&gt;range()</code>はtype = rangeとなるインプットを生成するでしょう。</li>
@@ -128,3 +146,29 @@ true;</code>を設定することによってそれを有効とすることが�
 <code>$this-&gt;paginate = array('maxLimit' =&gt; 1000);</code>
 </pre>
 <p>このデフォルト値は、ユーザのURL操作で「limit」パラメータをとても大きな数値にしたリクエストのために、過大なデータベースの情報の引き出しを防ぐために提供されます。</p>
+<h2>エイリアス</h2>
+<p>あるクラスの代わりに独自のクラスを使うために、ヘルパー、コンポーネント、ビヘイビアは別名（訳注：エイリアス）を使うことができるようになりました。これは、ビューで全ての<code>$this-&gt;Html</code>のインスタンスを置き換える必要なく<code>MyHtml</code>ヘルパーを作成することが、非常に簡単にできるようになったということです。これを為すには、モデルでしていたのと同じように、クラスを用いた「className」キーを渡してください。</p>
+<pre>
+<code>public $helpers = array( 
+    'Html' =&gt; array( 
+        'className' =&gt; 'MyHtml' 
+    ) 
+);</code>
+</pre>
+<p>同じように、コントローラで使うためにコンポーネントを別名として使うことができます。</p>
+<pre>
+<code>public $components = array( 
+    'Email' =&gt; array( 
+        'className' =&gt; 'QueueEmailer' 
+    ) 
+);</code>
+</pre>
+<p><code>Email</code>コンポーネントを呼び出すことは、代わりに<code>QueueEmailer</code>を呼び出すことになるでしょう。最後に、ビヘイビアでも別名呼び出しが可能です。</p>
+<pre>
+<code>public $actsAs = array( 
+    'Containable' =&gt; array( 
+        'className' =&gt; 'SuperContainable' 
+    ) 
+);</code>
+</pre>
+<p>2.0がコレクションを利用し、アプリケーションにまたがって共有することから、全てのエイリアス化されたクラスはアプリケーションの至る所で使用されるでしょう。アプリケーションはいつでもエイリアスにアクセスを試み、それは独自のクラスにアクセスすることになります。例えば、上記のように<code>Html</code>をエイリアス化したとき、全ての<code>Html</code>ヘルパーを使うヘルパーやエレメントは<code>Html</code>ヘルパーを読み込み、<code>MyHtml</code>を代わりに使うことになるでしょう。</p>
